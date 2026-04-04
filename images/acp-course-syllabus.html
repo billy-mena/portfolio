@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ACP Full Course Syllabus 2025</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:#1a1a1a;color:#ccc;padding:20px;min-height:100vh}
+:root{--ps:#31A8FF;--ai:#FF9A00;--id:#FF3366}
+
+.syl-header{text-align:center;margin-bottom:18px}
+.syl-title{font-size:18px;font-weight:600;color:#fff;margin-bottom:4px}
+.syl-sub{font-size:12px;color:#666}
+
+.stats-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.stat-box{flex:1;min-width:70px;background:#222;border-radius:8px;padding:10px 12px;text-align:center;border:1px solid #2a2a2a}
+.stat-num{font-size:20px;font-weight:700;color:#fff}
+.stat-lbl{font-size:10px;color:#666;margin-top:2px}
+
+.gagne-strip{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.gp{font-size:10px;padding:3px 7px;border-radius:4px;border:1px solid #2a2a2a;color:#555;background:#1e1e1e}
+
+.track-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab-btn{padding:6px 16px;border-radius:20px;border:1.5px solid #333;background:transparent;color:#666;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.tab-btn:hover{color:#ccc;border-color:#555}
+.tab-btn.active-ps{background:var(--ps);border-color:var(--ps);color:#000;font-weight:700}
+.tab-btn.active-ai{background:var(--ai);border-color:var(--ai);color:#000;font-weight:700}
+.tab-btn.active-id{background:var(--id);border-color:var(--id);color:#fff;font-weight:700}
+.tab-btn.active-all{background:#fff;border-color:#fff;color:#000;font-weight:700}
+
+.track-panel{display:none}
+.track-panel.active{display:block}
+
+.track-label{font-size:12px;font-weight:700;margin:0 0 8px;letter-spacing:.2px}
+
+.module-card{border:1px solid #2a2a2a;border-radius:8px;margin-bottom:8px;overflow:hidden;background:#1e1e1e}
+.module-head{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;background:#222;transition:background .15s}
+.module-head:hover{background:#2a2a2a}
+.mod-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;color:#000;min-width:52px;text-align:center;flex-shrink:0}
+.mod-title{font-size:13px;font-weight:500;color:#ddd;flex:1}
+.bloom-tag{font-size:10px;color:#888;padding:2px 6px;border-radius:4px;border:1px solid #333;white-space:nowrap;flex-shrink:0}
+.mod-toggle{font-size:14px;color:#555;transition:transform .2s;flex-shrink:0;width:16px;text-align:center}
+
+.module-body{display:none;padding:10px 12px;border-top:1px solid #2a2a2a}
+.module-body.open{display:block}
+
+.obj-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px}
+.obj-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.obj-text{font-size:12px;color:#bbb;line-height:1.5}
+.obj-key{font-size:11px;color:#666;margin-top:2px;line-height:1.45}
+
+.media-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #2a2a2a}
+.media-chip{font-size:10px;padding:3px 8px;border-radius:4px;background:#1a1a1a;border:1px solid #333;color:#777}
+</style>
+</head>
+<body>
+
+<div class="syl-header">
+  <div class="syl-title">Adobe Certified Professional — Full Suite Course Syllabus</div>
+  <div class="syl-sub">Photoshop v26.x &nbsp;·&nbsp; Illustrator v29.x &nbsp;·&nbsp; InDesign v20.x &nbsp;·&nbsp; Mixed audience &nbsp;·&nbsp; English &nbsp;·&nbsp; All deployment formats</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-num">3</div><div class="stat-lbl">ACP tracks</div></div>
+  <div class="stat-box"><div class="stat-num">17</div><div class="stat-lbl">Total modules</div></div>
+  <div class="stat-box"><div class="stat-num">60+</div><div class="stat-lbl">Exam objectives</div></div>
+  <div class="stat-box"><div class="stat-num">150h</div><div class="stat-lbl">Target seat time</div></div>
+  <div class="stat-box"><div class="stat-num" style="font-size:14px">L1–L6</div><div class="stat-lbl">Bloom's coverage</div></div>
+</div>
+
+<div class="gagne-strip">
+  <span class="gp">1. Gain attention</span>
+  <span class="gp">2. State objectives</span>
+  <span class="gp">3. Recall prior knowledge</span>
+  <span class="gp">4. Present content</span>
+  <span class="gp">5. Provide guidance</span>
+  <span class="gp">6. Elicit performance</span>
+  <span class="gp">7. Give feedback</span>
+  <span class="gp">8. Assess performance</span>
+  <span class="gp">9. Enhance retention</span>
+</div>
+
+<div class="track-tabs">
+  <button class="tab-btn active-all" onclick="showTrack('all',this)">All Tracks</button>
+  <button class="tab-btn" onclick="showTrack('ps',this)" style="border-color:var(--ps);color:var(--ps)">Photoshop</button>
+  <button class="tab-btn" onclick="showTrack('ai',this)" style="border-color:var(--ai);color:var(--ai)">Illustrator</button>
+  <button class="tab-btn" onclick="showTrack('id',this)" style="border-color:var(--id);color:var(--id)">InDesign</button>
+</div>
+
+<!-- PHOTOSHOP TRACK -->
+<div class="track-panel active" id="panel-ps">
+  <div class="track-label" style="color:var(--ps)">Photoshop Track — Visual Design Using Adobe Photoshop (v26.x)</div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ps)">PS-1</span>
+      <span class="mod-title">Working in the Design Industry</span>
+      <span class="bloom-tag">L1 Remember</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ps)"></span><div><div class="obj-text">1.1 Identify terminology: client goals, target audience, demographics, accessibility</div><div class="obj-key">1.2 Copyright, permissions, licensing · model &amp; location releases · AI-generated content</div><div class="obj-key">1.3 Digital image terminology: pixel, raster, vector, resolution, bit depth, resampling</div><div class="obj-key">1.4 Design principles: balance, contrast, hierarchy, rule of thirds, depth of field, white balance</div></div></div>
+      <div class="media-row"><span class="media-chip">Concept quiz</span><span class="media-chip">Infographic cards</span><span class="media-chip">Glossary</span><span class="media-chip">Video lesson</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ps)">PS-2</span>
+      <span class="mod-title">Project Setup and Interface</span>
+      <span class="bloom-tag">L2 Understand</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ps)"></span><div><div class="obj-text">2.1 Document settings: width/height, resolution, color mode, bit depth, artboards, metadata</div><div class="obj-key">2.2 Workspace: panels, toolbars, options bar, contextual taskbar, guides, grids, rulers</div><div class="obj-key">2.3 Import assets: embedding, linking, Smart Objects, Camera Raw, drag &amp; drop, Convert to Link</div><div class="obj-key">2.4 Colors &amp; gradients: Color Picker, swatches, Eyedropper, gradient types, ASE export</div><div class="obj-key">2.5 Brushes, styles, patterns: open, create, organize libraries</div></div></div>
+      <div class="media-row"><span class="media-chip">Interface simulator</span><span class="media-chip">Guided walkthrough</span><span class="media-chip">Drag &amp; drop activity</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ps)">PS-3</span>
+      <span class="mod-title">Layers, Masks and Adjustments</span>
+      <span class="bloom-tag">L3 Apply</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ps)"></span><div><div class="obj-text">3.1 Layer management: add, delete, hide, lock, group, merge, flatten, blend modes, fill opacity</div><div class="obj-key">3.2 Masks: pixel mask, vector mask, clipping mask, Select and Mask workspace, frame tool</div><div class="obj-key">3.3 Adjustments: adjustment layers, Smart Filters, limiting to selections/layers, presets</div></div></div>
+      <div class="media-row"><span class="media-chip">Layers panel sim</span><span class="media-chip">Mask challenge</span><span class="media-chip">Scenario activity</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ps)">PS-4</span>
+      <span class="mod-title">Adding Content to a Document</span>
+      <span class="bloom-tag">L3 Apply</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ps)"></span><div><div class="obj-text">4.1 Raster tools: Brush, Pencil, Smudge, Sharpen, Blur, Eraser, Background Eraser, History Brush</div><div class="obj-key">4.1c AI tools: Generative Fill prompt writing, Sky Replacement, Remove Background</div><div class="obj-key">4.2 Vector tools: Pen, Curvature Pen, Freeform Pen, anchor points, shape tools</div><div class="obj-key">4.3 Text: Type tool, Type on a Path, Warp Text, character/paragraph settings, Check Spelling</div></div></div>
+      <div class="media-row"><span class="media-chip">Tool simulation</span><span class="media-chip">Drawing challenge</span><span class="media-chip">Type exercise</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ps)">PS-5</span>
+      <span class="mod-title">Modifying Visual Elements</span>
+      <span class="bloom-tag">L4 Analyze</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ps)"></span><div><div class="obj-text">5.1 Selections: Quick Selection, Magic Wand, Lasso, Marquee, Select Subject, Object Selection, channels</div><div class="obj-key">5.2 Retouching: Healing Brush, Clone Stamp, Content-Aware Fill, Generative Remove, Patch, Dodge/Burn</div><div class="obj-key">5.3 Transform: Crop, Perspective Crop, rotate, warp, distort, skew, non-destructive crop</div><div class="obj-key">5.4 Filters &amp; styles: Smart Filters, layer styles, materials, blend modes, filter gallery</div></div></div>
+      <div class="media-row"><span class="media-chip">Selection game</span><span class="media-chip">Retouch challenge</span><span class="media-chip">Transform activity</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ps)">PS-6</span>
+      <span class="mod-title">Publishing Digital Media</span>
+      <span class="bloom-tag">L5 Evaluate</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ps)"></span><div><div class="obj-text">6.1 Export: Quick Export, Export As, exporting layers/artboards to files</div><div class="obj-key">6.2 Save: PSD (native), CC documents, format selection, bit depth, color space, transparency support</div></div></div>
+      <div class="media-row"><span class="media-chip">Export quiz</span><span class="media-chip">Format matcher game</span><span class="media-chip">Practice exam</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ILLUSTRATOR TRACK -->
+<div class="track-panel" id="panel-ai">
+  <div class="track-label" style="color:var(--ai)">Illustrator Track — Graphic Design &amp; Illustration (v29.x)</div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ai);color:#000">AI-1</span>
+      <span class="mod-title">Working in the Design Industry</span>
+      <span class="bloom-tag">L1 Remember</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ai)"></span><div><div class="obj-text">1.1 Design terminology, communication, project management concepts</div><div class="obj-key">1.2 Copyright, licensing, AI-generated content, restricted fonts, check/change file copyright info</div><div class="obj-key">1.3 Digital graphics: raster vs vector, bleed, trim, live area, color modes (CMYK/RGB/HSB/Hex)</div><div class="obj-key">1.4 Design principles: elements, principles of design, typographic hierarchy</div></div></div>
+      <div class="media-row"><span class="media-chip">Concept quiz</span><span class="media-chip">Raster vs vector game</span><span class="media-chip">Glossary cards</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ai);color:#000">AI-2</span>
+      <span class="mod-title">Document Management</span>
+      <span class="bloom-tag">L2 Understand</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ai)"></span><div><div class="obj-text">2.1 Document settings: artboards, bleed, color mode, raster effects, presets</div><div class="obj-key">2.2 Artboards: scale, move, duplicate, resize, arrange, copy/paste art between artboards</div><div class="obj-key">2.3 Assets: place, embed, Links panel, Edit Original, linking vs embedding</div><div class="obj-key">2.4 Save/export: .ai, .pdf, .eps, .svg; Asset Export panel; Package project (font/image management)</div></div></div>
+      <div class="media-row"><span class="media-chip">Artboard simulator</span><span class="media-chip">Export format quiz</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ai);color:#000">AI-3</span>
+      <span class="mod-title">Workflow and Interface Customization</span>
+      <span class="bloom-tag">L2 Understand</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ai)"></span><div><div class="obj-text">3.1 Workspace: application bar, panels, toolbars, contextual taskbar, preferences</div><div class="obj-key">3.2 Design aids: rulers, guides, grids, snap, views (Outline, Pixel Preview, Trim View, Overprint Preview)</div><div class="obj-key">3.2e–g Drawing modes · Dimension Tool · Mock Up Tool</div><div class="obj-key">3.3 Colors: swatches (Process, Spot, Global), gradients, Gradient Mesh, Color Guide</div><div class="obj-key">3.4 Brushes, symbols, graphic styles, patterns: create, edit, apply from libraries, Generate Patterns</div><div class="obj-key">3.5 Layers: add, delete, hide, lock, sublayers, stacking order, Paste Remembers Layers</div></div></div>
+      <div class="media-row"><span class="media-chip">Interface sim</span><span class="media-chip">Layers challenge</span><span class="media-chip">Color activity</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ai);color:#000">AI-4</span>
+      <span class="mod-title">Working with Objects, Paths and Text</span>
+      <span class="bloom-tag">L3 Apply</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ai)"></span><div><div class="obj-text">4.1 Create: Pen tool (anchor pts, curves), Curvature, Pencil, Blob Brush, Shape tools, Image Trace, AI Generate Vectors</div><div class="obj-key">4.2 Modify: Simplify, Smooth, Join, Pathfinder, Shape Builder, Eraser, Scissors, Live Corners, Expand</div><div class="obj-key">4.3 Add text: Area Type, Point Type, Type on Path; kerning, tracking, leading, baseline shift, Character/Paragraph Styles</div><div class="obj-key">4.4 Modify text: threading, overflow, Area Type options, convert to outlines</div></div></div>
+      <div class="media-row"><span class="media-chip">Pen tool trainer</span><span class="media-chip">Pathfinder game</span><span class="media-chip">Type sim</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--ai);color:#000">AI-5</span>
+      <span class="mod-title">Modifying Object Appearance and Position</span>
+      <span class="bloom-tag">L4 Analyze</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--ai)"></span><div><div class="obj-text">5.1 Selections: Direct Selection, Group Selection, Isolation Mode, Lasso, saving selections, targeting vs selecting</div><div class="obj-key">5.2 Appearance: fill/stroke, Appearance panel, Recolor Artwork, effects (Drop Shadow, Feather, 3D), Graphic Styles</div><div class="obj-key">5.3 Opacity &amp; masks: Transparency panel, blending modes, opacity masks, clipping masks</div><div class="obj-key">5.4 Position: Align, Distribute, Distribute Spacing, Align to artboard/key object, Objects on Path</div></div></div>
+      <div class="media-row"><span class="media-chip">Appearance challenge</span><span class="media-chip">Align activity</span><span class="media-chip">Practice exam</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- INDESIGN TRACK -->
+<div class="track-panel" id="panel-id">
+  <div class="track-label" style="color:var(--id)">InDesign Track — Print &amp; Digital Media Publication (v20.x)</div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--id)">ID-1</span>
+      <span class="mod-title">Working in the Design Industry</span>
+      <span class="bloom-tag">L1 Remember</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--id)"></span><div><div class="obj-text">1.1 Publication terminology, audience, accessibility standards (alt text, WCAG contrast, hierarchy, kerning)</div><div class="obj-key">1.2 Copyright, licensing, AI-generated content, permissions, restricted fonts (convert to outlines)</div><div class="obj-key">1.3 Layout terms: bleed, trim, slug, gutter, spread, parent page, facing pages, frame, column, margin</div><div class="obj-key">1.4 Design principles + typographic hierarchy (serif vs sans serif, kerning, tracking, leading)</div></div></div>
+      <div class="media-row"><span class="media-chip">Concept quiz</span><span class="media-chip">Layout anatomy diagram</span><span class="media-chip">Glossary</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--id)">ID-2</span>
+      <span class="mod-title">Project Setup and Interface</span>
+      <span class="bloom-tag">L2 Understand</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--id)"></span><div><div class="obj-text">2.1 Document: margins, columns, gutter, bleed, Facing Pages, Primary Text Frame, presets</div><div class="obj-key">2.2 Workspace: panels (Properties, Control, Layers, Pages, Links, Swatches, Align, Text Wrap, Hyperlinks)</div><div class="obj-key">2.3 Design aids: rulers, guides, Smart Guides, grids, screen modes (Normal, Preview, Bleed, Presentation)</div><div class="obj-key">2.4 Import: embed, link, relink, Show Import Options, place .docx/.rtf/.txt</div><div class="obj-key">2.5 Colors: fill/stroke, swatches (Process, Spot), gradients, Eyedropper, tints</div></div></div>
+      <div class="media-row"><span class="media-chip">Interface sim</span><span class="media-chip">Document setup quiz</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--id)">ID-3</span>
+      <span class="mod-title">Organizing Documents</span>
+      <span class="bloom-tag">L2 Understand</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--id)"></span><div><div class="obj-text">3.1 Layers: add, delete, hide, lock; layers are document-wide across all pages and spreads</div><div class="obj-key">3.2 Pages: add, delete, shuffle; Parent Pages, page numbering, section options, override elements</div></div></div>
+      <div class="media-row"><span class="media-chip">Pages panel sim</span><span class="media-chip">Parent page challenge</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--id)">ID-4</span>
+      <span class="mod-title">Creating and Modifying Text and Tables</span>
+      <span class="bloom-tag">L3 Apply</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--id)"></span><div><div class="obj-text">4.1 Text: text frames, Type tool, Type on a Path, character/paragraph settings, Drop Cap, threading, overset text</div><div class="obj-key">4.2 Styles: paragraph vs character styles, applying, modifying, clearing overrides (+), redefine style</div><div class="obj-key">4.3 Editing: Find/Change, GREP, spell check, custom dictionary, table of contents</div><div class="obj-key">4.4 Tables: rows, columns, cells, merge/split, header/footer rows, strokes, borders, Table/Cell styles</div></div></div>
+      <div class="media-row"><span class="media-chip">Text flow sim</span><span class="media-chip">Styles challenge</span><span class="media-chip">Table builder</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--id)">ID-5</span>
+      <span class="mod-title">Adding and Modifying Visual Elements</span>
+      <span class="bloom-tag">L3 Apply</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--id)"></span><div><div class="obj-text">5.1 Frames: graphic/text/unassigned; place graphics; Frame Fitting; Content-Aware Fit; Content Grabber</div><div class="obj-key">5.2 Transform: modify frame content, crop, scale, rotate, align, distribute, reference point</div><div class="obj-key">5.3 Appearance: effects (Drop Shadow, Feather, Glow, Transparency), Object Styles, fill/stroke/opacity</div><div class="obj-key">5.4 Interactivity: hyperlinks, QR codes (Object > Generate QR Code)</div><div class="obj-key">5.5 AI features: text-to-image generation, Generative Expand</div></div></div>
+      <div class="media-row"><span class="media-chip">Frame sim</span><span class="media-chip">Effects activity</span><span class="media-chip">Object styles quiz</span></div>
+    </div>
+  </div>
+
+  <div class="module-card">
+    <div class="module-head" onclick="toggle(this)">
+      <span class="mod-badge" style="background:var(--id)">ID-6</span>
+      <span class="mod-title">Publishing Documents</span>
+      <span class="bloom-tag">L5 Evaluate</span>
+      <span class="mod-toggle">+</span>
+    </div>
+    <div class="module-body">
+      <div class="obj-row"><span class="obj-dot" style="background:var(--id)"></span><div><div class="obj-text">6.1 Preflight: Preflight panel, defining preflight profile, resolving errors (resolution, bleed, overset, fonts)</div><div class="obj-key">6.2 Export: .indd (native), .idml (backward-compatible), PDF Print (marks, bleeds, PDF/X), Interactive PDF</div><div class="obj-key">6.3 Print proofs: print settings, thumbnails, spreads, separations preview</div><div class="obj-key">6.4 Package: font and asset management, delivery folder for printers</div></div></div>
+      <div class="media-row"><span class="media-chip">Preflight sim</span><span class="media-chip">Export settings quiz</span><span class="media-chip">Practice exam</span></div>
+    </div>
+  </div>
+</div>
+
+<div style="font-size:10px;color:#444;margin-top:16px;text-align:center;padding-top:10px;border-top:1px solid #2a2a2a">
+  ACP Exam Prep 2025 · Photoshop v26.x · Illustrator v29.x · InDesign v20.x · Certiport / Adobe Certified Professional
+</div>
+
+<script>
+function showTrack(t, btn) {
+  document.querySelectorAll('.track-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active-ps','active-ai','active-id','active-all');
+    b.style.borderColor=''; b.style.color='';
+  });
+  if (t === 'all') {
+    document.querySelectorAll('.track-panel').forEach(p => p.classList.add('active'));
+    btn.classList.add('active-all');
+  } else {
+    document.getElementById('panel-' + t).classList.add('active');
+    btn.classList.add('active-' + t);
+  }
+}
+function toggle(head) {
+  const body = head.nextElementSibling;
+  const tog = head.querySelector('.mod-toggle');
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? '−' : '+';
+}
+</script>
+</body>
+</html>

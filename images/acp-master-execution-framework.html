@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ACP Course — Master Execution Framework</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:#f8f7f4;padding:24px;min-height:100vh}
+h1{font-size:15px;font-weight:600;color:#1a1a1a;text-align:center;margin-bottom:4px}
+.sub{font-size:11px;color:#888;text-align:center;margin-bottom:20px}
+svg text{font-family:-apple-system,'Segoe UI',sans-serif}
+.node{cursor:pointer}
+.node:hover rect,.node:hover circle{filter:brightness(1.08)}
+.tt{position:fixed;background:rgba(10,10,10,.95);color:#fff;padding:8px 12px;border-radius:5px;font-size:11.5px;max-width:280px;line-height:1.5;z-index:999;pointer-events:none;display:none;border:1px solid rgba(255,255,255,.1);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<h1>ACP Course Development — Master Execution Framework</h1>
+<p class="sub">ADDIE × Bloom's Taxonomy × Gagne's 9 Events × Mayer's 12 Principles · Click any element to learn more</p>
+
+<svg width="100%" viewBox="0 0 680 820" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<!-- PHASE ROW -->
+<g class="node" onclick="tip(event,'Phase 1 — Analyze: Learner needs analysis, audience profiling, competency gap matrix mapped to all ACP exam objectives across Photoshop, Illustrator, and InDesign.')">
+<rect x="20" y="70" width="120" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="80" y="90" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Phase 1</text>
+<text x="80" y="108" text-anchor="middle" font-size="11" fill="#534AB7">Analyze</text>
+</g>
+<g class="node" onclick="tip(event,'Phase 2 — Design: Course blueprint, learning objectives mapped to Bloom\'s levels 1–6, module sequence, assessment strategy, interaction levels (L1–L5) per lesson, Gagne\'s 9 Events scaffold.')">
+<rect x="160" y="70" width="120" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="220" y="90" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">Phase 2</text>
+<text x="220" y="108" text-anchor="middle" font-size="11" fill="#185FA5">Design</text>
+</g>
+<g class="node" onclick="tip(event,'Phase 3 — Develop: Build all media — HTML5 simulators (Photoshop, Illustrator, InDesign), guided tasks, quiz banks, reference cards, storyboards, SCORM packaging, GitHub-deployable bundle.')">
+<rect x="300" y="70" width="120" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="360" y="90" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Phase 3</text>
+<text x="360" y="108" text-anchor="middle" font-size="11" fill="#0F6E56">Develop</text>
+</g>
+<g class="node" onclick="tip(event,'Phase 4 — Implement: Deploy via GitHub Pages (free), SCORM upload to LMS (Moodle/Canvas/Blackboard), and standalone HTML5 offline bundle. Facilitator guide included.')">
+<rect x="440" y="70" width="100" height="56" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="490" y="90" text-anchor="middle" font-size="13" font-weight="500" fill="#633806">Phase 4</text>
+<text x="490" y="108" text-anchor="middle" font-size="11" fill="#854F0B">Implement</text>
+</g>
+<g class="node" onclick="tip(event,'Phase 5 — Evaluate: Kirkpatrick L1 (reaction surveys), L2 (pre/post quiz scores, domain gap analysis, task completion), L3 (ACP exam pass rate tracking at 30/60/90 days).')">
+<rect x="560" y="70" width="100" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="610" y="90" text-anchor="middle" font-size="13" font-weight="500" fill="#712B13">Phase 5</text>
+<text x="610" y="108" text-anchor="middle" font-size="11" fill="#993C1D">Evaluate</text>
+</g>
+<line x1="140" y1="98" x2="158" y2="98" stroke="#aaa" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="280" y1="98" x2="298" y2="98" stroke="#aaa" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="420" y1="98" x2="438" y2="98" stroke="#aaa" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="540" y1="98" x2="558" y2="98" stroke="#aaa" stroke-width="1" marker-end="url(#arrow)"/>
+
+<!-- SECTION: DELIVERABLES -->
+<text x="20" y="158" font-size="12" font-weight="500" fill="#1a1a1a">Key deliverables by phase</text>
+<line x1="20" y1="163" x2="660" y2="163" stroke="#ddd" stroke-width="0.5"/>
+
+<g class="node" onclick="tip(event,'Analyze Deliverables: Learner Profile Document, Competency Gap Matrix, ACP exam objective mapping for all 3 applications, audience segmentation (beginner/intermediate/advanced).')">
+<rect x="20" y="172" width="128" height="44" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="84" y="188" text-anchor="middle" font-size="11" font-weight="500" fill="#3C3489">Learner needs</text>
+<text x="84" y="205" text-anchor="middle" font-size="10" fill="#534AB7">Audience + gap audit</text>
+</g>
+<g class="node" onclick="tip(event,'Design Deliverables: Full course syllabus (17 modules across 3 tracks), learning objectives at Bloom\'s L1–L5, assessment blueprint, storyboards, media asset list, Gagne event mapping.')">
+<rect x="160" y="172" width="128" height="44" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="224" y="188" text-anchor="middle" font-size="11" font-weight="500" fill="#0C447C">Course blueprint</text>
+<text x="224" y="205" text-anchor="middle" font-size="10" fill="#185FA5">Objectives + map</text>
+</g>
+<g class="node" onclick="tip(event,'Develop Deliverables: 3 pixel-accurate HTML5 simulators (Ps/Ai/Id), 60 guided tasks, 60 quiz questions, reference cards, SCORM wrapper, GitHub Pages site, offline ZIP bundle.')">
+<rect x="300" y="172" width="128" height="44" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="364" y="188" text-anchor="middle" font-size="11" font-weight="500" fill="#085041">Media assets</text>
+<text x="364" y="205" text-anchor="middle" font-size="10" fill="#0F6E56">HTML5 + SCORM + slides</text>
+</g>
+<g class="node" onclick="tip(event,'Implement Deliverables: GitHub Pages URL, SCORM 1.2 package, offline HTML5 bundle, facilitator guide, deployment checklist, README with setup instructions.')">
+<rect x="440" y="172" width="100" height="44" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="490" y="188" text-anchor="middle" font-size="11" font-weight="500" fill="#633806">Deployment</text>
+<text x="490" y="205" text-anchor="middle" font-size="10" fill="#854F0B">GitHub + SCORM</text>
+</g>
+<g class="node" onclick="tip(event,'Evaluate Deliverables: Reaction survey template (L1), pre/post quiz reports with domain gap analysis (L2), 30/60/90-day ACP exam pass rate tracker (L3), Kirkpatrick evaluation report.')">
+<rect x="552" y="172" width="108" height="44" rx="6" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="606" y="188" text-anchor="middle" font-size="11" font-weight="500" fill="#712B13">Kirkpatrick</text>
+<text x="606" y="205" text-anchor="middle" font-size="10" fill="#993C1D">L1–L3 eval</text>
+</g>
+
+<!-- SECTION: FRAMEWORKS -->
+<text x="20" y="242" font-size="12" font-weight="500" fill="#1a1a1a">Applied learning frameworks</text>
+<line x1="20" y1="247" x2="660" y2="247" stroke="#ddd" stroke-width="0.5"/>
+
+<g class="node" onclick="tip(event,'Bloom\'s Taxonomy (6 levels): L1 Remember — recall tool names and keyboard shortcuts. L2 Understand — explain concepts like destructive vs non-destructive editing. L3 Apply — complete guided simulator tasks. L4 Analyze — compare export formats for specific use cases. L5 Evaluate — judge design decisions. L6 Create — produce complete design outputs.')">
+<rect x="20" y="256" width="198" height="130" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="119" y="275" text-anchor="middle" font-size="12" font-weight="500" fill="#0C447C">Bloom's taxonomy</text>
+<text x="119" y="294" text-anchor="middle" font-size="10" fill="#185FA5">L1 Remember — recall tools</text>
+<text x="119" y="310" text-anchor="middle" font-size="10" fill="#185FA5">L2 Understand — concepts</text>
+<text x="119" y="326" text-anchor="middle" font-size="10" fill="#185FA5">L3 Apply — simulations</text>
+<text x="119" y="342" text-anchor="middle" font-size="10" fill="#185FA5">L4 Analyze — case studies</text>
+<text x="119" y="358" text-anchor="middle" font-size="10" fill="#185FA5">L5 Evaluate — assessments</text>
+<text x="119" y="374" text-anchor="middle" font-size="10" fill="#185FA5">L6 Create — design tasks</text>
+</g>
+<g class="node" onclick="tip(event,'Gagne\'s 9 Events applied per lesson: 1. Gain attention (scenario hook). 2. Inform objectives (domain banner). 3. Recall prior knowledge (warm-up question). 4. Present content (guided task instruction). 5. Provide learning guidance (hint panel). 6. Elicit performance (interactive task). 7. Provide feedback (instant quiz feedback). 8. Assess performance (quiz mode). 9. Enhance retention (reference card + summary).')">
+<rect x="232" y="256" width="198" height="130" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="331" y="275" text-anchor="middle" font-size="12" font-weight="500" fill="#085041">Gagne's 9 events</text>
+<text x="331" y="294" text-anchor="middle" font-size="10" fill="#0F6E56">1. Gain attention</text>
+<text x="331" y="310" text-anchor="middle" font-size="10" fill="#0F6E56">2. Inform objectives</text>
+<text x="331" y="326" text-anchor="middle" font-size="10" fill="#0F6E56">3. Recall prior knowledge</text>
+<text x="331" y="342" text-anchor="middle" font-size="10" fill="#0F6E56">4–6. Present + guide</text>
+<text x="331" y="358" text-anchor="middle" font-size="10" fill="#0F6E56">7. Practice + feedback</text>
+<text x="331" y="374" text-anchor="middle" font-size="10" fill="#0F6E56">8–9. Assess + transfer</text>
+</g>
+<g class="node" onclick="tip(event,'Mayer\'s 12 Principles applied: Coherence (no extraneous content). Signaling (domain badges highlight key info). Redundancy (no text read over identical text). Spatial contiguity (labels near what they describe). Temporal contiguity (narration with visuals). Segmenting (tasks chunked per domain). Pre-training (glossary before simulation). Modality (audio + visual where possible). Multimedia (text + graphics together). Personalization (conversational guided tone). Voice (human-sounding feedback). Embodiment (instructor-style guidance cues).')">
+<rect x="444" y="256" width="216" height="130" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="552" y="275" text-anchor="middle" font-size="12" font-weight="500" fill="#3C3489">Mayer's 12 principles</text>
+<text x="552" y="294" text-anchor="middle" font-size="10" fill="#534AB7">Coherence + signaling</text>
+<text x="552" y="310" text-anchor="middle" font-size="10" fill="#534AB7">Redundancy + contiguity</text>
+<text x="552" y="326" text-anchor="middle" font-size="10" fill="#534AB7">Segmenting + pre-training</text>
+<text x="552" y="342" text-anchor="middle" font-size="10" fill="#534AB7">Modality + multimedia</text>
+<text x="552" y="358" text-anchor="middle" font-size="10" fill="#534AB7">Personalization + voice</text>
+<text x="552" y="374" text-anchor="middle" font-size="10" fill="#534AB7">Image + embodiment</text>
+</g>
+
+<!-- SECTION: SIMULATORS -->
+<text x="20" y="410" font-size="12" font-weight="500" fill="#1a1a1a">Three Adobe simulators</text>
+<line x1="20" y1="415" x2="660" y2="415" stroke="#ddd" stroke-width="0.5"/>
+
+<g class="node" onclick="tip(event,'Photoshop Simulator (v26.x): Pixel-accurate UI clone. 6 domains · 12 guided tasks · 20 quiz questions. Features: full toolbox, Layers panel with blend modes/opacity, Adjustments panel, Color/Swatches/Gradients, Properties, live canvas with Smart Object/Type/Adjustment layers. Guided + Explore + Quiz modes.')">
+<rect x="20" y="424" width="198" height="80" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="119" y="446" text-anchor="middle" font-size="12" font-weight="500" fill="#712B13">Photoshop simulator</text>
+<text x="119" y="463" text-anchor="middle" font-size="10" fill="#993C1D">Layers, masks, selections</text>
+<text x="119" y="478" text-anchor="middle" font-size="10" fill="#993C1D">Retouching + compositing</text>
+<text x="119" y="493" text-anchor="middle" font-size="10" fill="#993C1D">Guided + Explore + Quiz</text>
+</g>
+<g class="node" onclick="tip(event,'Illustrator Simulator (v29.x): Pixel-accurate UI clone. 5 domains · 12 guided tasks · 20 quiz questions. Features: full toolbox (Pen, Shapes, Type, Pathfinder), Appearance panel, Layers, Align, Gradient panel, Swatches (Process/Spot/Global/Pattern), Pathfinder, 2 artboards on canvas. View modes: Normal/Outline/Pixel/Overprint/Trim.')">
+<rect x="232" y="424" width="198" height="80" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="331" y="446" text-anchor="middle" font-size="12" font-weight="500" fill="#633806">Illustrator simulator</text>
+<text x="331" y="463" text-anchor="middle" font-size="10" fill="#854F0B">Pen, paths, shapes</text>
+<text x="331" y="478" text-anchor="middle" font-size="10" fill="#854F0B">Typography + color</text>
+<text x="331" y="493" text-anchor="middle" font-size="10" fill="#854F0B">Guided + Explore + Quiz</text>
+</g>
+<g class="node" onclick="tip(event,'InDesign Simulator (v20.x): Pixel-accurate UI clone. 6 domains · 12 guided tasks · 20 quiz questions. Features: facing pages spread (pp 2–3), text threading with overset, tables, graphic frames with X-cross, parent page elements, margin/column/bleed guides, Layers/Pages/Links/Styles panels, Preflight panel, QR code + hyperlink elements.')">
+<rect x="444" y="424" width="216" height="80" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="552" y="446" text-anchor="middle" font-size="12" font-weight="500" fill="#0C447C">InDesign simulator</text>
+<text x="552" y="463" text-anchor="middle" font-size="10" fill="#185FA5">Layouts, parent pages</text>
+<text x="552" y="478" text-anchor="middle" font-size="10" fill="#185FA5">Typography + styles</text>
+<text x="552" y="493" text-anchor="middle" font-size="10" fill="#185FA5">Guided + Explore + Quiz</text>
+</g>
+
+<!-- SECTION: DELIVERY -->
+<text x="20" y="528" font-size="12" font-weight="500" fill="#1a1a1a">Delivery formats</text>
+<line x1="20" y1="533" x2="660" y2="533" stroke="#ddd" stroke-width="0.5"/>
+
+<g class="node" onclick="tip(event,'HTML5 Slides: Built with vanilla HTML/CSS/JS — no dependencies. Open index.html in any modern browser. Works offline, on USB, on any OS. Reveal.js-compatible structure for slide-based presentation format. Mobile responsive.')">
+<rect x="20" y="542" width="148" height="56" rx="8" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="94" y="562" text-anchor="middle" font-size="12" font-weight="500" fill="#444441">HTML5 slides</text>
+<text x="94" y="579" text-anchor="middle" font-size="10" fill="#5F5E5A">Local / offline / USB</text>
+</g>
+<g class="node" onclick="tip(event,'SCORM 1.2 / 2004: Wrapped with imsmanifest.xml. Upload to any LMS (Moodle, Canvas, Blackboard, TalentLMS). Tracks: completion status, quiz score (0–100%), time spent. xAPI (Tin Can) wrapper can be added for detailed statement tracking.')">
+<rect x="178" y="542" width="148" height="56" rx="8" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="252" y="562" text-anchor="middle" font-size="12" font-weight="500" fill="#444441">SCORM 1.2 / 2004</text>
+<text x="252" y="579" text-anchor="middle" font-size="10" fill="#5F5E5A">LMS deployable</text>
+</g>
+<g class="node" onclick="tip(event,'GitHub Pages: Free public hosting. Push to a GitHub repository, enable Pages — the site gets a public URL (username.github.io/acp-course). Zero cost, zero server maintenance. Supports custom domains. Auto-deploys on git push.')">
+<rect x="336" y="542" width="148" height="56" rx="8" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="410" y="562" text-anchor="middle" font-size="12" font-weight="500" fill="#444441">GitHub Pages</text>
+<text x="410" y="579" text-anchor="middle" font-size="10" fill="#5F5E5A">Free public hosting</text>
+</g>
+<g class="node" onclick="tip(event,'Offline / USB Bundle: Single ZIP download containing all 3 simulators, index.html hub, course syllabus, and reference cards. Extract and double-click index.html — no internet required. Works on any device with a browser. Ideal for school labs and low-connectivity environments.')">
+<rect x="494" y="542" width="166" height="56" rx="8" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="577" y="562" text-anchor="middle" font-size="12" font-weight="500" fill="#444441">Offline / USB bundle</text>
+<text x="577" y="579" text-anchor="middle" font-size="10" fill="#5F5E5A">Desktop + mobile ready</text>
+</g>
+
+<!-- SECTION: EVALUATION -->
+<text x="20" y="622" font-size="12" font-weight="500" fill="#1a1a1a">Kirkpatrick evaluation plan</text>
+<line x1="20" y1="627" x2="660" y2="627" stroke="#ddd" stroke-width="0.5"/>
+
+<g class="node" onclick="tip(event,'Level 1 — Reaction: Post-lesson satisfaction surveys (5-point Likert scale). Measures: content relevance, simulator usability, pacing, visual design quality, likelihood to recommend. Target: mean ≥ 4.0/5.0. Delivered as embedded survey at module completion.')">
+<rect x="20" y="636" width="150" height="56" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="95" y="656" text-anchor="middle" font-size="12" font-weight="500" fill="#27500A">L1 Reaction</text>
+<text x="95" y="673" text-anchor="middle" font-size="10" fill="#3B6D11">Post-lesson surveys</text>
+</g>
+<g class="node" onclick="tip(event,'Level 2 — Learning: Pre/post quiz scores (target ≥20pt gain), domain-level gap analysis (no domain below 70%), guided task completion rate (target 100%), confidence self-rating (target mean ≥4.0/5.0). Built-in quiz mode scores tracked via SCORM/LMS or manual log.')">
+<rect x="182" y="636" width="150" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="257" y="656" text-anchor="middle" font-size="12" font-weight="500" fill="#085041">L2 Learning</text>
+<text x="257" y="673" text-anchor="middle" font-size="10" fill="#0F6E56">Pre/post assessments</text>
+</g>
+<g class="node" onclick="tip(event,'Level 3 — Behavior: ACP exam pass rate tracking at 30/60/90 days post-training. Supervisor observation checklist (can learner perform ACP tasks on the job?). Portfolio evidence of completed design work. 90-day follow-up survey. Target: ≥75% exam pass rate.')">
+<rect x="344" y="636" width="150" height="56" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="419" y="656" text-anchor="middle" font-size="12" font-weight="500" fill="#0C447C">L3 Behavior</text>
+<text x="419" y="673" text-anchor="middle" font-size="10" fill="#185FA5">Exam pass rate tracking</text>
+</g>
+<g class="node" onclick="tip(event,'Expert Replication Prompt: A fully documented expert-level prompt capturing all design decisions, frameworks applied, tool specs, ACP objective coverage, deployment targets, and evaluation methods — enabling this entire course to be rebuilt or updated for future ACP exam versions.')">
+<rect x="506" y="636" width="154" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="583" y="656" text-anchor="middle" font-size="12" font-weight="500" fill="#3C3489">Expert replication</text>
+<text x="583" y="673" text-anchor="middle" font-size="10" fill="#534AB7">Prompt + documentation</text>
+</g>
+
+<!-- SECTION: E-LEARNING LEVELS -->
+<text x="20" y="718" font-size="12" font-weight="500" fill="#1a1a1a">E-learning interaction levels</text>
+<line x1="20" y1="723" x2="660" y2="723" stroke="#ddd" stroke-width="0.5"/>
+
+<g class="node" onclick="tip(event,'Level 1 — Passive: Read-only content, static slides, PDF documents. Learner clicks Next. Low cognitive engagement. Used sparingly in this course for background context only.')">
+<rect x="20" y="732" width="76" height="26" rx="4" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="58" y="749" text-anchor="middle" font-size="10" fill="#444441">L1 Passive</text>
+</g>
+<g class="node" onclick="tip(event,'Level 2 — Limited Interaction: Clickable elements, simple quizzes, basic navigation choices. Learner responds to prompts. Used in concept introduction sections.')">
+<rect x="106" y="732" width="76" height="26" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="144" y="749" text-anchor="middle" font-size="10" fill="#0C447C">L2 Limited</text>
+</g>
+<g class="node" onclick="tip(event,'Level 3 — Moderate Interaction: Branching scenarios, drag-and-drop, click-to-reveal, layered discovery. Learner makes meaningful choices. Used in domain knowledge checks.')">
+<rect x="192" y="732" width="88" height="26" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="236" y="749" text-anchor="middle" font-size="10" fill="#085041">L3 Moderate</text>
+</g>
+<g class="node" onclick="tip(event,'Level 4 — Complex Interaction: Simulations, role-play scenarios, dynamic feedback based on choices, multi-step tasks. Learner applies skill in realistic context. Used in guided task mode.')">
+<rect x="290" y="732" width="88" height="26" rx="4" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="334" y="749" text-anchor="middle" font-size="10" fill="#633806">L4 Complex</text>
+</g>
+<g class="node" onclick="tip(event,'Level 5 — Immersive Simulation: Pixel-accurate application simulation. Learner interacts with a replica of the real software — selecting tools, manipulating panels, completing tasks exactly as they would in the ACP Live-in-the-App exam section. Highest development investment, highest learning impact. All three simulators operate at this level.')">
+<rect x="388" y="732" width="130" height="26" rx="4" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="453" y="749" text-anchor="middle" font-size="10" fill="#3C3489">L5 Immersive sim ★</text>
+</g>
+
+<text x="340" y="800" text-anchor="middle" font-size="10" fill="#aaa">Click any element for detailed explanation · ACP Exam Prep 2025 · Ps v26.x · Ai v29.x · Id v20.x</text>
+</svg>
+
+<div class="tt" id="tt"></div>
+
+<script>
+function tip(e, msg) {
+  const t = document.getElementById('tt');
+  t.textContent = msg;
+  t.style.display = 'block';
+  const pad = 12;
+  let x = e.clientX + pad;
+  let y = e.clientY + pad;
+  t.style.left = x + 'px';
+  t.style.top = y + 'px';
+  // reposition if off-screen
+  const r = t.getBoundingClientRect();
+  if (r.right > window.innerWidth - 10) t.style.left = (e.clientX - r.width - pad) + 'px';
+  if (r.bottom > window.innerHeight - 10) t.style.top = (e.clientY - r.height - pad) + 'px';
+  clearTimeout(tip._timer);
+  tip._timer = setTimeout(() => t.style.display = 'none', 5000);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.node')) document.getElementById('tt').style.display = 'none';
+});
+</script>
+</body>
+</html>

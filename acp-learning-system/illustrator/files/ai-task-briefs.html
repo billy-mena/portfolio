@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Illustrator — Task Briefs, Answer Keys & Rubric | ACP 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ai:#FF9A00;--bg:#1A1A2E;--bg1:#16213E;--surf:#252540;--surf2:#2E2E50;
+  --border:rgba(255,255,255,.08);--border-strong:rgba(255,255,255,.16);
+  --text:#F0F0FF;--text2:#A8A8C8;--text3:#6868A0;
+  --correct:#00D68F;--wrong:#FF4D6D;--partial:#FFB800;
+  --r:10px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;}
+.nav{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-weight:700;font-size:.9rem;color:var(--ai);font-family:var(--mono);}
+.nav-link{font-size:.83rem;color:var(--text2);text-decoration:none;padding:.3rem .7rem;border-radius:6px;}
+.nav-link:hover{background:var(--surf);color:var(--text);}
+.tab-bar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+.tab-btn{padding:.4rem 1rem;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);color:var(--text2);background:transparent;transition:all .15s;font-family:var(--font);}
+.tab-btn.active{background:var(--ai);color:#000;border-color:var(--ai);}
+.page{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+.panel{display:none;}.panel.active{display:block;}
+.section-label{font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin:.875rem 0 .5rem;}
+.brief-card{background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.brief-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;flex-wrap:wrap;}
+.brief-num{font-family:var(--mono);font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(255,154,0,.1);color:var(--ai);border:0.5px solid rgba(255,154,0,.3);}
+.brief-title{font-size:1rem;font-weight:600;}
+.brief-badge{font-size:.7rem;padding:2px 8px;border-radius:20px;}
+.bloom-b{background:rgba(0,214,143,.1);color:var(--correct);border:0.5px solid rgba(0,214,143,.25);}
+.time-b{background:var(--surf2);color:var(--text3);}
+.brief-scenario{font-size:.875rem;color:var(--text2);line-height:1.65;padding:.7rem .9rem;background:var(--bg);border-radius:8px;border-left:3px solid var(--ai);margin-bottom:.875rem;}
+.brief-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.5rem;margin-bottom:.875rem;}
+.spec-item{background:var(--bg);border:0.5px solid var(--border);border-radius:7px;padding:.5rem .75rem;}
+.spec-label{font-size:.68rem;color:var(--text3);margin-bottom:2px;font-family:var(--mono);}
+.spec-value{color:var(--text);font-weight:500;font-size:.83rem;}
+.steps-ol{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.steps-ol li{display:flex;gap:.65rem;align-items:flex-start;font-size:.83rem;color:var(--text2);line-height:1.5;}
+.step-n{width:20px;height:20px;border-radius:50%;background:rgba(255,154,0,.15);color:var(--ai);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;flex-shrink:0;margin-top:1px;font-family:var(--mono);}
+.answer-row{display:flex;gap:.75rem;padding:.6rem 0;border-bottom:0.5px solid var(--border);align-items:flex-start;}
+.answer-row:last-child{border-bottom:none;}
+.ans-step{font-family:var(--mono);font-size:.7rem;color:var(--ai);min-width:55px;padding-top:2px;}
+.ans-action{flex:1;font-size:.83rem;color:var(--text);}
+.ans-value{font-family:var(--mono);font-size:.78rem;color:var(--correct);background:rgba(0,214,143,.08);padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.ans-context{font-size:.75rem;color:var(--text3);margin-top:.2rem;}
+.rubric-wrap{overflow-x:auto;}
+table.rubric{width:100%;border-collapse:collapse;font-size:.82rem;min-width:600px;}
+table.rubric th{padding:.6rem .875rem;font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);border-bottom:0.5px solid var(--border);text-align:left;background:var(--bg1);}
+table.rubric td{padding:.65rem .875rem;border-bottom:0.5px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+table.rubric td:first-child{font-weight:500;color:var(--text);white-space:nowrap;}
+.level-4{color:var(--correct);}
+.level-3{color:var(--ai);}
+.level-2{color:var(--partial);}
+.level-1{color:var(--wrong);}
+.rubric-score{text-align:center;font-weight:700;font-family:var(--mono);}
+.acp-ref{font-family:var(--mono);font-size:.68rem;color:var(--text3);display:block;margin-top:2px;}
+.mc-list-item{background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:.75rem;}
+.mc-opt{padding:.4rem .75rem;border-radius:7px;font-size:.83rem;margin-bottom:.25rem;}
+.mc-correct{border:0.5px solid rgba(0,214,143,.4);background:rgba(0,214,143,.07);color:#7FFFD4;}
+.mc-wrong{border:0.5px solid var(--border);background:var(--bg);color:var(--text3);}
+.mc-expl{margin-top:.6rem;padding:.6rem .875rem;background:rgba(255,154,0,.06);border:0.5px solid rgba(255,154,0,.2);border-radius:8px;font-size:.8rem;color:var(--text2);line-height:1.55;}
+@media print{.nav,.tab-bar,.print-btn{display:none;}.panel{display:block!important;}body{background:white;color:black;}.brief-card,.mc-list-item{background:white;border:1px solid #ddd;}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="nav-logo">Ai</span>
+  <a href="../index.html" class="nav-link">← Illustrator</a>
+  <a href="../../index.html" class="nav-link">Home</a>
+  <button class="print-btn" onclick="window.print()" style="margin-left:auto;padding:.4rem 1rem;border-radius:20px;font-size:.8rem;background:transparent;border:0.5px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font);">🖨 Print</button>
+</nav>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('briefs',event)">📋 Task briefs</button>
+  <button class="tab-btn" onclick="showTab('keys',event)">🗝 Answer keys</button>
+  <button class="tab-btn" onclick="showTab('rubric',event)">📊 Portfolio rubric</button>
+  <button class="tab-btn" onclick="showTab('mc',event)">✅ MC answer key</button>
+</div>
+
+<div class="page">
+
+<!-- TASK BRIEFS -->
+<div class="panel active" id="panel-briefs">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Print and distribute these briefs before each task simulation.</p>
+
+  <p class="section-label">Domain 2 — Document Management</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ai-2.1a/b</span>
+      <span class="brief-title">New document settings &amp; presets</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~8 min</span>
+    </div>
+    <div class="brief-scenario">Create a new Illustrator document for a social media graphics set, meeting the specifications below. Save the settings as a reusable preset.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Width × Height</div><div class="spec-value">1080 × 1080 px</div></div>
+      <div class="spec-item"><div class="spec-label">Artboards</div><div class="spec-value">3</div></div>
+      <div class="spec-item"><div class="spec-label">Colour Mode</div><div class="spec-value">RGB</div></div>
+      <div class="spec-item"><div class="spec-label">Raster Effects</div><div class="spec-value">72 ppi (Screen)</div></div>
+      <div class="spec-item"><div class="spec-label">Preset name</div><div class="spec-value">Social Square 1080</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → New. Configure width, height, artboard count, colour mode, and raster effects.</li>
+      <li><span class="step-n">2</span>Click the Save Preset icon. Enter the preset name and confirm.</li>
+      <li><span class="step-n">3</span>Click Create to generate the document.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ai-2.3a/b</span>
+      <span class="brief-title">Place assets — embed vs link, Links panel</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~7 min</span>
+    </div>
+    <div class="brief-scenario">Place a client logo as an embedded asset and a background texture as a linked asset into an existing Illustrator document.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → Place. Select the logo file. UNCHECK "Link" to embed it. Click Place.</li>
+      <li><span class="step-n">2</span>File → Place again. Select the texture file. CHECK "Link". Click Place.</li>
+      <li><span class="step-n">3</span>Window → Links. Verify: logo shows no link icon (embedded); texture shows a link icon.</li>
+      <li><span class="step-n">4</span>Select the linked texture in the Links panel. Click the Edit Original button (pencil icon).</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ai-2.4b/c</span>
+      <span class="brief-title">Export for Screens &amp; Package</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~8 min</span>
+    </div>
+    <div class="brief-scenario">Export all artboards at 1x and 2x resolution. Then package the project to collect all linked files and fonts.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → Export → Export for Screens.</li>
+      <li><span class="step-n">2</span>Verify all artboards are checked. Click "+ Add Scale" → set to 2x, format PNG.</li>
+      <li><span class="step-n">3</span>Click Export Artboard. Choose destination folder.</li>
+      <li><span class="step-n">4</span>File → Package. Choose destination. Click Package.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 3 — Workflow &amp; Interface</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ai-3.3a/b</span>
+      <span class="brief-title">Create global and spot colour swatches</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~8 min</span>
+    </div>
+    <div class="brief-scenario">Build a brand colour palette. Create a global process swatch and a spot colour swatch, then organise both into a colour group.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Global swatch</div><div class="spec-value">C:0 M:70 Y:100 K:0</div></div>
+      <div class="spec-item"><div class="spec-label">Swatch name</div><div class="spec-value">Brand Orange</div></div>
+      <div class="spec-item"><div class="spec-label">Global checkbox</div><div class="spec-value">Checked</div></div>
+      <div class="spec-item"><div class="spec-label">Spot type</div><div class="spec-value">Pantone (any)</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Window → Swatches. Click the New Swatch (+) button.</li>
+      <li><span class="step-n">2</span>Set CMYK values, name "Brand Orange", check Global. Click OK.</li>
+      <li><span class="step-n">3</span>Create another new swatch. Set Colour Type: Spot Color. Select a Pantone. Click OK.</li>
+      <li><span class="step-n">4</span>Shift+click both swatches → click the New Colour Group folder icon.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 4 — Objects, Paths &amp; Text</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num" style="color:#9B8EF0;background:rgba(155,142,240,.1);border-color:rgba(155,142,240,.3);">Ai-4.1e ✦</span>
+      <span class="brief-title">Generate Vectors — Adobe Firefly AI</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~7 min</span>
+    </div>
+    <div class="brief-scenario">Use the Generate Vectors feature to create a custom vector icon. Edit the generated result using standard Illustrator path tools.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Edit → Generate Vectors. The AI prompt panel opens.</li>
+      <li><span class="step-n">2</span>Enter a descriptive prompt (subject + style + colours). Click Generate.</li>
+      <li><span class="step-n">3</span>Select the best variation from the 4 options. Place on artboard.</li>
+      <li><span class="step-n">4</span>Object → Ungroup (Ctrl+Shift+G). Press A (Direct Selection) to edit anchor points.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ai-4.4a/b</span>
+      <span class="brief-title">Thread text frames &amp; convert to outlines</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~8 min</span>
+    </div>
+    <div class="brief-scenario">Thread a long article across two text frames. Then convert the headline to vector outlines for custom editing.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Click the red + overflow indicator on the first text frame.</li>
+      <li><span class="step-n">2</span>Click the second text frame to flow the overflow text into it.</li>
+      <li><span class="step-n">3</span>Type → Area Type Options. Set Columns to 2.</li>
+      <li><span class="step-n">4</span>Select the headline text. Type → Create Outlines (Shift+Ctrl+O).</li>
+      <li><span class="step-n">5</span>Ungroup (Ctrl+Shift+G). Press A to edit individual letterform paths.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 5 — Appearance &amp; Position</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ai-5.3a/b</span>
+      <span class="brief-title">Clipping masks &amp; opacity masks</span>
+      <span class="brief-badge bloom-b">Apply</span>
+      <span class="brief-badge time-b">~8 min</span>
+    </div>
+    <div class="brief-scenario">Create a clipping mask to constrain a pattern to a star shape. Then apply an opacity mask to a photograph for a soft fade-to-transparent edge.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Place the star shape ON TOP of the pattern. Select both. Object → Clipping Mask → Make (Ctrl+7).</li>
+      <li><span class="step-n">2</span>Confirm: star path loses fill/stroke; pattern shows only within star boundary.</li>
+      <li><span class="step-n">3</span>Select photo + gradient shape. Window → Transparency. Panel menu (≡) → Make Opacity Mask.</li>
+      <li><span class="step-n">4</span>Click the mask thumbnail in the Transparency panel to activate mask editing.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ANSWER KEYS -->
+<div class="panel" id="panel-keys">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Exact expected values for each step. Use for grading and self-checking.</p>
+
+  <p class="section-label">Ai-2.1a/b — New document settings</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Open dialog</div><span class="ans-value">File → New</span><div class="ans-context">Ctrl+N (Win) / Cmd+N (Mac)</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Dimensions</div><span class="ans-value">1080 × 1080 px</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Artboard count</div><span class="ans-value">3</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Colour Mode</div><span class="ans-value">RGB</span><div class="ans-context">NOT CMYK — this is a screen/web document.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Raster Effects</div><span class="ans-value">72 ppi (Screen)</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 6</span><div><div class="ans-action">Preset name</div><span class="ans-value">Social Square 1080</span></div></div>
+  </div>
+
+  <p class="section-label">Ai-4.1e ✦ — Generate Vectors</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Open panel</div><span class="ans-value">Edit → Generate Vectors</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Prompt requirement</div><span class="ans-value">Subject + style + colours</span><div class="ans-context">Any descriptive prompt accepted. More specific = better results.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Output type</div><span class="ans-value">Editable vector paths (NOT raster)</span><div class="ans-context">Key ACP exam point: Generate Vectors produces actual SVG-compatible paths.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Ungroup command</div><span class="ans-value">Object → Ungroup (Ctrl+Shift+G)</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Edit paths</div><span class="ans-value">Direct Selection tool (A)</span></div></div>
+  </div>
+
+  <p class="section-label">Ai-5.3a/b — Clipping &amp; opacity masks</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Clip shape position</div><span class="ans-value">ON TOP of the content to be clipped</span><div class="ans-context">Critical: wrong stacking order = inverted or failed mask.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Command</div><span class="ans-value">Object → Clipping Mask → Make</span><div class="ans-context">Keyboard: Ctrl+7 (Win) / Cmd+7 (Mac)</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Opacity mask command</div><span class="ans-value">Window → Transparency → panel menu (≡) → Make Opacity Mask</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Mask editing</div><span class="ans-value">Click the MASK thumbnail (right) in Transparency panel</span><div class="ans-context">White in mask = opaque. Black = transparent. Grey = semi-transparent.</div></div></div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="panel" id="panel-rubric">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">5-criterion portfolio rubric mapped to ACP 2025 Illustrator objectives.</p>
+
+  <div class="brief-card" style="padding:0;overflow:hidden;">
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead>
+          <tr>
+            <th style="min-width:140px;">Criterion</th>
+            <th>4 — Exemplary</th>
+            <th>3 — Proficient</th>
+            <th>2 — Developing</th>
+            <th>1 — Beginning</th>
+            <th style="text-align:center;min-width:50px;">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Document setup<span class="acp-ref">Ai-2.1a</span></td>
+            <td><span class="level-4">All specs correct: 1080×1080 px, 3 artboards, RGB, 72 ppi. Preset saved. Artboards named.</span></td>
+            <td><span class="level-3">All critical specs correct. Minor omission (e.g. preset not saved).</span></td>
+            <td><span class="level-2">Most specs correct; 1–2 errors (wrong colour mode or raster effects setting).</span></td>
+            <td><span class="level-1">Multiple incorrect settings. Document not screen-ready.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Asset management<span class="acp-ref">Ai-2.3 / 2.4c</span></td>
+            <td><span class="level-4">Logo embedded, texture linked. Links panel verified. File → Package used for delivery. Assets correctly named.</span></td>
+            <td><span class="level-3">Correct embed/link applied. Package used. Minor naming issue.</span></td>
+            <td><span class="level-2">Embed/link distinction not applied correctly. Package not used.</span></td>
+            <td><span class="level-1">All assets embedded or all linked — no distinction. No Package.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Vector drawing &amp; paths<span class="acp-ref">Ai-4.1 / 4.2</span></td>
+            <td><span class="level-4">Pen tool used for corner and curved points. Pathfinder or Shape Builder applied correctly. Image Trace expanded and simplified.</span></td>
+            <td><span class="level-3">Pen tool used. Pathfinder applied. Trace expanded. One technique slightly incorrect.</span></td>
+            <td><span class="level-2">Paths drawn but using Pencil/freehand only. No Pathfinder use.</span></td>
+            <td><span class="level-1">No vector drawing tools used. Shapes only from toolbar presets.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Typography<span class="acp-ref">Ai-4.3 / 4.4</span></td>
+            <td><span class="level-4">Point type for headline. Area type for body. Type on a Path used. Character/Paragraph Styles applied. Text converted to outlines for delivery.</span></td>
+            <td><span class="level-3">Three type modes used. Styles applied to at least one text element. Outlines created.</span></td>
+            <td><span class="level-2">Only one type mode used. No styles. Text not converted to outlines.</span></td>
+            <td><span class="level-1">All text as single-line point type. No formatting structure.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Masks &amp; alignment<span class="acp-ref">Ai-5.3 / 5.4</span></td>
+            <td><span class="level-4">Clipping mask applied correctly (top shape). Opacity mask with gradient fade. Objects aligned using Distribute Spacing (equal gaps). Key Object used.</span></td>
+            <td><span class="level-3">Clipping mask correct. Alignment uses Distribute. Minor mask or alignment issue.</span></td>
+            <td><span class="level-2">Clipping mask wrong stack order or not applied. Alignment uses Distribute Objects (not Spacing).</span></td>
+            <td><span class="level-1">No masks. Objects positioned manually without Align panel.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:var(--bg1);">
+            <td style="font-weight:600;" colspan="5">Total score</td>
+            <td class="rubric-score" style="color:var(--ai);">/ 20</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;">
+    <div style="background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--correct);">18–20</div><div style="font-size:.75rem;color:var(--text3);">Distinction · ACP ready</div></div>
+    <div style="background:rgba(255,154,0,.08);border:0.5px solid rgba(255,154,0,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--ai);">14–17</div><div style="font-size:.75rem;color:var(--text3);">Merit · Near ready</div></div>
+    <div style="background:rgba(255,184,0,.08);border:0.5px solid rgba(255,184,0,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--partial);">10–13</div><div style="font-size:.75rem;color:var(--text3);">Pass · More practice</div></div>
+    <div style="background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--wrong);">0–9</div><div style="font-size:.75rem;color:var(--text3);">Resubmit</div></div>
+  </div>
+</div>
+
+<!-- MC ANSWER KEY -->
+<div class="panel" id="panel-mc">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Full MC question bank with correct answers and explanations. Covers Ai-1.3 through Ai-5.4.</p>
+  <div id="mc-list"></div>
+</div>
+
+</div>
+
+<script>
+function showTab(id,e){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  e.target.classList.add('active');
+}
+
+const MC_QUESTIONS=[
+  {code:'Ai-1.3a',q:'Which statement correctly describes the difference between raster and vector graphics?',options:['Raster images scale without quality loss; vector images pixelate when enlarged','Vector graphics use mathematical paths and scale to any size without quality loss; raster images are pixel-based and lose quality when enlarged','Vector files are always larger than raster files','Raster graphics can only be created in Photoshop'],correct:1,explanation:'Vector graphics are resolution-independent mathematical paths. Raster images are pixel grids — enlarging them causes pixelation. This is the foundational distinction tested in ACP Domain 1.'},
+  {code:'Ai-2.1a',q:'The Raster Effects setting in the New Document dialog controls:',options:['The resolution of placed photographs','The resolution at which raster effects (drop shadows, glows, blurs) are rendered on export','The maximum number of colours in the document','The default artboard background colour'],correct:1,explanation:'Raster Effects ppi determines how raster effects (like Drop Shadow, Feather, Glow) are rendered. 72 ppi = screen; 300 ppi = print. Setting too low produces blurry shadows in print output.'},
+  {code:'Ai-2.3a',q:'You placed a logo with File → Place and "Link" checked. What happens if you move the original file?',options:['Illustrator automatically updates the file path','The link breaks — a missing link warning appears in the Links panel','The image stays visible but cannot be printed','Nothing — the file is already embedded'],correct:1,explanation:'A linked file is a reference to the original. If the source file moves, the reference breaks. The Links panel shows a red ? (missing) or yellow ! (modified) icon. Embed to avoid external dependencies.'},
+  {code:'Ai-2.4c',q:'Which command collects the .ai file, all linked images, and fonts into one folder?',options:['File → Save a Copy','File → Export → Export for Screens','File → Package','File → Save As → PDF'],correct:2,explanation:'File → Package creates a folder containing the .ai, all linked files, and document fonts. Standard delivery method for printers and collaborators. Missing linked files or fonts cause production errors.'},
+  {code:'Ai-3.3a',q:'What identifies a "global" colour swatch in the Illustrator Swatches panel?',options:['A dot in the lower-right corner','A white triangle in the lower-right corner','A star symbol next to the name','A double border around the swatch'],correct:1,explanation:'Global swatches have a small white triangle in the lower-right corner. Editing a global swatch updates all objects using it simultaneously — essential for brand colour management.'},
+  {code:'Ai-3.5c',q:'You copy an object and paste it. Instead of going to the currently active layer, it pastes to its original layer. Which setting causes this?',options:['Layer lock is enabled','Paste in Place is selected','Paste Remembers Layers is enabled in the Layers panel menu','Object → Paste in Place was used'],correct:2,explanation:'Paste Remembers Layers (Layers panel ≡ menu, toggle) causes pasted objects to return to their original layer instead of the active layer. Critical for maintaining layer organisation when moving artwork.'},
+  {code:'Ai-4.1a',q:'When using the Pen tool, how do you create a smooth curved anchor point?',options:['Click without dragging','Click and drag to pull out direction handles','Alt+click on the canvas','Double-click on the canvas'],correct:1,explanation:'Click + drag with the Pen tool creates a smooth anchor point with direction handles. Handle angle = curve direction; handle length = curve magnitude. Click without dragging = sharp corner point.'},
+  {code:'Ai-4.1e',q:'What is the key advantage of Generate Vectors compared to placing a raster image?',options:['It is significantly faster','The output is scalable vector paths — editable with standard Illustrator tools and exportable as SVG','It requires no internet connection','It produces more artistic results'],correct:1,explanation:'Generate Vectors (powered by Adobe Firefly) creates actual SVG-compatible vector paths — not pixels. They scale perfectly and are fully editable with Direct Selection, Pen, Pathfinder, and all vector tools.'},
+  {code:'Ai-4.2a',q:'In the Pathfinder panel, which Shape Mode removes the topmost selected shape from all shapes below it?',options:['Unite','Minus Front','Intersect','Exclude'],correct:1,explanation:'Minus Front subtracts the frontmost selected shape from all shapes beneath it. The result has a hole where the front shape was. The resulting shape takes the colour of the bottom object.'},
+  {code:'Ai-4.4a',q:'A text frame shows a small red plus (+) in the lower-right corner. What does this indicate?',options:['The text has a Character Style applied','The frame has a stroke','Text is overflowing — more text exists than fits in the frame','The text has been converted to outlines'],correct:2,explanation:'The red + is the overflow indicator. Click it to load a thread cursor, then click another text frame to flow the overflow text into it. View → Show Text Threads shows connecting lines.'},
+  {code:'Ai-5.1b',q:'How do you enter Isolation Mode to edit a grouped object without ungrouping it?',options:['Object → Isolate Group','Double-click the group on the canvas','Press I while a group is selected','Right-click → Enter Isolation Mode'],correct:1,explanation:'Double-clicking a group enters Isolation Mode. A grey overlay appears on all other artwork and a breadcrumb bar shows "Isolation Mode". Press Esc to exit. Each Esc exits one nesting level.'},
+  {code:'Ai-5.3a',q:'When creating a clipping mask in Illustrator, the clipping path (shape) must be:',options:['Below all the content to be clipped','On top of the content to be clipped','On its own layer','Converted to a Smart Object first'],correct:1,explanation:'The clipping path must be on TOP. Select the clip shape and content → Object → Clipping Mask → Make (Ctrl+7). The top path defines the clip boundary; it loses its fill and stroke.'},
+  {code:'Ai-5.4a',q:'You want equal gaps between 5 icons. Which Align panel option achieves this?',options:['Align to Selection → Distribute Objects Horizontal','Align to Selection → Distribute Spacing Horizontal','Key Object → Align Left Edge','Align to Artboard → Align Centre Horizontal'],correct:1,explanation:'"Distribute Spacing" creates equal gaps between object edges. "Distribute Objects" distributes by object centres — gaps are unequal when objects have different widths. Use Spacing for consistent visual gaps.'},
+];
+
+document.getElementById('mc-list').innerHTML=MC_QUESTIONS.map((item,i)=>`
+  <div class="mc-list-item">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;">
+      <span style="font-size:.68rem;font-family:var(--mono);color:var(--ai);background:rgba(255,154,0,.1);padding:2px 7px;border-radius:4px;">Q${i+1}</span>
+      <span style="font-family:var(--mono);font-size:.68rem;color:var(--text3);">${item.code}</span>
+    </div>
+    <p style="font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.6rem;line-height:1.5;">${item.q}</p>
+    ${item.options.map((opt,oi)=>`
+      <div class="mc-opt ${oi===item.correct?'mc-correct':'mc-wrong'}">
+        ${oi===item.correct?'✓ ':''}<strong>${String.fromCharCode(65+oi)}.</strong> ${opt}
+      </div>`).join('')}
+    <div class="mc-expl"><strong>Explanation:</strong> ${item.explanation}</div>
+  </div>
+`).join('');
+</script>
+</body>
+</html>

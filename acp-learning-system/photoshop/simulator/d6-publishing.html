@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ps · Domain 6: Publishing Digital Media | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#0A2A1A 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.domain-hero h1{font-size:1.6rem;margin-bottom:.3rem;}
+.domain-meta{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,214,143,.35);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--correct);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--correct);color:#000;border-color:var(--correct);}
+
+.adobe-sim{background:#2B2B2B;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3C3C3C;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#31A8FF;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 240px;min-height:340px;}
+.adobe-tools{background:#2B2B2B;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:12px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(49,168,255,.2);color:#31A8FF;}
+.adobe-canvas{background:#505050;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.canvas-doc{background:#FFF;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.adobe-panels{background:#2B2B2B;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;cursor:pointer;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#31A8FF;box-shadow:0 0 0 2px rgba(49,168,255,.2);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:#00D68F;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#00D68F;color:#00D68F;}
+
+/* Export dialog */
+.export-dialog{background:#3C3C3C;border-radius:6px;padding:0;width:100%;max-width:340px;border:0.5px solid #555;}
+.export-title{background:#333;padding:10px 14px;font-size:11px;font-weight:600;color:#EEE;border-bottom:1px solid #1A1A1A;border-radius:6px 6px 0 0;}
+.export-body{padding:12px 14px;}
+.export-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.export-label{font-size:10px;color:#AAA;min-width:70px;}
+.export-value{font-size:10px;color:#CCC;font-family:var(--font-mono);}
+.export-select{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:10px;padding:4px 6px;border-radius:3px;flex:1;cursor:pointer;}
+.export-select.highlight{border-color:#00D68F;box-shadow:0 0 0 2px rgba(0,214,143,.2);}
+.export-input{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:10px;padding:4px 6px;border-radius:3px;width:80px;font-family:var(--font-mono);}
+.export-input.highlight{border-color:#00D68F;}
+.export-footer{padding:8px 14px;background:#2B2B2B;border-top:1px solid #1A1A1A;display:flex;justify-content:flex-end;gap:6px;border-radius:0 0 6px 6px;}
+.export-btn{padding:5px 16px;border-radius:3px;font-size:10px;font-weight:500;cursor:pointer;border:none;}
+.export-btn-primary{background:#00D68F;color:#000;}
+.export-btn-primary:hover{opacity:.85;}
+.export-btn-cancel{background:#555;color:#CCC;}
+
+/* Format cards */
+.format-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;}
+.format-card{background:#3A3A3A;border:0.5px solid #555;border-radius:4px;padding:6px 8px;cursor:pointer;transition:all .15s;}
+.format-card:hover{border-color:#777;}
+.format-card.selected{border-color:#00D68F;background:rgba(0,214,143,.08);}
+.format-name{font-size:11px;font-weight:600;color:#EEE;margin-bottom:2px;}
+.format-desc{font-size:9px;color:#888;line-height:1.3;}
+
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;color:var(--color-text-primary);line-height:1.6;margin-bottom:.5rem;}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ps active">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div class="domain-meta">
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="acp-tag">Ps · Domain 6</span>
+      <span class="badge badge-live">Live tasks</span>
+      <span class="badge badge-mc">+ MC</span>
+    </div>
+    <h1>Publishing Digital Media</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-top:.3rem;">Final domain · 2 objectives · 4 tasks + MC · Completes the Photoshop ACP course</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 6 tasks</div>
+  <div class="task-item active" onclick="loadTask('ps-6-1a')" id="nav-ps61a">
+    <div class="task-icon" id="icon-ps61a">6.1</div>
+    <div class="task-info"><div class="task-obj">Ps-6.1a/b</div><div class="task-name">Export layers, artboards &amp; documents</div></div>
+    <div class="task-score" id="sc-ps61a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-6-1c')" id="nav-ps61c">
+    <div class="task-icon" id="icon-ps61c">6.1</div>
+    <div class="task-info"><div class="task-obj">Ps-6.1b</div><div class="task-name">Export As &amp; Quick Export</div></div>
+    <div class="task-score" id="sc-ps61c">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-6-2a')" id="nav-ps62a">
+    <div class="task-icon" id="icon-ps62a">6.2</div>
+    <div class="task-info"><div class="task-obj">Ps-6.2a</div><div class="task-name">Save documents — formats &amp; compatibility</div></div>
+    <div class="task-score" id="sc-ps62a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-6-2b')" id="nav-ps62b">
+    <div class="task-icon" id="icon-ps62b">6.2</div>
+    <div class="task-info"><div class="task-obj">Ps-6.2b</div><div class="task-name">File formats — bit depth, colour space, transparency</div></div>
+    <div class="task-score" id="sc-ps62b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-6-mc')" id="nav-ps6mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 5–6</div><div class="task-name">Knowledge check</div></div>
+    <div class="task-score" id="sc-ps6mc">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d5-modifying.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 5</div></div>
+  </a>
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:var(--correct);">✓</div>
+    <div class="task-info"><div class="task-name" style="color:var(--correct);">Ps complete →</div></div>
+  </a>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card" style="border-radius:var(--border-radius-lg);">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS = {
+
+'ps-6-1a': {
+  id:'ps-6-1a', tool:'photoshop', domain:6,
+  objective:'6.1a', objectiveText:'Export elements of a document — layers and artboards',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'export-layers',
+  scenario:'A multi-layer social media document has 3 artboards (Instagram, Facebook, Twitter). Export each artboard as a separate PNG file using File → Export → Export As, and also export all layers as individual files.',
+  steps:[
+    {id:1, instruction:'Go to File → Export → Export As to open the Export As dialog.',
+     expectedAction:'menu-click', expectedTarget:'file-export-as',
+     hint1:'Go to the File menu.',
+     hint2:'File → Export → Export As (not Save As).',
+     hint3:'File → Export → Export As opens a dialog with full export settings.',
+     correctFeedback:'Export As dialog opened.',
+     incorrectFeedback:'Go to File → Export → Export As.',
+     acpContext:'ACP Ps-6.1b: Export As (not Save As or Save for Web Legacy) is the current standard export method with the most format options.',
+     gagneEvent:4},
+    {id:2, instruction:'In the Export As dialog, set Format to PNG.',
+     expectedAction:'select', expectedTarget:'export-format', expectedValue:'png', matchType:'exact',
+     hint1:'The Format dropdown is at the top of the Export As dialog.',
+     hint2:'Click the Format dropdown and select PNG.',
+     hint3:'Format dropdown → PNG.',
+     correctFeedback:'PNG format selected. Good for web and transparency.',
+     incorrectFeedback:'Select PNG from the Format dropdown.',
+     acpContext:'ACP Ps-6.1b: PNG = lossless, supports transparency. JPEG = lossy, no transparency. GIF = animation, limited colours. TIFF = lossless, print.',
+     gagneEvent:6},
+    {id:3, instruction:'Enable "Use Artboards" to export each artboard as a separate file.',
+     expectedAction:'click', expectedTarget:'use-artboards',
+     hint1:'Look for a "Use Artboards" checkbox or option in the Export As dialog.',
+     hint2:'Check the "Use Artboards" option to export each artboard as its own PNG file.',
+     hint3:'Check the Use Artboards checkbox in the Export As dialog.',
+     correctFeedback:'Use Artboards enabled. Each artboard will export as a separate file named after the artboard.',
+     incorrectFeedback:'Check the "Use Artboards" option in the Export As dialog.',
+     acpContext:'ACP Ps-6.1a: Use Artboards exports each artboard as a separate file. Without it, the entire canvas exports as one file.',
+     gagneEvent:6},
+    {id:4, instruction:'Click Export All (or Export) to save the files.',
+     expectedAction:'click', expectedTarget:'export-all-btn',
+     hint1:'Click the Export All or Export button in the dialog.',
+     hint2:'Click Export All — Photoshop prompts for a destination folder.',
+     hint3:'Click Export All → choose a folder → files are saved.',
+     correctFeedback:'Artboards exported as individual PNG files.',
+     incorrectFeedback:'Click the Export All button.',
+     acpContext:'ACP Ps-6.1a/b: Files are named using the artboard name. Organise artboards with clear names before exporting.',
+     gagneEvent:7},
+    {id:5, instruction:'Now export all layers as individual files. Go to File → Export → Layers to Files.',
+     expectedAction:'menu-click', expectedTarget:'layers-to-files',
+     hint1:'Go to File → Export.',
+     hint2:'File → Export → Layers to Files exports each visible layer as its own file.',
+     hint3:'File → Export → Layers to Files → set format and destination → Run.',
+     correctFeedback:'Layers to Files export initiated. Each layer becomes a separate file.',
+     incorrectFeedback:'Go to File → Export → Layers to Files.',
+     acpContext:'ACP Ps-6.1a: Layers to Files is useful for sprite sheets, animation frames, and handing off individual assets to developers.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-6-1c': {
+  id:'ps-6-1c', tool:'photoshop', domain:6,
+  objective:'6.1b', objectiveText:'Quick Export and export options',
+  bloomsLevel:'Apply', estimatedMinutes:6, uiType:'quick-export',
+  scenario:'Quickly export the current document as a PNG for web delivery using Quick Export, then configure the Quick Export format preference for future exports.',
+  steps:[
+    {id:1, instruction:'Use Quick Export. Go to File → Export → Quick Export as PNG.',
+     expectedAction:'menu-click', expectedTarget:'quick-export-png',
+     hint1:'Go to File → Export.',
+     hint2:'File → Export → Quick Export as PNG immediately saves without a dialog.',
+     hint3:'File → Export → Quick Export as PNG → choose save location.',
+     correctFeedback:'Quick Export as PNG triggered. No dialog — exports immediately with the current Quick Export settings.',
+     incorrectFeedback:'Go to File → Export → Quick Export as PNG.',
+     acpContext:'ACP Ps-6.1b: Quick Export skips the dialog and uses preset settings. Configure the default format in Edit → Preferences → Export.',
+     gagneEvent:4},
+    {id:2, instruction:'Configure Quick Export preferences. Go to Edit → Preferences → Export (or Photoshop → Preferences → Export on Mac).',
+     expectedAction:'menu-click', expectedTarget:'prefs-export',
+     hint1:'Go to the Edit menu (Windows) or Photoshop menu (Mac).',
+     hint2:'Edit → Preferences → Export opens the export preferences.',
+     hint3:'Edit → Preferences → Export → find the Quick Export Format dropdown.',
+     correctFeedback:'Export Preferences opened.',
+     incorrectFeedback:'Go to Edit → Preferences → Export.',
+     acpContext:'ACP Ps-6.1b: Quick Export Format preferences let you set the default format (PNG, JPEG, GIF, SVG) applied every time Quick Export is used.',
+     gagneEvent:5},
+    {id:3, instruction:'Set the Quick Export Format to JPEG and Quick Export Location to "Ask where to export each time".',
+     expectedAction:'select', expectedTarget:'qe-format', expectedValue:'jpeg', matchType:'exact',
+     hint1:'Find the Quick Export Format dropdown in Preferences → Export.',
+     hint2:'Change Quick Export Format from PNG to JPEG.',
+     hint3:'Preferences → Export → Quick Export Format dropdown → select JPEG.',
+     correctFeedback:'Quick Export Format set to JPEG. Future Quick Exports will save as JPEG.',
+     incorrectFeedback:'Set Quick Export Format to JPEG in the Preferences Export panel.',
+     acpContext:'ACP Ps-6.1b: Use PNG for transparency-required assets. Use JPEG for photographs and full-colour images without transparency needs.',
+     gagneEvent:6},
+    {id:4, instruction:'Click OK to save the preferences.',
+     expectedAction:'click', expectedTarget:'prefs-ok',
+     hint1:'Click the OK button.',
+     hint2:'Click OK to apply the preference changes.',
+     hint3:'Click OK in the Preferences dialog.',
+     correctFeedback:'Preferences saved. Quick Export now defaults to JPEG.',
+     incorrectFeedback:'Click OK to save the preferences.',
+     acpContext:'ACP Ps-6.1b: Preferences apply across all documents. Change them back to PNG for web projects where transparency is needed.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-6-2a': {
+  id:'ps-6-2a', tool:'photoshop', domain:6,
+  objective:'6.2a', objectiveText:'Save documents — formats, CC documents, preserving layers',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'save-formats',
+  scenario:'Save a layered Photoshop document in three ways: as a .PSD to preserve all layers for future editing, as a Cloud Document for collaboration, and as a flattened copy.',
+  steps:[
+    {id:1, instruction:'Save as PSD (native format). Go to File → Save As. Set format to Photoshop (.psd).',
+     expectedAction:'menu-click', expectedTarget:'file-save-as',
+     hint1:'Go to File → Save As.',
+     hint2:'File → Save As → Format dropdown → Photoshop (.psd).',
+     hint3:'File → Save As → find the Format dropdown → select Photoshop → Save.',
+     correctFeedback:'Save As dialog opened. PSD preserves all layers, masks, and adjustments.',
+     incorrectFeedback:'Go to File → Save As.',
+     acpContext:'ACP Ps-6.2a: .PSD is the native Photoshop format. Always save the layered PSD as your master file before exporting to other formats.',
+     gagneEvent:4},
+    {id:2, instruction:'Select "Photoshop" from the Format dropdown to save as .PSD.',
+     expectedAction:'select', expectedTarget:'save-format-psd', expectedValue:'photoshop', matchType:'contains',
+     hint1:'The Format dropdown is in the Save As dialog.',
+     hint2:'Click the Format dropdown → select Photoshop.',
+     hint3:'Format dropdown → Photoshop (.psd) → Save.',
+     correctFeedback:'PSD format selected. Layers, masks, Smart Objects, and adjustment layers are all preserved.',
+     incorrectFeedback:'Select Photoshop (.psd) from the Format dropdown.',
+     acpContext:'ACP Ps-6.2a: Saving as JPEG or PNG flattens layers. Always keep a layered .PSD master. The ACP exam tests this distinction.',
+     gagneEvent:6},
+    {id:3, instruction:'Save as a Cloud Document for Creative Cloud collaboration. Go to File → Save as Cloud Document.',
+     expectedAction:'menu-click', expectedTarget:'save-cloud-doc',
+     hint1:'Go to the File menu.',
+     hint2:'File → Save as Cloud Document saves to Adobe Creative Cloud.',
+     hint3:'File → Save as Cloud Document → it uploads automatically.',
+     correctFeedback:'Cloud Document saved. It is now accessible from any device via Creative Cloud and shareable with collaborators.',
+     incorrectFeedback:'Go to File → Save as Cloud Document.',
+     acpContext:'ACP Ps-6.2a: Cloud Documents save to Adobe Creative Cloud (not local disk). They support real-time collaboration and version history.',
+     gagneEvent:6},
+    {id:4, instruction:'Save a flattened copy. Go to File → Save a Copy. Select JPEG format. This saves a flat version without affecting the layered PSD.',
+     expectedAction:'menu-click', expectedTarget:'save-a-copy',
+     hint1:'Go to File → Save a Copy.',
+     hint2:'File → Save a Copy → choose JPEG → this saves a flat copy without changing the working PSD.',
+     hint3:'File → Save a Copy → Format: JPEG → Save.',
+     correctFeedback:'"Save a Copy" saves a flattened version while keeping the working PSD unchanged and open.',
+     incorrectFeedback:'Go to File → Save a Copy.',
+     acpContext:'ACP Ps-6.2a: Save a Copy (not Save As) preserves the current working state. It does not close or change the active file.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-6-2b': {
+  id:'ps-6-2b', tool:'photoshop', domain:6,
+  objective:'6.2b', objectiveText:'Save in appropriate image formats — bit depth, colour space, transparency',
+  bloomsLevel:'Evaluate', estimatedMinutes:8, uiType:'file-formats',
+  scenario:'Choose the correct file format, bit depth, and colour space for three different scenarios: a web graphic with transparency, a print-ready photograph, and a social media image. Apply your knowledge to make the correct settings for each.',
+  steps:[
+    {id:1, instruction:'For a web graphic with transparency: which format preserves transparency? Select PNG from the format options.',
+     expectedAction:'click', expectedTarget:'select-png',
+     hint1:'Think about which format supports transparency.',
+     hint2:'PNG supports transparency (alpha channel). JPEG does not. GIF supports binary transparency.',
+     hint3:'Click PNG in the format selector.',
+     correctFeedback:'PNG selected — correct for web graphics requiring transparency. PNG uses lossless compression.',
+     incorrectFeedback:'Select PNG — it is the only common web format with full transparency support.',
+     acpContext:'ACP Ps-6.2b: PNG = lossless + transparency. JPEG = lossy + no transparency. TIFF = lossless print. GIF = animation/limited transparency.',
+     gagneEvent:5},
+    {id:2, instruction:'Set the colour space to sRGB for web output.',
+     expectedAction:'select', expectedTarget:'color-space', expectedValue:'srgb', matchType:'exact',
+     hint1:'Find the colour space/profile option.',
+     hint2:'For web output, set colour space to sRGB. Adobe RGB is for print.',
+     hint3:'Colour space dropdown → sRGB.',
+     correctFeedback:'sRGB selected — the standard web colour space. Monitors and browsers expect sRGB; other spaces may display differently.',
+     incorrectFeedback:'Select sRGB as the colour space for web output.',
+     acpContext:'ACP Ps-6.2b: sRGB is the web standard. Adobe RGB has a wider gamut but must be converted to sRGB before web publishing, or colours may appear muted.',
+     gagneEvent:6},
+    {id:3, instruction:'For a print photograph: set bit depth to 16 bit for maximum tonal range.',
+     expectedAction:'select', expectedTarget:'bit-depth', expectedValue:'16', matchType:'exact',
+     hint1:'Find the bit depth option.',
+     hint2:'For print retouching, 16 bit provides more tonal gradations and avoids banding.',
+     hint3:'Bit depth dropdown → 16 bit.',
+     correctFeedback:'16-bit depth selected. 16-bit files have 65,536 tonal values per channel — far more than 8-bit (256 values).',
+     incorrectFeedback:'Select 16 bit from the bit depth dropdown.',
+     acpContext:'ACP Ps-6.2b: 8-bit = 256 tonal values per channel. 16-bit = 65,536. Use 16-bit for retouching to avoid posterisation (banding). Convert to 8-bit before final JPEG export.',
+     gagneEvent:6},
+    {id:4, instruction:'For a social media image (JPEG): set Quality to 80 (a good balance of size and quality).',
+     expectedAction:'input', expectedTarget:'jpeg-quality', expectedValue:'80', matchType:'exact',
+     hint1:'Find the JPEG quality setting.',
+     hint2:'JPEG quality ranges from 0 (smallest/worst) to 100 (largest/best). 80 is a professional standard.',
+     hint3:'JPEG Quality input → type 80.',
+     correctFeedback:'JPEG Quality 80 — professional standard. Typically indistinguishable from 100% but significantly smaller file size.',
+     incorrectFeedback:'Set JPEG Quality to 80.',
+     acpContext:'ACP Ps-6.2b: JPEG quality 80–85 is industry standard for web delivery. Quality 100 produces unnecessarily large files with minimal visual improvement.',
+     gagneEvent:6},
+    {id:5, instruction:'Identify a format that supports transparency AND lossless compression AND 16-bit. Select TIFF with Layers.',
+     expectedAction:'click', expectedTarget:'select-tiff',
+     hint1:'Which format supports all three: transparency, lossless, and 16-bit?',
+     hint2:'TIFF supports transparency (alpha channel), lossless compression (LZW), and 16-bit depth.',
+     hint3:'Click the TIFF option in the format selector.',
+     correctFeedback:'TIFF selected — the only format supporting transparency + lossless + 16-bit. Used for print-ready master files.',
+     incorrectFeedback:'Select TIFF — it is the format that supports all three requirements.',
+     acpContext:'ACP Ps-6.2b: TIFF is preferred for print masters. PSD also supports all three but is Photoshop-specific. TIFF is universally readable by print software.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-6-mc': {
+  id:'ps-6-mc', tool:'photoshop', domain:6,
+  objective:'5.1–6.2', objectiveText:'Domain 5 & 6 knowledge check',
+  bloomsLevel:'Understand', estimatedMinutes:10, uiType:'mc',
+  questions:[
+    {q:'Which selection tool uses AI to automatically detect and select the primary subject in a photograph?',options:['Quick Selection','Magic Wand','Select Subject','Object Selection'],correct:2,explanation:'Select Subject (Select → Subject) uses Adobe Sensei AI to detect the main subject automatically. Object Selection requires you to draw around the object. Quick Selection requires painting.',acpObj:'Ps-5.1a'},
+    {q:'To permanently remove pixels outside a crop (not hide them), you would:',options:['Uncheck Delete Cropped Pixels in the Options Bar','Check Delete Cropped Pixels in the Options Bar','Use Image → Canvas Size instead','Use Edit → Free Transform'],correct:1,explanation:'Checking "Delete Cropped Pixels" permanently removes cropped pixels (destructive). Unchecking it hides them non-destructively, allowing you to recrop later.',acpObj:'Ps-5.3a'},
+    {q:'Which tool brightens specific tonal areas of a photograph by painting over them?',options:['Sponge tool in Saturate mode','Burn tool','Dodge tool','Smudge tool'],correct:2,explanation:'The Dodge tool lightens (brightens) areas when you paint over them. Burn darkens. Sponge affects saturation, not brightness. Smudge blends pixels.',acpObj:'Ps-5.2b'},
+    {q:'Which file format supports transparency, uses lossless compression, and is the standard for web graphics?',options:['JPEG','GIF','PNG','TIFF'],correct:2,explanation:'PNG supports full transparency (alpha channel), uses lossless compression, and is the web standard for graphics requiring transparency. JPEG has no transparency. GIF has limited (binary) transparency. TIFF is for print.',acpObj:'Ps-6.2b'},
+    {q:'A client needs the original layered Photoshop file for future editing. Which format should you save in?',options:['JPEG at quality 100','PNG-24','PSD (Photoshop native format)','TIFF'],correct:2,explanation:'PSD is the native Photoshop format that preserves all layers, masks, Smart Objects, adjustment layers, and other Photoshop-specific features. TIFF can preserve layers but PSD is the expected answer for Photoshop file delivery.',acpObj:'Ps-6.2a'},
+    {q:'You need to export 4 artboards as separate files in one operation. Which option in the Export As dialog enables this?',options:['Export All Layers','Use Artboards','Quick Export PNG','Save as Copies'],correct:1,explanation:'"Use Artboards" in the Export As dialog exports each artboard as a separate file. Without this, the entire canvas (all artboards combined) exports as a single file.',acpObj:'Ps-6.1a'},
+    {q:'For web delivery, which colour space should you use to ensure accurate colour display across devices and browsers?',options:['Adobe RGB','ProPhoto RGB','CMYK','sRGB'],correct:3,explanation:'sRGB is the web standard colour space. All monitors, browsers, and mobile devices expect sRGB. Adobe RGB and ProPhoto RGB have wider gamuts used for print/photography workflows — they must be converted to sRGB before web publishing.',acpObj:'Ps-6.2b'},
+    {q:'What is the key advantage of using File → Save a Copy instead of File → Save As?',options:['It is faster','The saved copy is smaller in file size','It saves a version without changing or closing the currently active file','It automatically converts to PDF'],correct:2,explanation:'"Save a Copy" saves a duplicate in any format while leaving the original PSD open and unchanged as the active document. "Save As" changes the active document to the new file.',acpObj:'Ps-6.2a'}
+  ]
+}
+};
+
+/* ═══ STATE ═══════════════════════════════════════════════ */
+let currentTask=null, currentMode='guided', currentStep=0, stepResults=[], mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id]; if(!task) return;
+  currentTask=task; currentStep=0; stepResults=new Array((task.steps||[]).length).fill(null); mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task); renderUI(task); renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(task){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag">Ps-${task.objective}</span>
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="badge" style="background:rgba(0,214,143,.12);color:var(--correct);border:0.5px solid rgba(0,214,143,.25);">${task.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${task.estimatedMinutes} min</span>
+    </div>
+    <h2>${task.objectiveText}</h2>
+    <div class="task-scenario">${task.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode; currentStep=0; stepResults=new Array((currentTask?.steps||[]).length).fill(null); mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERING ═══════════════════════════════════════ */
+function renderUI(task){
+  const c=document.getElementById('adobe-sim');
+  if(task.uiType==='mc'){c.innerHTML='';return;}
+  const renders={
+    'export-layers':exportLayersUI,'quick-export':quickExportUI,
+    'save-formats':saveFormatsUI,'file-formats':fileFormatsUI
+  };
+  c.innerHTML=renders[task.uiType]?renders[task.uiType]():'';
+}
+
+function exportLayersUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item" onclick="doMenu('file-export-as')">File</span>
+      <span class="menu-item">Edit</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div>
+      </div>
+      <div class="adobe-canvas" style="flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem;">
+          <div style="background:#1A4A8A;border-radius:4px;padding:.5rem;text-align:center;font-size:9px;color:#FFF;">Instagram<br>1080×1080</div>
+          <div style="background:#3A5A9A;border-radius:4px;padding:.5rem;text-align:center;font-size:9px;color:#FFF;">Facebook<br>1200×630</div>
+          <div style="background:#2A4A7A;border-radius:4px;padding:.5rem;text-align:center;font-size:9px;color:#FFF;">Twitter<br>1600×900</div>
+        </div>
+        <div style="font-size:9px;color:#888;">3 artboards — export separately with Use Artboards</div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Export controls</div>
+        <div class="panel-body">
+          <div class="adj-btn highlight" onclick="doMenu('file-export-as')">File → Export → Export As</div>
+          <div class="adj-btn" onclick="doMenu('layers-to-files')">File → Export → Layers to Files</div>
+        </div>
+        <div class="panel-hdr">Export As dialog</div>
+        <div class="panel-body" id="export-dialog-panel" style="display:none;">
+          <div class="export-row">
+            <span class="export-label">Format</span>
+            <select class="export-select highlight" id="sel-export-fmt" onchange="doSelect('export-format',this.value.toLowerCase())">
+              <option value="">— Select —</option>
+              <option value="png">PNG</option>
+              <option value="jpeg">JPEG</option>
+              <option value="gif">GIF</option>
+              <option value="svg">SVG</option>
+            </select>
+          </div>
+          <div class="export-row">
+            <span class="export-label">Use Artboards</span>
+            <input type="checkbox" id="cb-artboards" style="accent-color:#00D68F;" onclick="doAction('use-artboards')">
+          </div>
+          <button onclick="doAction('export-all-btn')" style="width:100%;margin-top:5px;padding:4px;background:#00D68F;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">Export All</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function quickExportUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item" onclick="doMenu('quick-export-png')">File</span>
+      <span class="menu-item" onclick="doMenu('prefs-export')">Edit</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools"><div class="tool-btn active">↖</div></div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:200px;height:140px;background:linear-gradient(135deg,#1A3A6A,#3A6AAA);display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:20px;font-weight:700;color:#FFF;text-align:center;">Quick<br>Export</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Quick export</div>
+        <div class="panel-body">
+          <div class="adj-btn highlight" onclick="doMenu('quick-export-png')">File → Export → Quick Export as PNG</div>
+          <div class="adj-btn" onclick="doMenu('prefs-export')">Edit → Preferences → Export</div>
+        </div>
+        <div class="panel-hdr">Export Preferences</div>
+        <div class="panel-body" id="qe-prefs" style="display:none;">
+          <div class="prop-row"><span class="prop-label">Quick Export Format</span></div>
+          <select class="prop-select highlight" id="sel-qe-fmt" onchange="doSelect('qe-format',this.value.toLowerCase())">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="gif">GIF</option>
+            <option value="svg">SVG</option>
+          </select>
+          <div class="prop-row" style="margin-top:6px;"><span class="prop-label">Location</span></div>
+          <select class="prop-select" style="margin-bottom:6px;">
+            <option>Ask where to export each time</option>
+            <option>Export to folder next to current file</option>
+          </select>
+          <button onclick="doAction('prefs-ok')" style="width:100%;padding:4px;background:#00D68F;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function saveFormatsUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item" onclick="doMenu('file-save-as')">File</span>
+      <span class="menu-item">Edit</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools"><div class="tool-btn active">↖</div></div>
+      <div class="adobe-canvas">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;">
+          <div style="background:#2B2B2B;border:1px solid #555;border-radius:4px;padding:.5rem 1rem;text-align:center;">
+            <div style="font-size:10px;color:#31A8FF;font-family:var(--font-mono);margin-bottom:3px;">portrait.psd</div>
+            <div style="font-size:9px;color:#888;">12 layers · 45 MB</div>
+          </div>
+          <div style="font-size:9px;color:#666;">Save in multiple formats →</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Save options</div>
+        <div class="panel-body">
+          <div class="adj-btn highlight" onclick="doMenu('file-save-as')">File → Save As (.psd)</div>
+          <div class="adj-btn" onclick="doMenu('save-cloud-doc')">File → Save as Cloud Document</div>
+          <div class="adj-btn" onclick="doMenu('save-a-copy')">File → Save a Copy</div>
+        </div>
+        <div class="panel-hdr">Save As dialog</div>
+        <div class="panel-body" id="save-as-panel" style="display:none;">
+          <div class="prop-row"><span class="prop-label">Format</span></div>
+          <select class="prop-select highlight" id="sel-save-fmt" onchange="doSelect('save-format-psd',this.value.toLowerCase())">
+            <option value="">— Select —</option>
+            <option value="photoshop">Photoshop (.psd)</option>
+            <option value="tiff">TIFF</option>
+            <option value="jpeg">JPEG</option>
+            <option value="png">PNG</option>
+            <option value="pdf">Photoshop PDF</option>
+          </select>
+          <button onclick="doAction('save-confirm')" style="width:100%;margin-top:5px;padding:4px;background:#00D68F;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function fileFormatsUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span><span class="menu-item">Image</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools"><div class="tool-btn active">↖</div></div>
+      <div class="adobe-canvas" style="flex-direction:column;gap:.5rem;padding:.875rem;">
+        <div class="format-grid" id="format-grid">
+          <div class="format-card" id="fmt-png" onclick="doAction('select-png')">
+            <div class="format-name">PNG</div>
+            <div class="format-desc">Lossless · Transparency · Web standard</div>
+          </div>
+          <div class="format-card" id="fmt-jpg">
+            <div class="format-name">JPEG</div>
+            <div class="format-desc">Lossy · No transparency · Photographs</div>
+          </div>
+          <div class="format-card" id="fmt-tiff" onclick="doAction('select-tiff')">
+            <div class="format-name">TIFF</div>
+            <div class="format-desc">Lossless · Transparency · 16-bit · Print</div>
+          </div>
+          <div class="format-card" id="fmt-psd">
+            <div class="format-name">PSD</div>
+            <div class="format-desc">Layers · Masks · Photoshop native</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;width:100%;">
+          <div style="flex:1;">
+            <div style="font-size:9px;color:#888;margin-bottom:3px;">Colour space</div>
+            <select class="prop-select highlight" id="sel-colorspace" onchange="doSelect('color-space',this.value.toLowerCase().replace(' ',''))">
+              <option value="">— Select —</option>
+              <option value="srgb">sRGB</option>
+              <option value="adobe rgb">Adobe RGB</option>
+              <option value="cmyk">CMYK</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:9px;color:#888;margin-bottom:3px;">Bit depth</div>
+            <select class="prop-select highlight" id="sel-bitdepth" onchange="doSelect('bit-depth',this.value)">
+              <option value="">—</option>
+              <option value="8">8 bit</option>
+              <option value="16">16 bit</option>
+              <option value="32">32 bit</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:9px;color:#888;margin-bottom:3px;">JPEG Quality</div>
+            <input class="prop-input highlight" id="inp-jpeg-quality" style="width:100%;" placeholder="0–100" oninput="doInput('jpeg-quality',this.value)">
+          </div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Format guide</div>
+        <div class="panel-body">
+          <div style="font-size:9px;color:#888;line-height:1.7;">
+            <div>PNG → web + transparency</div>
+            <div>JPEG → photo, no transparency</div>
+            <div>TIFF → print master, 16-bit</div>
+            <div>PSD → layered, Photoshop only</div>
+            <div style="margin-top:4px;color:#AAA;">sRGB → web/screen</div>
+            <div>Adobe RGB → wide gamut print</div>
+            <div>16-bit → retouching masters</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══ HANDLERS ══════════════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+function applyEffect(target){
+  const map={
+    'file-export-as':()=>{const p=document.getElementById('export-dialog-panel');if(p)p.style.display='block';},
+    'use-artboards':()=>{const cb=document.getElementById('cb-artboards');if(cb)cb.checked=true;},
+    'export-all-btn':()=>{},
+    'layers-to-files':()=>{},
+    'quick-export-png':()=>{},
+    'prefs-export':()=>{const p=document.getElementById('qe-prefs');if(p)p.style.display='block';},
+    'prefs-ok':()=>{const p=document.getElementById('qe-prefs');if(p)p.style.display='none';},
+    'file-save-as':()=>{const p=document.getElementById('save-as-panel');if(p)p.style.display='block';},
+    'save-cloud-doc':()=>{},
+    'save-a-copy':()=>{},
+    'select-png':()=>{document.querySelectorAll('.format-card').forEach(c=>c.classList.remove('selected'));document.getElementById('fmt-png')?.classList.add('selected');},
+    'select-tiff':()=>{document.querySelectorAll('.format-card').forEach(c=>c.classList.remove('selected'));document.getElementById('fmt-tiff')?.classList.add('selected');}
+  };
+  if(map[target])map[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask)return;
+  if(currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact';
+    const sv=String(value).toLowerCase().trim();const ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';
+    showFB('correct',step.correctFeedback,step.acpContext);
+    updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit answers</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">
+      Domain 5–6 knowledge check · ${qs.length} questions · <span class="acp-tag">Ps-5.1 → 6.2</span>
+    </div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`
+          <div onclick="selectMC(${qi},${oi},${q.correct},'${q.acpObj}')"
+            id="mc-opt-${qi}-${oi}"
+            style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;">
+            ${opt}
+          </div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()" style="margin-top:.5rem;">Submit answers</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';
+  document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct,code){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{
+    el.style.borderColor='var(--color-border-tertiary)';
+    el.style.background='var(--surface)';
+    el.style.color='var(--text-secondary)';
+  });
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(49,168,255,.4)';sel.style.background='rgba(49,168,255,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;
+  let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];
+    const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{
+        const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;
+        if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}
+        else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}
+        el.style.cursor='default';el.style.pointerEvents='none';
+      });
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation+` <span style="font-family:var(--font-mono);font-size:.7rem;opacity:.7;">${q.acpObj}</span>`;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);
+  showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+  const sc=document.getElementById('sc-ps6mc');if(sc)sc.textContent=pct+'%';
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const sc=document.getElementById('sc-'+currentTask.id.replace(/-/g,'').replace('mc','mc'));if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+currentTask.id.replace(/-/g,''));if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#31A8FF'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag">Ps-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button>${currentTask.id!=='ps-6-mc'?'<a href="../../illustrator/index.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Next: Illustrator →</a>':''}</div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('ps-6-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

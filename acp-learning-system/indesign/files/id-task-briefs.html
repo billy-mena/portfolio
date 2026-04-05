@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InDesign — Task Briefs, Answer Keys &amp; Rubric | ACP 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --id:#00C896;--bg:#0A1A14;--bg1:#06120D;--surf:#112018;--surf2:#182C22;
+  --border:rgba(255,255,255,.08);--border-strong:rgba(255,255,255,.14);
+  --text:#E8FFF5;--text2:#90C8AA;--text3:#4A8060;
+  --correct:#00D68F;--wrong:#FF4D6D;--partial:#FFB800;
+  --r:10px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;padding:0;}
+.nav{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-weight:700;font-size:.9rem;color:var(--id);font-family:var(--mono);}
+.nav-link{font-size:.83rem;color:var(--text2);text-decoration:none;padding:.3rem .7rem;border-radius:6px;transition:all .15s;}
+.nav-link:hover,.nav-link.active{background:var(--surf);color:var(--text);}
+.tab-bar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+.tab-btn{padding:.4rem 1rem;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);color:var(--text2);background:transparent;transition:all .15s;font-family:var(--font);}
+.tab-btn:hover{background:var(--surf);color:var(--text);}
+.tab-btn.active{background:var(--id);color:#000;border-color:var(--id);}
+.page{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+.panel{display:none;}.panel.active{display:block;}
+.section-label{font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin:.875rem 0 .5rem;}
+.brief-card{background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.brief-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;flex-wrap:wrap;}
+.brief-num{font-family:var(--mono);font-size:.72rem;color:var(--id);background:rgba(0,200,150,.1);padding:3px 9px;border-radius:4px;border:0.5px solid rgba(0,200,150,.25);}
+.brief-title{font-size:1rem;font-weight:600;color:var(--text);}
+.brief-badge{font-size:.72rem;padding:2px 9px;border-radius:20px;border:0.5px solid;}
+.bloom-badge{background:rgba(0,214,143,.08);color:var(--correct);border-color:rgba(0,214,143,.2);}
+.time-badge{background:rgba(0,200,150,.06);color:var(--text3);border-color:var(--border);}
+.ai-badge{background:rgba(155,142,240,.1);color:#9B8EF0;border-color:rgba(155,142,240,.25);}
+.brief-scenario{font-size:.875rem;color:var(--text2);line-height:1.65;margin-bottom:.875rem;padding:.6rem .875rem;background:var(--bg1);border-radius:8px;border-left:3px solid var(--id);}
+.brief-specs{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;margin-bottom:.875rem;}
+.spec-item{background:var(--bg1);border-radius:6px;padding:.45rem .7rem;display:flex;justify-content:space-between;align-items:center;gap:.5rem;}
+.spec-label{font-size:.78rem;color:var(--text3);}
+.spec-value{font-size:.78rem;font-family:var(--mono);color:var(--id);}
+.steps-ol{list-style:none;counter-reset:step;}
+.steps-ol li{display:flex;align-items:flex-start;gap:.65rem;padding:.4rem 0;font-size:.875rem;color:var(--text2);line-height:1.6;border-bottom:0.5px solid var(--border);}
+.steps-ol li:last-child{border-bottom:none;}
+.step-n{width:20px;height:20px;border-radius:50%;background:rgba(0,200,150,.15);color:var(--id);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+.answer-row{display:flex;gap:.75rem;padding:.5rem 0;border-bottom:0.5px solid var(--border);align-items:flex-start;}
+.answer-row:last-child{border-bottom:none;}
+.ans-step{font-family:var(--mono);font-size:.68rem;color:var(--text3);min-width:45px;padding-top:2px;flex-shrink:0;}
+.ans-action{font-size:.82rem;font-weight:500;color:var(--text);margin-bottom:.15rem;}
+.ans-value{font-family:var(--mono);font-size:.8rem;color:var(--id);background:rgba(0,200,150,.1);padding:2px 7px;border-radius:4px;border:0.5px solid rgba(0,200,150,.2);display:inline-block;}
+.ans-context{font-size:.75rem;color:var(--text3);margin-top:.2rem;line-height:1.5;}
+.rubric-wrap{overflow-x:auto;}
+.rubric{width:100%;border-collapse:collapse;font-size:.82rem;}
+.rubric th{background:var(--bg1);padding:.6rem .875rem;text-align:left;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);border-bottom:0.5px solid var(--border-strong);}
+.rubric td{padding:.65rem .875rem;border-bottom:0.5px solid var(--border);vertical-align:top;}
+.rubric td:first-child{font-weight:500;color:var(--text);font-size:.82rem;}
+.acp-ref{font-family:var(--mono);font-size:.65rem;color:var(--text3);display:block;margin-top:.2rem;}
+.level-4{color:var(--correct);}
+.level-3{color:var(--text2);}
+.level-2{color:var(--partial);}
+.level-1{color:var(--wrong);}
+.rubric-score{font-family:var(--mono);font-size:.88rem;text-align:center;color:var(--id);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">ACP 2025 · Id</span>
+  <a href="../index.html" class="nav-link">← InDesign</a>
+  <a href="../../index.html" class="nav-link">Home</a>
+</nav>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('briefs',this)">Task Briefs</button>
+  <button class="tab-btn" onclick="showTab('keys',this)">Answer Keys</button>
+  <button class="tab-btn" onclick="showTab('rubric',this)">Rubric</button>
+  <button class="tab-btn" onclick="showTab('mc',this)">MC Answer Key</button>
+</div>
+
+<div class="page">
+
+<!-- ═══ BRIEFS ════════════════════════════════════════ -->
+<div class="panel active" id="panel-briefs">
+  <p class="section-label">Domain 2 — Document Setup &amp; Interface</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-2.1</span>
+      <span class="brief-title">New document — A4 facing pages, bleed, slug, columns</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Create a print magazine document with the following exact specifications. All settings must be applied in the New Document dialog before clicking Create.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Intent</div><div class="spec-value">Print</div></div>
+      <div class="spec-item"><div class="spec-label">Size</div><div class="spec-value">A4 (210 × 297mm)</div></div>
+      <div class="spec-item"><div class="spec-label">Pages / Facing</div><div class="spec-value">4 pages, Facing Pages ✓</div></div>
+      <div class="spec-item"><div class="spec-label">Margins</div><div class="spec-value">12mm all sides</div></div>
+      <div class="spec-item"><div class="spec-label">Columns / Gutter</div><div class="spec-value">2 columns, 5mm gutter</div></div>
+      <div class="spec-item"><div class="spec-label">Bleed</div><div class="spec-value">3mm all sides</div></div>
+      <div class="spec-item"><div class="spec-label">Slug Top</div><div class="spec-value">6mm</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → New → Document (Ctrl+N). Enable the Preview checkbox.</li>
+      <li><span class="step-n">2</span>Intent: Print. Width: 210mm, Height: 297mm. Pages: 4. Check Facing Pages.</li>
+      <li><span class="step-n">3</span>Margins: click the chain icon to link all four fields. Set all to 12mm.</li>
+      <li><span class="step-n">4</span>Columns: 2. Gutter: 5mm.</li>
+      <li><span class="step-n">5</span>Bleed: click More Options if needed. Set all bleed fields to 3mm (chain icon to link). Slug Top: 6mm.</li>
+      <li><span class="step-n">6</span>Click Create. Verify: red guides = bleed, purple guides = margins, green = slug.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-2.3</span>
+      <span class="brief-title">Place assets &amp; manage the Links panel</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Place two image files, verify their link status in the Links panel, relink a missing file, and use Edit Original to open a placed Photoshop file.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → Place (Ctrl+D). Select a photograph → Open. Click on the page to place at image size.</li>
+      <li><span class="step-n">2</span>Window → Links. Verify the chain icon (🔗) next to the placed file = linked and current.</li>
+      <li><span class="step-n">3</span>Select the missing link (red ?) in Links panel. Click the Relink button (chain + arrow icon) → navigate to file → Open.</li>
+      <li><span class="step-n">4</span>Select any linked image → click the Edit Original button (pencil icon) in the Links panel.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 3 — Organising Documents</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-3.1</span>
+      <span class="brief-title">Create &amp; apply a Master page — override on one page</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Create an "A-Running Footer" master page containing a footer text frame with an automatic page number. Apply it to all 12 pages. Override the footer on page 3 for a custom message.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Window → Pages (F12). Panel menu ≡ → New Master. Name: Running Footer, Prefix: A → OK.</li>
+      <li><span class="step-n">2</span>Double-click A-Running Footer to enter it. Press T, drag a footer text frame at the bottom.</li>
+      <li><span class="step-n">3</span>Click inside the frame. Type → Insert Special Character → Markers → Current Page Number.</li>
+      <li><span class="step-n">4</span>Panel ≡ → Apply Master to Pages → A-Running Footer → Pages: 1–12 → OK.</li>
+      <li><span class="step-n">5</span>Navigate to page 3. Ctrl+Shift+click the greyed footer frame to override it. Edit the text.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-3.4</span>
+      <span class="brief-title">Object styles — create, apply, redefine</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~7 min</span>
+    </div>
+    <div class="brief-scenario">Create an Object Style "Caption Frame" from a manually formatted text frame (1pt stroke, 4mm inset). Apply to three frames, then redefine the style by updating the stroke to 2pt.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Select a text frame. Set: Fill: None, Stroke: 1pt Black. Object → Text Frame Options → Inset: 4mm all → OK.</li>
+      <li><span class="step-n">2</span>Window → Styles → Object Styles (Ctrl+F7). With the frame selected, click + → name: Caption Frame → OK.</li>
+      <li><span class="step-n">3</span>Select three other text frames → click Caption Frame in the Object Styles panel.</li>
+      <li><span class="step-n">4</span>Edit one frame locally (stroke: 2pt). Panel ≡ → Redefine Style → all instances update.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 4 — Text &amp; Tables</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-4.1</span>
+      <span class="brief-title">Thread text frames &amp; Text Frame Options</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Resolve a text overflow on page 1 by threading to a new frame on page 2. Then configure a sidebar frame with 6mm inset, 2 columns, and centred vertical alignment.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Click the red + out-port on the overflowing frame. Navigate to page 2. Click to place the threaded frame.</li>
+      <li><span class="step-n">2</span>View → Extras → Show Text Threads to confirm the thread connection.</li>
+      <li><span class="step-n">3</span>Select the sidebar frame. Object → Text Frame Options (Ctrl+B).</li>
+      <li><span class="step-n">4</span>Inset Spacing: chain icon → all 6mm. Columns: 2, Gutter: 4mm. Vertical Justification: Center → OK.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-4.2</span>
+      <span class="brief-title">Paragraph Styles &amp; Character Styles</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Create Body Text and Heading 1 Paragraph Styles. Set Next Style on Heading 1 to Body Text. Create an "Emphasis" Character Style (bold + brand colour). Apply all styles throughout the article.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Window → Styles → Paragraph Styles (F11). Format body text manually → click + → name: Body Text → OK.</li>
+      <li><span class="step-n">2</span>Format a heading → + → name: Heading 1 → Next Style: Body Text → OK.</li>
+      <li><span class="step-n">3</span>Window → Styles → Character Styles (Shift+F11). Select emphasis text (bold + colour) → + → name: Emphasis → OK.</li>
+      <li><span class="step-n">4</span>Apply styles: click inside paragraph → click style name in panel.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-4.3</span>
+      <span class="brief-title">Insert &amp; format a table</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Insert a 5-row, 4-column table with 1 header row. Format the header with a dark fill. Apply alternating row fills and set column stroke weight to 0.5pt.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Click inside a text frame. Table → Insert Table → Body Rows: 5, Columns: 4, Header Rows: 1 → OK.</li>
+      <li><span class="step-n">2</span>Click in header row → Table → Select → Row. Apply dark fill from Swatches panel.</li>
+      <li><span class="step-n">3</span>Table → Table Options → Alternating Fills. Set odd row colour → OK.</li>
+      <li><span class="step-n">4</span>Select all → Table → Cell Options → Strokes and Fills → Weight: 0.5pt → OK.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 5 — Visual Elements &amp; AI Features</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-5.1</span>
+      <span class="brief-title">Place images, frame fitting &amp; content repositioning</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Draw an image frame, place a photograph, apply Fill Frame Proportionally and Auto Fit. Then reposition the image content within the frame to improve the crop composition.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Frame tool</div><div class="spec-value">F (Rectangle Frame)</div></div>
+      <div class="spec-item"><div class="spec-label">Fitting</div><div class="spec-value">Fill Frame Proportionally</div></div>
+      <div class="spec-item"><div class="spec-label">Auto Fit</div><div class="spec-value">Checked (Control bar)</div></div>
+      <div class="spec-item"><div class="spec-label">Content select</div><div class="spec-value">Double-click (orange handles)</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Press F → drag to draw a rectangle frame. Select it → File → Place (Ctrl+D) → choose photograph.</li>
+      <li><span class="step-n">2</span>Right-click → Fitting → Fill Frame Proportionally. Check Auto Fit in the Control bar.</li>
+      <li><span class="step-n">3</span>Double-click the image → orange handles appear (content selected). Drag to reposition within the frame.</li>
+      <li><span class="step-n">4</span>Click outside to deselect. Single-click the frame to verify blue handles (frame selected).</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num" style="color:#9B8EF0;background:rgba(155,142,240,.1);border-color:rgba(155,142,240,.3);">Id-5.5 ✦</span>
+      <span class="brief-title">Text-to-Image &amp; Generative Expand</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge ai-badge">AI 2025</span>
+      <span class="brief-badge time-badge">~7 min</span>
+    </div>
+    <div class="brief-scenario">Generate a full-bleed background image using a text prompt, then use Generative Expand to extend a landscape photograph to fill a taller frame.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Draw a large empty image frame. With it selected: Object → Generate Image (or click Generate in taskbar).</li>
+      <li><span class="step-n">2</span>Enter prompt: "aerial mountain range, golden hour, cinematic wide format". Click Generate.</li>
+      <li><span class="step-n">3</span>Click the best of the 4 variations → Place → image fills the frame.</li>
+      <li><span class="step-n">4</span>Select a placed photograph. Drag the top frame handle to make the frame taller than the image.</li>
+      <li><span class="step-n">5</span>Click Generative Expand in the contextual taskbar → choose variation → Accept.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 6 — Publishing</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-6.1 / 6.2</span>
+      <span class="brief-title">Preflight — fix errors, create profile, package document</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Resolve three Preflight errors, create a custom "Print Ready" profile that flags images below 300 ppi, then package the document for printer delivery.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Window → Output → Preflight. Click Missing Links error → navigate to frame → Links panel → Relink.</li>
+      <li><span class="step-n">2</span>Click Overset Text error → navigate to frame → click red + out-port → thread to new frame.</li>
+      <li><span class="step-n">3</span>Preflight panel ≡ → Define Profiles → + → name: Print Ready → Links → Min. Image Resolution: 300 ppi → OK.</li>
+      <li><span class="step-n">4</span>File → Package (Alt+Shift+Ctrl+P) → Report → check Copy Fonts &amp; Copy Links → fill Instructions → Create Packaged Folder.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Id-6.3</span>
+      <span class="brief-title">Export PDF/X-1a for print &amp; Interactive PDF for screen</span>
+      <span class="brief-badge bloom-badge">Evaluate</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Export a print-ready PDF/X-1a with crop marks and bleed. Then export a separate Interactive PDF with hyperlinks and bookmarks for the client's digital edition.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Print preset</div><div class="spec-value">PDF/X-1a:2001</div></div>
+      <div class="spec-item"><div class="spec-label">Marks</div><div class="spec-value">Crop + Bleed marks</div></div>
+      <div class="spec-item"><div class="spec-label">Bleed</div><div class="spec-value">Use Document Bleed Settings</div></div>
+      <div class="spec-item"><div class="spec-label">Pages</div><div class="spec-value">All, as Spreads</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → Export (Ctrl+E) → Adobe PDF (Print). Preset: [PDF/X-1a:2001].</li>
+      <li><span class="step-n">2</span>Marks and Bleeds tab → Crop Marks ✓ → Bleed Marks ✓ → Use Document Bleed Settings ✓.</li>
+      <li><span class="step-n">3</span>General tab → Pages: All → Spreads ✓ → click Export.</li>
+      <li><span class="step-n">4</span>File → Export → Adobe PDF (Interactive) → Hyperlinks: All ✓ → Bookmarks ✓ → OK.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ═══ ANSWER KEYS ═══════════════════════════════════ -->
+<div class="panel" id="panel-keys">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Exact expected values for each step. Use for grading and self-checking.</p>
+
+  <p class="section-label">Id-2.1 — New document settings</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Intent / dimensions</div><div><span class="ans-value">Print · 210mm × 297mm · 4 pages · Facing Pages ✓</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Margins (all)</div><div><span class="ans-value">12mm</span></div><div class="ans-context">Chain icon links all four fields.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Columns / Gutter</div><div><span class="ans-value">2 columns · 5mm gutter</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Bleed / Slug Top</div><div><span class="ans-value">3mm all sides · Slug Top: 6mm</span></div><div class="ans-context">Bleed = artwork extends beyond trim. Slug = printer info area outside bleed.</div></div></div>
+  </div>
+
+  <p class="section-label">Id-2.3 — Links panel</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Link status icons</div><div><span class="ans-value">🔗 chain = current · ⚠ yellow = modified · ? red = missing</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Relink command</div><div><span class="ans-value">Links panel → Relink button (chain + arrow icon)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Edit Original</div><div><span class="ans-value">Links panel → pencil icon (Edit Original)</span></div><div class="ans-context">Always use Edit Original — never re-place to update a linked asset.</div></div></div>
+  </div>
+
+  <p class="section-label">Id-3.1 — Master pages</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Create master</div><div><span class="ans-value">Pages panel ≡ → New Master → Name: Running Footer, Prefix: A</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Page number insertion</div><div><span class="ans-value">Type → Insert Special Character → Markers → Current Page Number</span></div><div class="ans-context">Shows "A" on master. Resolves to the correct number on each document page.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Override master item</div><div><span class="ans-value">Ctrl+Shift+click (Cmd+Shift+click) the greyed item</span></div><div class="ans-context">Override = locally editable on this page only. Other pages unaffected.</div></div></div>
+  </div>
+
+  <p class="section-label">Id-4.1 — Threading &amp; Text Frame Options</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Load thread cursor</div><div><span class="ans-value">Click red + out-port (lower-right of overflowing frame)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Text Frame Options</div><div><span class="ans-value">Object → Text Frame Options (Ctrl+B) → Inset: 6mm · Columns: 2 · Gutter: 4mm · Vertical: Center</span></div></div></div>
+  </div>
+
+  <p class="section-label">Id-4.2 — Paragraph &amp; Character Styles</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Create Paragraph Style</div><div><span class="ans-value">Format text manually → Paragraph Styles panel (+) → name → OK</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Next Style setting</div><div><span class="ans-value">Heading 1 → Next Style: Body Text</span></div><div class="ans-context">Press Enter after a heading → next paragraph automatically uses Body Text.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Character Style</div><div><span class="ans-value">Minimum attributes only — bold + colour. Not font, size, or leading.</span></div></div></div>
+  </div>
+
+  <p class="section-label">Id-5.1 — Image fitting</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Fill frame</div><div><span class="ans-value">Right-click → Fitting → Fill Frame Proportionally</span></div><div class="ans-context">Fills frame fully. May crop edges. Fit Content = whole image visible, may leave gaps.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Select content</div><div><span class="ans-value">Double-click → orange handles appear (content selected, not frame)</span></div></div></div>
+  </div>
+
+  <p class="section-label">Id-5.5 — Generative Expand</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Trigger Generative Expand</div><div><span class="ans-value">Resize frame larger than image → Generative Expand button in taskbar → choose variation → Accept</span></div><div class="ans-context">Firefly fills empty area with seamlessly matched AI-generated content.</div></div></div>
+  </div>
+
+  <p class="section-label">Id-6.2 — Package</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Package command</div><div><span class="ans-value">File → Package (Alt+Shift+Ctrl+P)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Options</span><div><div class="ans-action">Three required checkboxes</div><div><span class="ans-value">Copy Fonts ✓ · Copy Linked Graphics ✓ · Update Graphic Links ✓</span></div><div class="ans-context">Package folder: .indd + Document Fonts/ + Links/ + Instructions.txt</div></div></div>
+  </div>
+
+  <p class="section-label">Id-6.3 — PDF Export</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Export path</div><div><span class="ans-value">File → Export (Ctrl+E) → Adobe PDF (Print)</span></div><div class="ans-context">NOT Adobe PDF (Interactive) — that is for screen/digital delivery.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Print preset</div><div><span class="ans-value">[PDF/X-1a:2001]</span></div><div class="ans-context">CMYK only, transparency flattened, embedded fonts — most printer-compatible.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Marks &amp; bleeds</div><div><span class="ans-value">Crop Marks ✓ · Bleed Marks ✓ · Use Document Bleed Settings ✓</span></div></div></div>
+  </div>
+</div>
+
+<!-- ═══ RUBRIC ════════════════════════════════════════ -->
+<div class="panel" id="panel-rubric">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Portfolio assessment rubric — maps each criterion to official ACP 2025 InDesign objectives.</p>
+  <div class="brief-card" style="padding:0;overflow:hidden;">
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead><tr>
+          <th style="min-width:140px;">Criterion</th>
+          <th style="min-width:30px;text-align:center;">4 — Exemplary</th>
+          <th style="min-width:30px;text-align:center;">3 — Proficient</th>
+          <th style="min-width:30px;text-align:center;">2 — Developing</th>
+          <th style="min-width:30px;text-align:center;">1 — Beginning</th>
+          <th style="text-align:center;min-width:50px;">Score</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>Document setup<span class="acp-ref">Id-2.1</span></td>
+            <td><span class="level-4">All specs exact: 3mm bleed, 6mm slug, 12mm margins, 2 columns, 5mm gutter, Facing Pages, Print intent.</span></td>
+            <td><span class="level-3">All critical specs correct. Minor single-value error.</span></td>
+            <td><span class="level-2">Most specs correct. Bleed or slug missing/wrong.</span></td>
+            <td><span class="level-1">Multiple errors. Not print-ready.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Master pages<span class="acp-ref">Id-3.1 / 3.2</span></td>
+            <td><span class="level-4">Master created with correct prefix. Auto page number inserted via Special Character menu. Applied to all pages. Override on correct page only, not others.</span></td>
+            <td><span class="level-3">Master created, page number inserted, applied. Override may affect extra pages.</span></td>
+            <td><span class="level-2">Master created but page number typed manually (not auto). Applied correctly.</span></td>
+            <td><span class="level-1">Page numbers placed on document pages, not master. No master-based consistency.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Paragraph Styles<span class="acp-ref">Id-4.2</span></td>
+            <td><span class="level-4">Body Text and Heading 1 created. Next Style set. All article text uses named styles. No "+" overrides without justification. Character Style minimal and correctly applied.</span></td>
+            <td><span class="level-3">Styles created and applied. Some paragraphs have local overrides.</span></td>
+            <td><span class="level-2">Styles created but inconsistently applied. Some text manually formatted instead.</span></td>
+            <td><span class="level-1">No named styles used. All formatting applied manually.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Image management<span class="acp-ref">Id-5.1</span></td>
+            <td><span class="level-4">Frames drawn with Rectangle Frame tool (F). Fill Frame Proportionally applied. Auto Fit enabled. Content repositioned with correct double-click workflow. No distorted images.</span></td>
+            <td><span class="level-3">Images placed and fitted. Correct tool used. Auto Fit may not be enabled.</span></td>
+            <td><span class="level-2">Images placed. Fitting applied but wrong method (Fit Content, stretches image).</span></td>
+            <td><span class="level-1">Images placed but not fitted. Distorted or disproportionate scaling visible.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Publishing &amp; export<span class="acp-ref">Id-6.1–6.3</span></td>
+            <td><span class="level-4">Preflight errors resolved before export. Package contains .indd, Document Fonts, Links. PDF exported as PDF/X-1a (Print) with crop marks, bleed, and document bleed settings used.</span></td>
+            <td><span class="level-3">Package complete. PDF exported as Print. Marks or bleed may be missing.</span></td>
+            <td><span class="level-2">PDF exported but Interactive preset used instead of Print, or no crop marks.</span></td>
+            <td><span class="level-1">No Package performed. PDF export settings incorrect or missing.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:var(--bg1);">
+            <td style="font-weight:600;color:var(--text);" colspan="5">Total score</td>
+            <td class="rubric-score" style="color:var(--id);">/ 20</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;">
+    <div style="background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--correct);">18–20</div><div style="font-size:.75rem;color:var(--text3);">Distinction · ACP ready</div></div>
+    <div style="background:rgba(0,200,150,.08);border:0.5px solid rgba(0,200,150,.2);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--id);">14–17</div><div style="font-size:.75rem;color:var(--text3);">Merit · Near ready</div></div>
+    <div style="background:rgba(255,184,0,.08);border:0.5px solid rgba(255,184,0,.2);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--partial);">10–13</div><div style="font-size:.75rem;color:var(--text3);">Pass · More practice</div></div>
+    <div style="background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.2);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--wrong);">0–9</div><div style="font-size:.75rem;color:var(--text3);">Resubmit · Not yet</div></div>
+  </div>
+</div>
+
+<!-- ═══ MC ANSWER KEY ════════════════════════════════ -->
+<div class="panel" id="panel-mc">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Full MC bank with correct answers, distractors explained, and ACP objective codes.</p>
+  <div id="mc-list"></div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const mcQuestions=[
+  {code:'Id-1.3a',q:'Artwork that extends beyond the trim edge of a page to prevent white borders after cutting is called:',options:['Slug','Bleed','Live area','Registration'],correct:1,explanation:'Bleed (typically 3mm / 0.125 inch) extends artwork beyond the trim. After cutting, even with minor variation, no white borders appear. Slug is outside the bleed and holds printer marks only.'},
+  {code:'Id-2.1',q:'In a facing-pages InDesign document, the "inside" margin refers to:',options:['The top margin','The margin at the bottom of the page','The margin closest to the binding spine — the same on both left and right pages','The column gutter'],correct:2,explanation:'Facing pages use "inside" and "outside" instead of "left" and "right". The inside margin is adjacent to the spine on both pages of a spread. It is typically wider than the outside margin to allow for binding.'},
+  {code:'Id-2.3',q:'The Links panel shows a yellow triangle next to a placed image. What does this mean?',options:['The file is missing','The file was modified after placing — update the link to refresh','The file is embedded','There is a colour profile mismatch'],correct:1,explanation:'A yellow triangle means the source file changed after it was placed. The placed version is outdated. Click Update Link to refresh it. A red ? means the file cannot be found at all.'},
+  {code:'Id-3.1',q:'To make a master page item editable on a specific document page without affecting other pages, you:',options:['Double-click the item','Delete the master from that page','Ctrl+Shift+click (Cmd+Shift+click) the greyed master item to override it locally','Apply [None] master to the page'],correct:2,explanation:'Ctrl+Shift+click overrides the master item locally on that page only — it becomes independently editable while the master still exists and all other pages remain unchanged.'},
+  {code:'Id-3.2',q:'Automatic page numbers in InDesign must be placed on a Master page because:',options:['It is a design convention only','If placed on a document page, the number only shows on that one page; on the master it resolves to the correct number on every page using that master','Document pages cannot hold text variables','Page numbers are stored in a separate file'],correct:1,explanation:'On the master, the page number marker shows the master prefix (e.g. "A"). On each document page that uses the master, it automatically resolves to the correct page number — including after reordering.'},
+  {code:'Id-4.1',q:'A text frame\'s out-port shows a red plus (+). This indicates:',options:['The frame uses a spot colour stroke','The frame is part of a Book file','Text is overflowing — more content exists than fits in the frame','The frame is locked on a layer'],correct:2,explanation:'The red + in the out-port signals overflow. Click it to load the thread cursor, then click or draw another frame to continue the story. The overset text flows in automatically.'},
+  {code:'Id-4.2',q:'The "Next Style" property of a Paragraph Style means:',options:['The style that this style is based on','When you press Enter at the end of a paragraph, the following paragraph automatically applies the specified style','The Character Style nested inside this Paragraph Style','The style that overrides this one when a "+" indicator appears'],correct:1,explanation:'Next Style automates typographic workflow. A Heading style with Next Style: Body Text automatically switches the following paragraph to body text when you press Enter — eliminating the need to manually click style names.'},
+  {code:'Id-5.1',q:'You double-click a placed image in InDesign. The handles change from blue to orange/brown. This means:',options:['You have selected the image frame','You have selected the image content inside the frame','You have entered Master page editing mode','You have activated the Direct Selection tool'],correct:1,explanation:'Blue handles = frame selected (move/resize the container). Orange/brown handles = content selected (move/resize the image within the frame). This two-level selection model is fundamental to InDesign\'s frame-based layout.'},
+  {code:'Id-5.5',q:'Generative Expand in InDesign is used to:',options:['Generate an EPUB version of the layout','Apply AI-powered text corrections to the story','Fill the empty areas of an enlarged frame by generating seamlessly matching content using Adobe Firefly','Automatically expand the document bleed area'],correct:2,explanation:'Generative Expand fills the gap when you make an image frame larger than the placed photo. Adobe Firefly analyses the image edges and generates matching content, enabling you to change a photo\'s aspect ratio without reshooting.'},
+  {code:'Id-6.2',q:'The Package command (File → Package) collects:',options:['Only the .indd file','The .indd file, all linked graphics (Links folder), and all document fonts (Document Fonts folder)','The .indd file and a PDF export only','All document styles and colour swatches only'],correct:1,explanation:'Package creates a folder with three key items: the InDesign document (.indd), a Document Fonts subfolder with all fonts used, and a Links subfolder with all placed images and graphics. An Instructions.txt file is added if you complete the printing instructions.'},
+  {code:'Id-6.3',q:'For commercial print production, you should export using:',options:['Adobe PDF (Interactive) with hyperlinks enabled','Adobe PDF (Print) with the [PDF/X-1a:2001] or [PDF/X-4:2008] preset','EPUB Fixed Layout for the printer\'s digital workflow','JPEG at 300 ppi per page'],correct:1,explanation:'Adobe PDF (Print) with a PDF/X preset is the correct choice for commercial printing. PDF/X-1a: CMYK only, transparency flattened. PDF/X-4: allows live transparency and colour-managed RGB. PDF Interactive is for screen/digital delivery only — it does not include print marks.'},
+  {code:'Id-6.4',q:'In the Print dialog Output tab, setting Colour to "Separations (Host-Based)" will:',options:['Print the document in greyscale','Convert all colours to black','Output one greyscale sheet per ink plate — Cyan, Magenta, Yellow, Black, plus any spot colours','Print a colour composite proof'],correct:2,explanation:'Separations mode outputs each colour channel as a separate greyscale sheet. Use it to verify plate content — check that logos use the correct spot colour, no unintended RGB colours exist, and each plate only carries the expected content.'}
+];
+
+document.getElementById('mc-list').innerHTML=mcQuestions.map((item,i)=>`
+  <div class="brief-card" style="margin-bottom:.75rem;">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;">
+      <span style="font-size:.68rem;font-family:var(--mono);color:var(--id);background:rgba(0,200,150,.1);padding:2px 7px;border-radius:4px;">Q${i+1}</span>
+      <span style="font-family:var(--mono);font-size:.68rem;color:var(--text3);">${item.code}</span>
+    </div>
+    <p style="font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.6rem;line-height:1.5;">${item.q}</p>
+    ${item.options.map((opt,oi)=>`
+      <div style="padding:.4rem .75rem;border-radius:7px;border:0.5px solid ${oi===item.correct?'rgba(0,214,143,.4)':'var(--border)'};background:${oi===item.correct?'rgba(0,214,143,.07)':'var(--bg)'};font-size:.82rem;color:${oi===item.correct?'#7FFFD4':'var(--text3)'};margin-bottom:.25rem;">
+        ${oi===item.correct?'✓ ':''}<strong>${String.fromCharCode(65+oi)}.</strong> ${opt}
+      </div>`).join('')}
+    <div style="margin-top:.6rem;padding:.6rem .875rem;background:rgba(0,200,150,.05);border:0.5px solid rgba(0,200,150,.2);border-radius:8px;font-size:.8rem;color:#90C8AA;line-height:1.55;">
+      <strong>Explanation:</strong> ${item.explanation}
+    </div>
+  </div>
+`).join('');
+</script>
+</body>
+</html>

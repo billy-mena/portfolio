@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ps · Domain 5: Modifying Visual Elements | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#1A0A2E 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.domain-hero h1{font-size:1.6rem;margin-bottom:.3rem;}
+.domain-meta{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(49,168,255,.35);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;flex-shrink:0;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--accent);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
+
+/* Adobe chrome */
+.adobe-sim{background:#2B2B2B;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3C3C3C;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#31A8FF;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 230px;min-height:360px;}
+.adobe-tools{background:#2B2B2B;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(49,168,255,.2);color:#31A8FF;}
+.tool-btn.highlight{border:1.5px solid #31A8FF;animation:pulse-ring 1.2s infinite;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#505050;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.canvas-doc{background:#FFF;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.adobe-panels{background:#2B2B2B;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;cursor:pointer;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#31A8FF;box-shadow:0 0 0 2px rgba(49,168,255,.2);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#31A8FF;color:#31A8FF;}
+.layer-row{display:flex;align-items:center;gap:5px;padding:4px 5px;border-radius:3px;cursor:pointer;margin-bottom:1px;border:1px solid transparent;}
+.layer-row:hover{background:#3A3A3A;}
+.layer-row.selected{background:rgba(49,168,255,.18);border-color:rgba(49,168,255,.3);}
+.layer-thumb{width:26px;height:20px;border-radius:2px;border:1px solid #555;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.layer-name{flex:1;color:#CCC;font-size:10px;}
+.layer-badge{font-size:8px;padding:1px 4px;border-radius:2px;flex-shrink:0;}
+
+/* Selection overlay */
+.sel-overlay{position:absolute;border:2px dashed #31A8FF;background:rgba(49,168,255,.08);pointer-events:none;transition:all .3s;}
+.sel-marching{animation:march 0.6s linear infinite;}
+@keyframes march{to{stroke-dashoffset:-10;}}
+
+/* Transform handles */
+.transform-handle{position:absolute;width:8px;height:8px;background:#31A8FF;border:1px solid #FFF;cursor:pointer;}
+
+/* Options bar */
+.options-bar{background:#2B2B2B;padding:4px 10px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #1A1A1A;min-height:32px;flex-wrap:wrap;}
+.opt-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#AAA;}
+.opt-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:2px 5px;border-radius:3px;width:45px;font-family:var(--font-mono);}
+.opt-input.highlight{border-color:#31A8FF;}
+.opt-btn{padding:3px 8px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;}
+.opt-btn:hover,.opt-btn.active{background:#4A4A4A;color:#FFF;}
+.opt-btn.commit{background:#31A8FF;color:#000;border-color:#31A8FF;}
+
+/* Step panel */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;color:var(--color-text-primary);line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ps active">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div class="domain-meta">
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="acp-tag">Ps · Domain 5</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1>Modifying Visual Elements</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-top:.3rem;">4 objectives · 8 tasks · Guided &amp; Independent modes · ACP 2025 exam-aligned</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 5 tasks</div>
+
+  <div class="task-item active" onclick="loadTask('ps-5-1a')" id="nav-ps51a">
+    <div class="task-icon" id="icon-ps51a">5.1</div>
+    <div class="task-info"><div class="task-obj">Ps-5.1a</div><div class="task-name">Make selections — Select Subject, Object Selection, Color Range</div></div>
+    <div class="task-score" id="sc-ps51a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-1b')" id="nav-ps51b">
+    <div class="task-icon" id="icon-ps51b">5.1</div>
+    <div class="task-info"><div class="task-obj">Ps-5.1b/c</div><div class="task-name">Modify &amp; save selections</div></div>
+    <div class="task-score" id="sc-ps51b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-2a')" id="nav-ps52a">
+    <div class="task-icon" id="icon-ps52a">5.2</div>
+    <div class="task-info"><div class="task-obj">Ps-5.2a</div><div class="task-name">Retouching — Healing, Clone &amp; Content-Aware</div></div>
+    <div class="task-score" id="sc-ps52a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-2b')" id="nav-ps52b">
+    <div class="task-icon" id="icon-ps52b">AI</div>
+    <div class="task-info"><div class="task-obj">Ps-5.2a</div><div class="task-name">AI Remove &amp; Find Distractions</div></div>
+    <div class="task-score" id="sc-ps52b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-2c')" id="nav-ps52c">
+    <div class="task-icon" id="icon-ps52c">5.2</div>
+    <div class="task-info"><div class="task-obj">Ps-5.2b</div><div class="task-name">Burn, Dodge &amp; Sponge</div></div>
+    <div class="task-score" id="sc-ps52c">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-3a')" id="nav-ps53a">
+    <div class="task-icon" id="icon-ps53a">5.3</div>
+    <div class="task-info"><div class="task-obj">Ps-5.3a/b</div><div class="task-name">Transform — Crop, canvas &amp; Free Transform</div></div>
+    <div class="task-score" id="sc-ps53a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-4a')" id="nav-ps54a">
+    <div class="task-icon" id="icon-ps54a">5.4</div>
+    <div class="task-info"><div class="task-obj">Ps-5.4a/b</div><div class="task-name">Smart Filters &amp; layer styles</div></div>
+    <div class="task-score" id="sc-ps54a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-5-4b')" id="nav-ps54b">
+    <div class="task-icon" id="icon-ps54b">5.4</div>
+    <div class="task-info"><div class="task-obj">Ps-5.4b/c</div><div class="task-name">Copy, manage &amp; apply materials</div></div>
+    <div class="task-score" id="sc-ps54b">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d4-content.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 4</div></div>
+  </a>
+  <a href="d6-publishing.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Domain 6 →</div></div>
+  </a>
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card" style="border-radius:var(--border-radius-lg);">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   TASK CONFIGS — ACP 2025 Domain 5 (Ps-5.1 → 5.4)
+═══════════════════════════════════════════════════════ */
+const TASKS = {
+
+/* ── Ps-5.1a — Selections ─────────────────────────── */
+'ps-5-1a': {
+  id:'ps-5-1a', tool:'photoshop', domain:5,
+  objective:'5.1a', objectiveText:'Make selections using a variety of tools',
+  bloomsLevel:'Apply', estimatedMinutes:9, uiType:'selections',
+  scenario:'Isolate a subject from a complex background using three different ACP-tested selection methods: Select Subject (AI), Object Selection, and Select Color Range. Each method suits different image types.',
+  steps:[
+    {id:1, instruction:'Use Select Subject. Go to Select → Subject.',
+     expectedAction:'menu-click', expectedTarget:'select-subject',
+     hint1:'Go to the Select menu in the menu bar.',
+     hint2:'Select → Subject — Photoshop AI detects and selects the main subject automatically.',
+     hint3:'Click Select in the menu bar → Subject.',
+     correctFeedback:'Select Subject applied. AI detects and selects the main subject. Marching ants appear around it.',
+     incorrectFeedback:'Click Select → Subject.',
+     acpContext:'ACP Ps-5.1a: Select Subject uses Adobe Sensei AI to detect the primary subject. Best for portraits, products, and isolated objects.',
+     gagneEvent:4},
+    {id:2, instruction:'Now try Object Selection (W). Click and drag a rough rectangle around a specific object on the canvas.',
+     expectedAction:'tool-select', expectedTarget:'object-selection',
+     hint1:'Press W for the Object Selection tool.',
+     hint2:'Press W. In Options Bar, set mode to Rectangle. Draw a box around the object.',
+     hint3:'Press W → drag a box around the object → Photoshop snaps the selection to the object\'s edges.',
+     correctFeedback:'Object Selection applied. Photoshop fits the selection precisely to the object within your drawn box.',
+     incorrectFeedback:'Press W for Object Selection, then drag around the target object.',
+     acpContext:'ACP Ps-5.1a: Object Selection is best when a scene has multiple objects — draw around the one you want and Photoshop isolates it.',
+     gagneEvent:6},
+    {id:3, instruction:'Use Select Color Range to select the blue sky. Go to Select → Color Range.',
+     expectedAction:'menu-click', expectedTarget:'select-color-range',
+     hint1:'Go to the Select menu.',
+     hint2:'Select → Color Range opens a dialog where you click on a colour to select all similar pixels.',
+     hint3:'Select → Color Range → click on the blue sky in the preview → adjust Fuzziness → click OK.',
+     correctFeedback:'Color Range dialog opened. Click on the sky colour to select similar blue pixels.',
+     incorrectFeedback:'Go to Select → Color Range.',
+     acpContext:'ACP Ps-5.1a: Color Range selects all pixels of a similar colour across the entire image. Fuzziness controls how broadly similar colours are included.',
+     gagneEvent:6},
+    {id:4, instruction:'In the Color Range dialog, click on the blue sky area in the preview image, then set Fuzziness to 40 and click OK.',
+     expectedAction:'input', expectedTarget:'fuzziness', expectedValue:'40', matchType:'exact',
+     hint1:'The Fuzziness slider is at the top of the Color Range dialog.',
+     hint2:'Click on the blue sky area in the preview thumbnail, then drag the Fuzziness slider to 40.',
+     hint3:'Click on the sky preview area → set the Fuzziness field to 40 → click OK.',
+     correctFeedback:'Color Range selection created. Selected areas appear white in the preview; unselected areas appear black.',
+     incorrectFeedback:'Click the sky in the preview and set Fuzziness to 40.',
+     acpContext:'ACP Ps-5.1a: Fuzziness 0 = exact colour only. Fuzziness 200 = very broad match. 30–60 is typical for sky selections.',
+     gagneEvent:7},
+    {id:5, instruction:'Use Quick Selection (W) on the subject. Press W, then paint over the subject to expand the selection.',
+     expectedAction:'tool-select', expectedTarget:'quick-selection',
+     hint1:'Press W to access the Quick Selection / Object Selection group.',
+     hint2:'Press W. If Object Selection appears, press Shift+W to cycle to Quick Selection.',
+     hint3:'Press W (or Shift+W to cycle) → paint over the subject by clicking and dragging.',
+     correctFeedback:'Quick Selection active. Paint over the subject — the selection grows to include similar neighbouring pixels.',
+     incorrectFeedback:'Press W (cycle with Shift+W if needed) to get Quick Selection, then paint over the subject.',
+     acpContext:'ACP Ps-5.1a: Quick Selection grows the selection as you paint — ideal for subjects with clear contrast against the background.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.1b — Modify & save selections ───────────── */
+'ps-5-1b': {
+  id:'ps-5-1b', tool:'photoshop', domain:5,
+  objective:'5.1b/c', objectiveText:'Modify, refine, and save selections',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'modify-selection',
+  scenario:'You have a rough selection that needs to be refined and saved for future use. Add to the selection, subtract from it, feather the edge, and save it as an alpha channel.',
+  steps:[
+    {id:1, instruction:'With an existing selection active, Add to it by holding Shift and clicking with any selection tool.',
+     expectedAction:'shift-click', expectedTarget:'add-to-selection',
+     hint1:'Hold Shift while using any selection tool to add to the current selection.',
+     hint2:'Hold Shift key → click or drag on an unselected area → it joins the existing selection.',
+     hint3:'Hold Shift → use Lasso or Marquee → drag over an area to add it to the selection.',
+     correctFeedback:'Added to selection. The + cursor confirms add mode.',
+     incorrectFeedback:'Hold Shift and use a selection tool to add to the existing selection.',
+     acpContext:'ACP Ps-5.1b: Shift = add. Alt/Option = subtract. Shift+Alt = intersect. These modifiers work with all selection tools.',
+     gagneEvent:5},
+    {id:2, instruction:'Subtract from the selection by holding Alt (Option on Mac) and clicking on an area to remove.',
+     expectedAction:'alt-click', expectedTarget:'subtract-selection',
+     hint1:'Hold Alt (Windows) or Option (Mac) while using a selection tool.',
+     hint2:'Hold Alt/Option → click or drag on a selected area → it is removed from the selection.',
+     hint3:'Hold Alt → drag the Lasso or Marquee over an area to deselect it.',
+     correctFeedback:'Subtracted from selection. The − cursor confirms subtract mode.',
+     incorrectFeedback:'Hold Alt (Option on Mac) and drag over the area to subtract.',
+     acpContext:'ACP Ps-5.1b: Subtracting lets you clean up over-selected areas. Use a small Lasso or Marquee for precise removal.',
+     gagneEvent:6},
+    {id:3, instruction:'Feather the selection edge. Go to Select → Modify → Feather. Enter a Feather Radius of 5 pixels.',
+     expectedAction:'menu-click', expectedTarget:'select-modify-feather',
+     hint1:'Go to Select → Modify.',
+     hint2:'Select → Modify → Feather opens the feather dialog.',
+     hint3:'Select → Modify → Feather → type 5 → click OK.',
+     correctFeedback:'Feather dialog opened. Set the radius to 5 pixels.',
+     incorrectFeedback:'Go to Select → Modify → Feather.',
+     acpContext:'ACP Ps-5.1b: Feathering creates a soft, gradual edge on the selection boundary. Use for compositing to avoid harsh cut-out edges.',
+     gagneEvent:6},
+    {id:4, instruction:'Set Feather Radius to 5 pixels and click OK.',
+     expectedAction:'input', expectedTarget:'feather-radius', expectedValue:'5', matchType:'exact',
+     hint1:'Enter the radius in the Feather Radius field.',
+     hint2:'Type 5 in the Feather Radius field and click OK.',
+     hint3:'Field shows a number — clear it, type 5, click OK.',
+     correctFeedback:'5px feather applied. The selection edge will now blend softly when used for compositing.',
+     incorrectFeedback:'Type 5 in the Feather Radius field and click OK.',
+     acpContext:'ACP Ps-5.1b: Feather radius matches pixel count. A 5px feather on a 300ppi image = very subtle. A 5px feather on a 72ppi image = more visible.',
+     gagneEvent:7},
+    {id:5, instruction:'Save the selection as an alpha channel. Go to Select → Save Selection.',
+     expectedAction:'menu-click', expectedTarget:'save-selection',
+     hint1:'Go to the Select menu.',
+     hint2:'Select → Save Selection opens a dialog to save the selection to the Channels panel.',
+     hint3:'Select → Save Selection → name it → click OK. It is now stored in the Channels panel.',
+     correctFeedback:'Selection saved as an alpha channel. Access it anytime via the Channels panel (Window → Channels) or Select → Load Selection.',
+     incorrectFeedback:'Go to Select → Save Selection.',
+     acpContext:'ACP Ps-5.1c: Saved selections are stored as alpha channels in the Channels panel. Load them with Select → Load Selection.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.2a — Retouching ────────────────────────── */
+'ps-5-2a': {
+  id:'ps-5-2a', tool:'photoshop', domain:5,
+  objective:'5.2a', objectiveText:'Retouch and repair images — Healing, Clone, Content-Aware',
+  bloomsLevel:'Apply', estimatedMinutes:9, uiType:'retouching',
+  scenario:'Retouch a portrait photograph to remove a skin blemish using the Healing Brush, clone a texture area using the Clone Stamp, and fill a gap using Content-Aware Fill.',
+  steps:[
+    {id:1, instruction:'Select the Spot Healing Brush (J). Ensure "Content-Aware" is selected in the Options Bar.',
+     expectedAction:'tool-select', expectedTarget:'spot-healing',
+     hint1:'Press J for the Healing Brush group. Cycle with Shift+J if needed.',
+     hint2:'Press J. The Spot Healing Brush appears. Check Options Bar: Type = Content-Aware.',
+     hint3:'Press J → in Options Bar confirm Type is set to Content-Aware → ready to use.',
+     correctFeedback:'Spot Healing Brush active in Content-Aware mode. Click directly on blemishes — no sampling needed.',
+     incorrectFeedback:'Press J for the Spot Healing Brush and confirm Content-Aware is selected in Options Bar.',
+     acpContext:'ACP Ps-5.2a: Spot Healing Brush (Content-Aware) automatically samples surrounding texture — perfect for quick blemish removal without manual sampling.',
+     gagneEvent:4},
+    {id:2, instruction:'Click on the blemish on the canvas to remove it.',
+     expectedAction:'click', expectedTarget:'canvas-heal',
+     hint1:'Click directly on the blemish.',
+     hint2:'Position the brush over the blemish and click once (or paint over it).',
+     hint3:'Click on the dark spot on the skin — Photoshop analyses surrounding texture and fills seamlessly.',
+     correctFeedback:'Blemish removed with Spot Healing. Photoshop sampled surrounding skin texture automatically.',
+     incorrectFeedback:'Click on the blemish on the canvas.',
+     acpContext:'ACP Ps-5.2a: Always work on a new empty layer (sample All Layers in Options Bar) to keep retouching non-destructive.',
+     gagneEvent:6},
+    {id:3, instruction:'Switch to the Clone Stamp (S). Set sample source: Alt+click (Option+click) on a clean area of skin to set the clone source.',
+     expectedAction:'tool-select', expectedTarget:'clone-stamp',
+     hint1:'Press S for the Clone Stamp tool.',
+     hint2:'Press S. Then Alt+click (Option+click on Mac) on a clean area to set the source point.',
+     hint3:'Press S → hold Alt/Option → click on a clean skin area → release → paint over the problem area.',
+     correctFeedback:'Clone source set. Now paint over the problem area — Photoshop copies from the sampled source point.',
+     incorrectFeedback:'Press S for Clone Stamp, then Alt+click on a clean area to set the clone source.',
+     acpContext:'ACP Ps-5.2a: Clone Stamp copies exactly from the source. Healing Brush blends with destination texture. Use Clone for textures that need exact replication (e.g. fabric, wood grain).',
+     gagneEvent:6},
+    {id:4, instruction:'Use Content-Aware Fill to fill a selected gap. First, make a selection around the gap, then go to Edit → Content-Aware Fill.',
+     expectedAction:'menu-click', expectedTarget:'content-aware-fill',
+     hint1:'Select the gap area first, then go to Edit.',
+     hint2:'Use any selection tool to select the gap → Edit → Content-Aware Fill.',
+     hint3:'Marquee or Lasso around the gap → Edit → Content-Aware Fill → preview appears → Output → click OK.',
+     correctFeedback:'Content-Aware Fill dialog opened. Photoshop previews the fill using surrounding content.',
+     incorrectFeedback:'Make a selection around the gap, then go to Edit → Content-Aware Fill.',
+     acpContext:'ACP Ps-5.2a: Content-Aware Fill workspace lets you paint over the sampling area (green overlay) to control which content is used to fill the selection.',
+     gagneEvent:7},
+    {id:5, instruction:'In the Content-Aware Fill dialog, click OK to apply the fill.',
+     expectedAction:'click', expectedTarget:'caf-ok',
+     hint1:'Review the preview in the Content-Aware Fill workspace, then click OK.',
+     hint2:'If the fill looks correct in the preview, click OK to apply it.',
+     hint3:'Click OK in the Content-Aware Fill dialog.',
+     correctFeedback:'Content-Aware Fill applied. The gap is seamlessly filled with surrounding content.',
+     incorrectFeedback:'Click OK in the Content-Aware Fill dialog.',
+     acpContext:'ACP Ps-5.2a: Content-Aware Fill outputs to a new layer by default — keeping the original intact.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.2b — AI Remove ─────────────────────────── */
+'ps-5-2b': {
+  id:'ps-5-2b', tool:'photoshop', domain:5,
+  objective:'5.2a', objectiveText:'Use AI Remove tool and Find Distractions',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'ai-remove',
+  scenario:'Remove unwanted elements from a landscape photo using the AI-powered Remove tool and Find Distractions — two key 2025 ACP exam objectives.',
+  steps:[
+    {id:1, instruction:'Select the Remove tool from the toolbar (grouped with Healing tools — press J, cycle with Shift+J).',
+     expectedAction:'tool-select', expectedTarget:'remove-tool',
+     hint1:'Press J, then Shift+J to cycle through the healing tool group.',
+     hint2:'Press J → press Shift+J until the Remove tool appears in the Options Bar.',
+     hint3:'Press J repeatedly (or Shift+J) until you see "Remove Tool" in the Options Bar.',
+     correctFeedback:'Remove tool selected. This is the AI-powered one-click removal tool — faster than the Spot Healing Brush for large objects.',
+     incorrectFeedback:'Press J then Shift+J to cycle to the Remove tool.',
+     acpContext:'ACP Ps-5.2a: The Remove tool uses generative AI. It analyses context and removes objects more intelligently than Content-Aware tools.',
+     gagneEvent:4},
+    {id:2, instruction:'Paint over the unwanted object on the canvas. Release the mouse to trigger AI removal.',
+     expectedAction:'click', expectedTarget:'remove-paint',
+     hint1:'Click and drag (paint) over the object to remove it.',
+     hint2:'Paint over the entire unwanted object — release the mouse and Photoshop generates the removal.',
+     hint3:'Click and drag to paint the object red (masked area) → release → AI removes it.',
+     correctFeedback:'AI removal triggered. Photoshop analyses surrounding content and removes the object.',
+     incorrectFeedback:'Click and drag to paint over the unwanted object, then release.',
+     acpContext:'ACP Ps-5.2a: Remove tool creates a non-destructive layer when "Create New Layer" is enabled in Options Bar. Always use this option for professional workflows.',
+     gagneEvent:6},
+    {id:3, instruction:'Use Find Distractions. Go to Edit → Find Distractions. Photoshop automatically detects distracting elements.',
+     expectedAction:'menu-click', expectedTarget:'find-distractions',
+     hint1:'Go to the Edit menu.',
+     hint2:'Edit → Find Distractions scans the image and highlights distracting elements.',
+     hint3:'Edit → Find Distractions → Photoshop marks distractions (wires, signs, people in background) with selection overlays.',
+     correctFeedback:'Find Distractions scanned the image. Detected distractions are highlighted.',
+     incorrectFeedback:'Go to Edit → Find Distractions.',
+     acpContext:'ACP Ps-5.2a: Find Distractions is an AI tool that identifies and marks distracting elements (power lines, people in backgrounds, visual noise) for quick removal.',
+     gagneEvent:5},
+    {id:4, instruction:'Apply the removal. With the detected distractions highlighted, click "Remove Distractions" or use the Remove tool to paint over the marked areas.',
+     expectedAction:'click', expectedTarget:'remove-distractions-apply',
+     hint1:'The detected distractions are highlighted. Click the button to remove them.',
+     hint2:'After Find Distractions identifies elements, click "Remove" or paint over them with the Remove tool.',
+     hint3:'Click the "Remove Distractions" button in the contextual taskbar or Options Bar.',
+     correctFeedback:'Distractions removed. Photoshop generates seamless fill for each detected element.',
+     incorrectFeedback:'Click Remove Distractions to apply the AI removal.',
+     acpContext:'ACP Ps-5.2a: Find Distractions + Remove tool is the fastest professional workflow for cleaning up scene photography.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.2c — Burn, Dodge, Sponge ──────────────── */
+'ps-5-2c': {
+  id:'ps-5-2c', tool:'photoshop', domain:5,
+  objective:'5.2b', objectiveText:'Use Burn, Dodge, and Sponge tools to alter exposure and saturation',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'burn-dodge',
+  scenario:'Enhance a portrait by brightening the eyes with Dodge, deepening shadows with Burn, and desaturating a distracting background element with Sponge.',
+  steps:[
+    {id:1, instruction:'Select the Dodge tool (O). In the Options Bar, set Range to Highlights and Exposure to 15%.',
+     expectedAction:'tool-select', expectedTarget:'dodge-tool',
+     hint1:'Press O for the Dodge/Burn/Sponge tool group.',
+     hint2:'Press O. If Burn or Sponge appears, press Shift+O to cycle to Dodge.',
+     hint3:'Press O → cycle with Shift+O if needed → Options Bar: Range = Highlights, Exposure = 15%.',
+     correctFeedback:'Dodge tool active. Painting brightens the area — especially highlights with this range setting.',
+     incorrectFeedback:'Press O (cycle with Shift+O) to get the Dodge tool.',
+     acpContext:'ACP Ps-5.2b: Dodge = lighten. Burn = darken. Range (Shadows/Midtones/Highlights) targets specific tonal areas — use Midtones for most portrait work.',
+     gagneEvent:4},
+    {id:2, instruction:'Set Exposure to 15% in the Options Bar.',
+     expectedAction:'input', expectedTarget:'dodge-exposure', expectedValue:'15', matchType:'exact',
+     hint1:'The Exposure field is in the Options Bar when Dodge is active.',
+     hint2:'Click the Exposure field in the Options Bar and type 15.',
+     hint3:'Find the Exposure % in Options Bar → type 15 → press Tab.',
+     correctFeedback:'15% exposure — subtle and controllable. Build up gradually for natural results.',
+     incorrectFeedback:'Set Exposure to 15% in the Options Bar.',
+     acpContext:'ACP Ps-5.2b: Keep Dodge/Burn exposure low (10–20%) and build up with multiple strokes for natural-looking results. High exposure creates unnatural-looking edits.',
+     gagneEvent:6},
+    {id:3, instruction:'Paint over the eye highlight area on the canvas to brighten it.',
+     expectedAction:'click', expectedTarget:'canvas-dodge',
+     hint1:'Paint on the eye area of the portrait.',
+     hint2:'Click and drag over the eye highlight — it brightens with each stroke.',
+     hint3:'Paint over the white/highlight area of the eye with the Dodge tool.',
+     correctFeedback:'Eye brightened with Dodge. Multiple passes create a more pronounced effect.',
+     incorrectFeedback:'Paint over the eye area on the canvas with the Dodge tool.',
+     acpContext:'ACP Ps-5.2b: Always work on a duplicate layer or use dodge/burn on a 50% grey overlay layer to keep dodging non-destructive.',
+     gagneEvent:6},
+    {id:4, instruction:'Switch to the Burn tool (Shift+O). Set Range to Shadows, Exposure 20%. Paint over a shadow area.',
+     expectedAction:'tool-select', expectedTarget:'burn-tool',
+     hint1:'Press Shift+O to cycle from Dodge to Burn.',
+     hint2:'Press Shift+O → Options Bar: Range = Shadows, Exposure = 20% → paint on shadow area.',
+     hint3:'Shift+O until Burn appears → Range: Shadows → Exposure: 20% → paint the shadow area.',
+     correctFeedback:'Burn tool active. Painting deepens shadows for more depth and contrast.',
+     incorrectFeedback:'Press Shift+O to switch to the Burn tool.',
+     acpContext:'ACP Ps-5.2b: Burning shadows (not midtones) avoids muddying skin tones while still adding depth.',
+     gagneEvent:6},
+    {id:5, instruction:'Switch to the Sponge tool (Shift+O again). Set Mode to Desaturate and Flow to 30%. Paint over the distracting background element.',
+     expectedAction:'tool-select', expectedTarget:'sponge-tool',
+     hint1:'Press Shift+O to cycle to the Sponge tool.',
+     hint2:'Shift+O until Sponge appears → Options Bar: Mode = Desaturate, Flow = 30%.',
+     hint3:'Shift+O to Sponge → Mode: Desaturate → Flow: 30% → paint on the distracting element.',
+     correctFeedback:'Sponge in Desaturate mode removes colour from the painted area, making it less visually prominent.',
+     incorrectFeedback:'Press Shift+O to cycle to the Sponge tool and set Mode to Desaturate.',
+     acpContext:'ACP Ps-5.2b: Sponge Desaturate reduces colour intensity. Sponge Saturate increases it. Low Flow builds up gradually for natural desaturation.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.3a — Transform ─────────────────────────── */
+'ps-5-3a': {
+  id:'ps-5-3a', tool:'photoshop', domain:5,
+  objective:'5.3a/b', objectiveText:'Transform digital graphics — Crop, canvas resize, Free Transform',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'transform',
+  scenario:'Prepare an image for Instagram by cropping it to 1:1 ratio using a non-destructive crop, resizing the canvas to add a border, then applying Free Transform to rotate and warp a separate element.',
+  steps:[
+    {id:1, instruction:'Select the Crop tool (C). In the Options Bar, set the ratio to 1:1 (Square).',
+     expectedAction:'tool-select', expectedTarget:'crop-tool',
+     hint1:'Press C for the Crop tool.',
+     hint2:'Press C → Options Bar: click the ratio dropdown → select 1:1 (Square).',
+     hint3:'Press C → click the W×H×Resolution dropdown in Options Bar → select 1:1 Square.',
+     correctFeedback:'Crop tool active in 1:1 ratio mode.',
+     incorrectFeedback:'Press C for the Crop tool and set ratio to 1:1 in Options Bar.',
+     acpContext:'ACP Ps-5.3a: The Crop tool in ratio mode maintains the aspect ratio as you drag. 1:1 = square (Instagram standard).',
+     gagneEvent:4},
+    {id:2, instruction:'Ensure "Delete Cropped Pixels" is UNCHECKED in the Options Bar for non-destructive cropping.',
+     expectedAction:'click', expectedTarget:'nondestructive-crop',
+     hint1:'Look for the "Delete Cropped Pixels" checkbox in the Options Bar.',
+     hint2:'In the Options Bar, uncheck "Delete Cropped Pixels" to keep cropped areas hidden but intact.',
+     hint3:'Find and UNCHECK the "Delete Cropped Pixels" checkbox in the Options Bar.',
+     correctFeedback:'Non-destructive crop enabled. Cropped pixels are hidden, not deleted — you can recrop at any time.',
+     incorrectFeedback:'Uncheck "Delete Cropped Pixels" in the Options Bar.',
+     acpContext:'ACP Ps-5.3a: Non-destructive crop is always preferred. If Delete Cropped Pixels is checked, pixels outside the crop are permanently discarded.',
+     gagneEvent:5},
+    {id:3, instruction:'Drag the crop handles to frame the composition, then press Enter to commit.',
+     expectedAction:'click', expectedTarget:'commit-crop',
+     hint1:'Drag the corners of the crop overlay to your composition.',
+     hint2:'Adjust the crop boundaries, then press Enter or click the ✓ in the Options Bar.',
+     hint3:'Position the 1:1 crop frame → press Enter or click ✓ to commit.',
+     correctFeedback:'Crop committed. The image is now square.',
+     incorrectFeedback:'Press Enter or click the checkmark to commit the crop.',
+     acpContext:'ACP Ps-5.3a: Press Esc to cancel a crop in progress. To reopen the crop, press C again — the previously hidden area can be restored.',
+     gagneEvent:7},
+    {id:4, instruction:'Resize the canvas to add a 100px border on each side. Go to Image → Canvas Size.',
+     expectedAction:'menu-click', expectedTarget:'image-canvas-size',
+     hint1:'Go to the Image menu.',
+     hint2:'Image → Canvas Size opens a dialog to add space around the existing image.',
+     hint3:'Image → Canvas Size → add 200px to width (100 each side) and 200px to height → click OK.',
+     correctFeedback:'Canvas Size dialog opened. Increasing canvas size adds transparent or coloured space around the image.',
+     incorrectFeedback:'Go to Image → Canvas Size.',
+     acpContext:'ACP Ps-5.3a: Canvas Size expands the canvas without stretching the image. Image Size resizes the image itself (with or without resampling).',
+     gagneEvent:6},
+    {id:5, instruction:'Apply Free Transform to a layer. Select the layer, then press Ctrl+T (Cmd+T).',
+     expectedAction:'menu-click', expectedTarget:'free-transform',
+     hint1:'Select a layer in the Layers panel, then press Ctrl+T.',
+     hint2:'With the layer selected, press Ctrl+T (Windows) or Cmd+T (Mac) to enter Free Transform.',
+     hint3:'Select the layer → Ctrl+T (or Edit → Free Transform) → handles appear around the layer.',
+     correctFeedback:'Free Transform active. Drag handles to resize, move outside the handle to rotate, right-click for warp/distort/perspective options.',
+     incorrectFeedback:'Press Ctrl+T (Cmd+T) to enter Free Transform.',
+     acpContext:'ACP Ps-5.3b: Free Transform: drag corner = scale, drag outside = rotate, right-click = Warp/Distort/Perspective/Skew. Always commit with Enter.',
+     gagneEvent:6},
+    {id:6, instruction:'Right-click inside the Free Transform bounding box to access Warp. Select Warp from the context menu.',
+     expectedAction:'click', expectedTarget:'warp-option',
+     hint1:'Right-click while Free Transform is active.',
+     hint2:'Right-click inside the transform handles → a context menu appears → select Warp.',
+     hint3:'Right-click (not on a handle, but inside the bounding box) → choose Warp from the menu.',
+     correctFeedback:'Warp mode active. Drag the mesh points to bend and reshape the layer content.',
+     incorrectFeedback:'Right-click inside the Free Transform handles and select Warp.',
+     acpContext:'ACP Ps-5.3b: Warp is ideal for fitting images onto curved surfaces (bottles, clothing mockups). Perspective adds convergence. Distort moves corners independently.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.4a — Smart Filters & layer styles ──────── */
+'ps-5-4a': {
+  id:'ps-5-4a', tool:'photoshop', domain:5,
+  objective:'5.4a/b', objectiveText:'Use Smart Filters and apply layer styles',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'filters-styles',
+  scenario:'Apply a Smart Filter (Gaussian Blur) and a layer style (Drop Shadow + Bevel and Emboss) to a logo layer. Then copy and paste those styles to a second layer.',
+  steps:[
+    {id:1, instruction:'Convert the logo layer to a Smart Object (right-click → Convert to Smart Object), then apply Filter → Blur → Gaussian Blur.',
+     expectedAction:'menu-click', expectedTarget:'filter-blur-gaussian',
+     hint1:'First convert to Smart Object, then go to the Filter menu.',
+     hint2:'Right-click layer → Convert to Smart Object → then Filter → Blur → Gaussian Blur.',
+     hint3:'Smart Object conversion → Filter → Blur → Gaussian Blur → set radius → OK.',
+     correctFeedback:'Gaussian Blur applied as a Smart Filter.',
+     incorrectFeedback:'Convert to Smart Object first, then Filter → Blur → Gaussian Blur.',
+     acpContext:'ACP Ps-5.4a: Smart Filters (excluding Neural Filters) are the testable filter type. They appear as editable sub-layers and can be toggled, re-ordered, and deleted.',
+     gagneEvent:5},
+    {id:2, instruction:'Set Gaussian Blur Radius to 3.0 pixels and click OK.',
+     expectedAction:'input', expectedTarget:'blur-radius', expectedValue:'3', matchType:'contains',
+     hint1:'The Radius field is in the Gaussian Blur dialog.',
+     hint2:'Type 3 or 3.0 in the Radius field.',
+     hint3:'Set Radius: 3.0 → click OK.',
+     correctFeedback:'Smart Filter applied at 3px radius. It appears as a sub-layer in the Layers panel.',
+     incorrectFeedback:'Set the Gaussian Blur radius to 3.0 pixels.',
+     acpContext:'ACP Ps-5.4a: Double-click the Smart Filter name to reopen its dialog and change settings non-destructively.',
+     gagneEvent:6},
+    {id:3, instruction:'Add a Drop Shadow layer style. Click the fx icon at the bottom of the Layers panel → Drop Shadow.',
+     expectedAction:'click', expectedTarget:'fx-drop-shadow',
+     hint1:'The fx icon is at the bottom of the Layers panel.',
+     hint2:'Click fx → Drop Shadow.',
+     hint3:'Click the fx icon at the Layers panel bottom → select Drop Shadow from the menu.',
+     correctFeedback:'Drop Shadow applied. The Layer Style dialog opens.',
+     incorrectFeedback:'Click the fx icon at the bottom of the Layers panel and select Drop Shadow.',
+     acpContext:'ACP Ps-5.4b: Layer styles are live effects attached to a layer. They update automatically when the layer content changes.',
+     gagneEvent:6},
+    {id:4, instruction:'In the Layer Style dialog, also enable Bevel & Emboss by checking its checkbox. Then click OK.',
+     expectedAction:'click', expectedTarget:'bevel-emboss',
+     hint1:'The Layer Style dialog shows a list of effects on the left. Click the checkbox next to Bevel & Emboss.',
+     hint2:'In the left panel of the Layer Style dialog, find "Bevel & Emboss" and check its checkbox.',
+     hint3:'Check the Bevel & Emboss checkbox → adjust settings if needed → click OK.',
+     correctFeedback:'Both Drop Shadow and Bevel & Emboss applied. The fx badge appears on the layer.',
+     incorrectFeedback:'Check the Bevel & Emboss checkbox in the Layer Style dialog, then click OK.',
+     acpContext:'ACP Ps-5.4b: Multiple styles can be stacked on one layer. Click each style name (not just the checkbox) to view and adjust its settings.',
+     gagneEvent:7},
+    {id:5, instruction:'Copy the layer styles to another layer. Right-click the fx badge on the source layer → Copy Layer Style.',
+     expectedAction:'click', expectedTarget:'copy-layer-style',
+     hint1:'Right-click the "fx" badge on the layer row in the Layers panel.',
+     hint2:'Right-click the fx icon on the layer → Copy Layer Style.',
+     hint3:'Right-click the fx badge → Copy Layer Style → then right-click the target layer → Paste Layer Style.',
+     correctFeedback:'Layer Style copied. Now right-click the target layer and choose Paste Layer Style.',
+     incorrectFeedback:'Right-click the fx badge on the layer and select Copy Layer Style.',
+     acpContext:'ACP Ps-5.4b: Copying/pasting layer styles ensures visual consistency across elements — a standard professional workflow.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-5.4b — Copy styles & materials ───────────── */
+'ps-5-4b': {
+  id:'ps-5-4b', tool:'photoshop', domain:5,
+  objective:'5.4b/c', objectiveText:'Manage layer styles and apply materials',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'styles-materials',
+  scenario:'Apply a material to a 3D-style layer, manage multiple layer styles (scale, copy, paste, clear), and verify the fx badge correctly reflects all applied effects.',
+  steps:[
+    {id:1, instruction:'Paste the copied layer style onto a second layer. Right-click the second layer → Paste Layer Style.',
+     expectedAction:'click', expectedTarget:'paste-layer-style',
+     hint1:'Right-click the target layer in the Layers panel.',
+     hint2:'Right-click the second layer row → Paste Layer Style.',
+     hint3:'Right-click the second layer → Paste Layer Style → the same effects appear on it.',
+     correctFeedback:'Layer style pasted. Both layers now share identical effects.',
+     incorrectFeedback:'Right-click the target layer and choose Paste Layer Style.',
+     acpContext:'ACP Ps-5.4b: Paste Layer Style is the fastest way to ensure visual consistency across elements in a composition.',
+     gagneEvent:5},
+    {id:2, instruction:'Scale the pasted effects to fit the new layer. Right-click the fx badge → Scale Effects.',
+     expectedAction:'click', expectedTarget:'scale-effects',
+     hint1:'Right-click the fx badge on the layer.',
+     hint2:'Right-click fx → Scale Effects → a dialog opens to scale all effects proportionally.',
+     hint3:'Right-click the fx badge → Scale Effects → adjust the percentage → click OK.',
+     correctFeedback:'Scale Effects dialog opened. Adjust the scale percentage to fit the layer size.',
+     incorrectFeedback:'Right-click the fx badge and select Scale Effects.',
+     acpContext:'ACP Ps-5.4b: Scale Effects scales all layer style values proportionally — essential when pasting styles between layers of different sizes.',
+     gagneEvent:6},
+    {id:3, instruction:'Set Scale to 80% and click OK.',
+     expectedAction:'input', expectedTarget:'scale-percent', expectedValue:'80', matchType:'exact',
+     hint1:'The Scale field shows a percentage.',
+     hint2:'Type 80 in the Scale field and click OK.',
+     hint3:'Set scale to 80% → click OK.',
+     correctFeedback:'Effects scaled to 80%. The shadow and bevel sizes are now proportional to the smaller layer.',
+     incorrectFeedback:'Set scale to 80% and click OK.',
+     acpContext:'ACP Ps-5.4b: If pasted styles look too large or small on the target layer, Scale Effects adjusts all values proportionally without manually editing each style.',
+     gagneEvent:7},
+    {id:4, instruction:'Apply a Material. With a 3D-enabled layer selected, go to the Properties panel and find the Materials section. Apply the "Concrete" material.',
+     expectedAction:'click', expectedTarget:'apply-material',
+     hint1:'Look in the Properties panel for material options when a 3D layer is selected.',
+     hint2:'In the Properties panel, scroll to the Materials section → click the material thumbnail → select Concrete.',
+     hint3:'Properties panel → Materials section → click the sphere thumbnail → choose Concrete from the library.',
+     correctFeedback:'Concrete material applied. Materials control surface texture, reflectivity, and shininess of 3D layers.',
+     incorrectFeedback:'In the Properties panel Materials section, select and apply the Concrete material.',
+     acpContext:'ACP Ps-5.4c: Materials change surface properties (texture, reflectivity, shininess). The Scale property in Materials adjusts how the texture tiles across the surface.',
+     gagneEvent:6},
+    {id:5, instruction:'Clear the styles from one layer. Right-click the fx badge → Clear Layer Style.',
+     expectedAction:'click', expectedTarget:'clear-layer-style',
+     hint1:'Right-click the fx badge on the layer to see style management options.',
+     hint2:'Right-click the fx badge → Clear Layer Style removes all effects.',
+     hint3:'Right-click fx → Clear Layer Style → all effects are removed.',
+     correctFeedback:'Layer styles cleared. The fx badge disappears from the layer.',
+     incorrectFeedback:'Right-click the fx badge and select Clear Layer Style.',
+     acpContext:'ACP Ps-5.4b: Clear Layer Style removes all effects at once. To remove a single effect, uncheck it in the Layer Style dialog.',
+     gagneEvent:8}
+  ]
+}
+};
+
+/* ═══ SHARED STATE & FUNCTIONS (reused from D3/D4 pattern) ══════ */
+let currentTask=null, currentMode='guided', currentStep=0, stepResults=[];
+
+function loadTask(id){
+  const task=TASKS[id]; if(!task) return;
+  currentTask=task; currentStep=0; stepResults=new Array(task.steps.length).fill(null);
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')&&el.getAttribute('onclick').includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task); renderUI(task); renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(task){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag">Ps-${task.objective}</span>
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="badge badge-live">${task.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${task.estimatedMinutes} min</span>
+    </div>
+    <h2>${task.objectiveText}</h2>
+    <div class="task-scenario">${task.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode; currentStep=0; stepResults=new Array((currentTask?.steps||[]).length).fill(null);
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERING ═══════════════════════════════════════════ */
+function renderUI(task){
+  const c=document.getElementById('adobe-sim');
+  const renders={
+    'selections':selUI,'modify-selection':modSelUI,'retouching':retouchUI,
+    'ai-remove':aiRemoveUI,'burn-dodge':burnDodgeUI,'transform':transformUI,
+    'filters-styles':filtersStylesUI,'styles-materials':stylesMatsUI
+  };
+  c.innerHTML=renders[task.uiType]?renders[task.uiType]():'';
+}
+
+function baseShell(menuItems, toolsHtml, canvasHtml, panelsHtml){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      ${menuItems}
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${toolsHtml}</div>
+      ${canvasHtml}
+      <div class="adobe-panels">${panelsHtml}</div>
+    </div>
+  </div>`;
+}
+
+function selUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('select-subject')">Select</span><span class="menu-item">Filter</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-qs" onclick="doTool('quick-selection')" title="Quick Selection/Object (W)">✦</div>
+     <div class="tool-btn" onclick="doTool('lasso')" title="Lasso (L)">⌒</div>
+     <div class="tool-btn" onclick="doTool('marquee')" title="Marquee (M)">⬜</div>`,
+    `<div class="adobe-canvas"><div class="canvas-doc" style="width:220px;height:155px;position:relative;overflow:hidden;" onclick="doAction('canvas-sel-click')">
+      <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 155' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23B0C8E8' width='220' height='80'/%3E%3Crect fill='%23789060' y='80' width='220' height='75'/%3E%3Cellipse cx='110' cy='80' rx='45' ry='55' fill='%23D4A882'/%3E%3Ccircle cx='110' cy='60' r='20' fill='%23C09070'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+      <div id="sel-overlay-el" style="display:none;position:absolute;border:2px dashed #31A8FF;background:rgba(49,168,255,.08);pointer-events:none;top:25px;left:65px;width:90px;height:110px;"></div>
+      <div style="position:absolute;bottom:4px;right:6px;font-size:9px;color:rgba(255,255,255,.5);">Click Select menu → Subject</div>
+    </div></div>`,
+    `<div class="panel-hdr">Selection options</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('select-subject')">Select → Subject</div>
+       <div class="adj-btn" onclick="doTool('object-selection')">W: Object Selection</div>
+       <div class="adj-btn" onclick="doMenu('select-color-range')">Select → Color Range</div>
+       <div class="adj-btn" onclick="doTool('quick-selection')">W: Quick Selection</div>
+     </div>
+     <div class="panel-hdr">Color Range</div>
+     <div class="panel-body" id="color-range-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Fuzziness</span>
+         <input class="prop-input highlight" id="inp-fuzziness" style="width:45px;" value="40" oninput="doInput('fuzziness',this.value)"></div>
+       <div style="width:100%;height:50px;background:linear-gradient(180deg,#FFF 0%,#888 50%,#000 100%);border-radius:3px;border:0.5px solid #444;margin-top:4px;"></div>
+       <button onclick="doAction('color-range-ok')" style="width:100%;margin-top:6px;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+function modSelUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('select-modify-feather')">Select</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" onclick="doTool('lasso-add')" title="Lasso (L)">⌒</div>`,
+    `<div class="adobe-canvas"><div class="canvas-doc" style="width:220px;height:155px;position:relative;cursor:crosshair;" onclick="doCanvasSelModify(event)">
+      <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 155' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23E8E0D0' width='220' height='155'/%3E%3Cellipse cx='110' cy='78' rx='70' ry='55' fill='%23C8A882'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+      <div id="mod-sel-overlay" style="position:absolute;border:2px dashed #31A8FF;background:rgba(49,168,255,.06);pointer-events:none;top:20px;left:40px;width:140px;height:115px;border-radius:50%;"></div>
+      <div id="mod-sel-add" style="display:none;position:absolute;border:2px solid rgba(0,214,143,.6);background:rgba(0,214,143,.06);pointer-events:none;top:10px;left:10px;width:50px;height:40px;border-radius:4px;"></div>
+    </div></div>`,
+    `<div class="panel-hdr">Modify selection</div>
+     <div class="panel-body">
+       <div class="adj-btn" onclick="doShiftClick('add-to-selection')">Shift+click → Add</div>
+       <div class="adj-btn" onclick="doAltClick('subtract-selection')">Alt+click → Subtract</div>
+       <div class="adj-btn" onclick="doMenu('select-modify-feather')">Select → Modify → Feather</div>
+       <div class="adj-btn" onclick="doMenu('save-selection')">Select → Save Selection</div>
+     </div>
+     <div class="panel-hdr">Feather dialog</div>
+     <div class="panel-body" id="feather-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Feather radius</span>
+         <input class="prop-input highlight" id="inp-feather" style="width:40px;" value="0" oninput="doInput('feather-radius',this.value)">
+         <span style="font-size:10px;color:#888;">px</span></div>
+       <button onclick="doAction('feather-ok')" style="width:100%;margin-top:5px;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;">OK</button>
+     </div>`
+  );
+}
+
+function retouchUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('content-aware-fill')">Edit</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-spot" onclick="doTool('spot-healing')" title="Spot Healing (J)">✦</div>
+     <div class="tool-btn" id="tb-clone" onclick="doTool('clone-stamp')" title="Clone (S)">⎘</div>`,
+    `<div class="adobe-canvas"><div class="canvas-doc" id="retouch-canvas" style="width:220px;height:155px;position:relative;cursor:crosshair;">
+      <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 155' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23D4B896' width='220' height='155'/%3E%3Ccircle cx='110' cy='75' r='60' fill='%23C8A882'/%3E%3Ccircle cx='130' cy='60' r='8' fill='%23A07850' opacity='.6'/%3E%3Ccircle cx='95' cy='90' r='5' fill='%23A07850' opacity='.5'/%3E%3C/svg%3E" style="width:100%;height:100%;" id="retouch-img">
+      <div id="blemish1" style="position:absolute;top:52px;left:122px;width:16px;height:16px;background:rgba(120,80,40,.5);border-radius:50%;cursor:pointer;" onclick="doAction('canvas-heal')"></div>
+      <div id="blemish2" style="position:absolute;top:82px;left:87px;width:10px;height:10px;background:rgba(120,80,40,.4);border-radius:50%;cursor:pointer;" onclick="doAction('canvas-heal')"></div>
+      <div id="gap-sel" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:none;border:2px dashed #31A8FF;width:60px;height:30px;cursor:pointer;" onclick="doMenu('content-aware-fill')"></div>
+    </div></div>`,
+    `<div class="panel-hdr">Options</div>
+     <div class="panel-body">
+       <div class="prop-row"><span class="prop-label">Type (Spot Heal)</span>
+         <select class="prop-select"><option>Content-Aware</option><option>Create Texture</option><option>Proximity Match</option></select></div>
+       <div class="adj-btn" onclick="doTool('spot-healing')">J: Spot Healing</div>
+       <div class="adj-btn" onclick="doTool('clone-stamp')">S: Clone Stamp (Alt+click to sample)</div>
+       <div class="adj-btn" onclick="doMenu('content-aware-fill')">Edit → Content-Aware Fill</div>
+     </div>
+     <div class="panel-hdr">CAF workspace</div>
+     <div class="panel-body" id="caf-panel" style="display:none;">
+       <div style="font-size:10px;color:#AAA;margin-bottom:4px;">Output settings</div>
+       <select class="prop-select" style="margin-bottom:4px;"><option>New Layer</option><option>Current Layer</option><option>Duplicate Layer</option></select>
+       <button onclick="doAction('caf-ok')" style="width:100%;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+function aiRemoveUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('find-distractions')">Edit</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-remove" onclick="doTool('remove-tool')" title="Remove (J)">✕●</div>`,
+    `<div class="adobe-canvas"><div class="canvas-doc" style="width:220px;height:155px;position:relative;cursor:crosshair;">
+      <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 155' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%234A6A40' width='220' height='155'/%3E%3Crect fill='%236A8A60' y='60' width='220' height='95'/%3E%3Crect x='30' y='40' width='20' height='80' fill='%23888' rx='2'/%3E%3Crect x='80' y='30' width='4' height='80' fill='%23555'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+      <div id="remove-overlay" style="display:none;position:absolute;background:rgba(255,100,100,.3);border:1px dashed #F87;pointer-events:none;top:35px;left:25px;width:30px;height:90px;"></div>
+      <div id="distraction-mark" style="display:none;position:absolute;border:2px solid #FFB800;border-radius:3px;pointer-events:none;top:25px;left:76px;width:12px;height:85px;"></div>
+      <div id="canvas-remove-area" style="position:absolute;inset:0;cursor:crosshair;" onclick="doAction('remove-paint')"></div>
+    </div></div>`,
+    `<div class="panel-hdr">AI Remove options</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doTool('remove-tool')">J → Shift+J: Remove tool</div>
+       <div class="adj-btn" onclick="doMenu('find-distractions')">Edit → Find Distractions</div>
+       <div class="adj-btn" onclick="doAction('remove-distractions-apply')">Remove detected distractions</div>
+     </div>
+     <div class="panel-hdr">Options bar</div>
+     <div class="panel-body">
+       <div class="prop-row"><span class="prop-label">Create new layer</span>
+         <input type="checkbox" checked style="accent-color:#31A8FF;"></div>
+       <div class="prop-row"><span class="prop-label">Every stroke</span>
+         <input type="checkbox" style="accent-color:#31A8FF;"></div>
+     </div>`
+  );
+}
+
+function burnDodgeUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item">Edit</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-dodge" onclick="doTool('dodge-tool')" title="Dodge (O)">☀</div>
+     <div class="tool-btn" id="tb-burn" onclick="doTool('burn-tool')" title="Burn (O)">🔥</div>
+     <div class="tool-btn" id="tb-sponge" onclick="doTool('sponge-tool')" title="Sponge (O)">〇</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:0;">
+      <div class="options-bar">
+        <span class="opt-item">Range: <select class="opt-input" style="width:70px;" id="sel-range"><option>Highlights</option><option>Midtones</option><option>Shadows</option></select></span>
+        <span class="opt-item">Exposure: <input class="opt-input highlight" id="inp-exposure" value="15" style="width:38px;" oninput="doInput('dodge-exposure',this.value)">%</span>
+      </div>
+      <div class="canvas-doc" style="width:220px;height:135px;position:relative;cursor:crosshair;" id="bd-canvas" onclick="doAction('canvas-dodge')">
+        <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 135' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23C8A882' width='220' height='135'/%3E%3Ccircle cx='110' cy='65' r='50' fill='%23D4B896'/%3E%3Ccircle cx='92' cy='52' r='8' fill='%23E8D4B8'/%3E%3Ccircle cx='128' cy='52' r='8' fill='%23E8D4B8'/%3E%3Ccircle cx='92' cy='52' r='4' fill='%23503820'/%3E%3Ccircle cx='128' cy='52' r='4' fill='%23503820'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+        <div id="dodge-overlay" style="display:none;position:absolute;background:radial-gradient(circle,rgba(255,255,200,.5) 0%,transparent 70%);pointer-events:none;top:30px;left:70px;width:50px;height:40px;border-radius:50%;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Tool selector</div>
+     <div class="panel-body">
+       <div class="adj-btn" onclick="doTool('dodge-tool')">O: Dodge (lighten)</div>
+       <div class="adj-btn" onclick="doTool('burn-tool')">Shift+O: Burn (darken)</div>
+       <div class="adj-btn" onclick="doTool('sponge-tool')">Shift+O: Sponge (sat)</div>
+     </div>
+     <div class="panel-hdr">Sponge options</div>
+     <div class="panel-body" id="sponge-opts" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Mode</span>
+         <select class="prop-select"><option>Desaturate</option><option>Saturate</option></select></div>
+       <div class="prop-row"><span class="prop-label">Flow</span>
+         <input class="prop-input" style="width:40px;" value="30">%</div>
+     </div>`
+  );
+}
+
+function transformUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('image-canvas-size')">Image</span><span class="menu-item" onclick="doMenu('free-transform')">Edit</span>`,
+    `<div class="tool-btn highlight" id="tb-crop" onclick="doTool('crop-tool')" title="Crop (C)">⊡</div>
+     <div class="tool-sep"></div><div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:0;">
+      <div class="options-bar">
+        <select class="opt-input" style="width:80px;" id="sel-ratio"><option>W:H:Res</option><option value="1:1">1:1 (Square)</option><option>4:5</option><option>16:9</option></select>
+        <label style="display:flex;align-items:center;gap:4px;font-size:10px;color:#AAA;">
+          <input type="checkbox" id="del-cropped" style="accent-color:#31A8FF;"> Delete Cropped Px
+        </label>
+        <button class="opt-btn commit" onclick="doAction('commit-crop')">✓ Commit</button>
+      </div>
+      <div class="canvas-doc" style="width:220px;height:130px;position:relative;overflow:visible;" id="transform-canvas">
+        <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 130' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23B0C8D4' width='220' height='130'/%3E%3Crect fill='%23607080' y='70' width='220' height='60'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23405060'/%3E%3Cellipse cx='170' cy='70' rx='30' ry='20' fill='%23405060'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+        <div id="crop-overlay" style="display:none;position:absolute;border:2px solid #31A8FF;top:0;left:0;right:0;bottom:0;pointer-events:none;">
+          <div style="position:absolute;top:-4px;left:-4px;width:8px;height:8px;background:#31A8FF;"></div>
+          <div style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:#31A8FF;"></div>
+          <div style="position:absolute;bottom:-4px;left:-4px;width:8px;height:8px;background:#31A8FF;"></div>
+          <div style="position:absolute;bottom:-4px;right:-4px;width:8px;height:8px;background:#31A8FF;"></div>
+        </div>
+        <div id="ft-handles" style="display:none;position:absolute;border:1px solid #31A8FF;top:15px;left:30px;width:160px;height:100px;pointer-events:none;">
+          <div style="position:absolute;top:-4px;left:-4px;width:8px;height:8px;background:#31A8FF;border:1px solid #FFF;"></div>
+          <div style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:#31A8FF;border:1px solid #FFF;"></div>
+          <div style="position:absolute;bottom:-4px;left:-4px;width:8px;height:8px;background:#31A8FF;border:1px solid #FFF;"></div>
+          <div style="position:absolute;bottom:-4px;right:-4px;width:8px;height:8px;background:#31A8FF;border:1px solid #FFF;"></div>
+          <div style="position:absolute;top:50%;right:-4px;transform:translateY(-50%);width:8px;height:8px;background:#31A8FF;border:1px solid #FFF;"></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Crop options</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doTool('crop-tool')">C: Crop tool</div>
+       <div class="adj-btn" onclick="doAction('nondestructive-crop')">☑ Uncheck Delete Cropped Px</div>
+       <div class="adj-btn" onclick="doMenu('image-canvas-size')">Image → Canvas Size</div>
+       <div class="adj-btn" onclick="doMenu('free-transform')">Ctrl+T: Free Transform</div>
+     </div>
+     <div class="panel-hdr">Canvas size</div>
+     <div class="panel-body" id="canvas-size-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">New width</span><input class="prop-input" style="width:55px;" value="320 px"></div>
+       <div class="prop-row"><span class="prop-label">New height</span><input class="prop-input" style="width:55px;" value="330 px"></div>
+       <button onclick="doAction('canvas-size-ok')" style="width:100%;margin-top:4px;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;">OK</button>
+     </div>`
+  );
+}
+
+function filtersStylesUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('filter-blur-gaussian')">Filter</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div><div class="tool-btn" style="font-size:10px;font-weight:700;">fx</div>`,
+    `<div class="adobe-canvas"><div class="canvas-doc" style="width:220px;height:155px;background:#1A1A2E;display:flex;align-items:center;justify-content:center;position:relative;" id="style-canvas">
+      <div id="logo-vis" style="font-size:24px;font-weight:700;color:#FFF;font-family:Georgia,serif;letter-spacing:.1em;transition:all .3s;position:relative;">LOGO<span id="fx-badge-vis" style="display:none;position:absolute;bottom:-12px;right:-2px;font-size:8px;color:#7AB8F5;font-family:var(--font-mono);">fx</span></div>
+      <div id="filter-glow" style="display:none;position:absolute;inset:0;background:rgba(49,168,255,.05);pointer-events:none;"></div>
+    </div></div>`,
+    `<div class="panel-hdr">Layers</div>
+     <div class="panel-body">
+       <div class="layer-row selected" id="logo-layer-fs" onclick="doAction('logo-layer-select')">
+         <span style="font-size:10px;color:#AAA;">👁</span>
+         <div class="layer-thumb" style="background:#1A1A2E;font-size:7px;font-weight:700;color:#FFF;">T/SO</div>
+         <span class="layer-name">Logo</span>
+         <span id="fs-so-badge" style="display:none;font-size:8px;color:#FFBB66;">SO</span>
+       </div>
+       <div id="smart-filter-row" style="display:none;padding-left:14px;">
+         <div class="layer-row" ondblclick="doAction('smart-filter-reopen')">
+           <span style="font-size:10px;color:#AAA;">👁</span>
+           <span class="layer-name" style="color:#FFBB66;font-size:10px;">Gaussian Blur</span>
+         </div>
+       </div>
+       <div class="layer-row">
+         <span style="font-size:10px;color:#AAA;">👁</span>
+         <div class="layer-thumb" style="background:#1A1A2E;"></div>
+         <span class="layer-name">Background</span>
+       </div>
+       <div class="layers-footer" style="display:flex;gap:4px;padding:5px 8px;border-top:1px solid #1A1A1A;justify-content:flex-end;">
+         <div style="cursor:pointer;padding:3px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:9px;color:#CCC;" onclick="doAction('fx-drop-shadow')">fx</div>
+         <div style="cursor:pointer;padding:3px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:9px;color:#CCC;" onclick="doMenu('filter-blur-gaussian')">Filter</div>
+       </div>
+     </div>
+     <div class="panel-hdr">Layer Style dialog</div>
+     <div class="panel-body" id="ls-dialog" style="display:none;">
+       <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:6px;">
+         <label style="font-size:10px;color:#CCC;display:flex;align-items:center;gap:5px;"><input type="checkbox" checked style="accent-color:#31A8FF;"> Drop Shadow</label>
+         <label style="font-size:10px;color:#CCC;display:flex;align-items:center;gap:5px;"><input id="bevel-check" type="checkbox" style="accent-color:#31A8FF;" onclick="doAction('bevel-emboss')"> Bevel &amp; Emboss</label>
+         <label style="font-size:10px;color:#CCC;display:flex;align-items:center;gap:5px;"><input type="checkbox" style="accent-color:#31A8FF;"> Outer Glow</label>
+       </div>
+       <div class="adj-btn" style="font-size:9px;" onclick="doAction('bevel-emboss')">✓ Check Bevel &amp; Emboss above → OK</div>
+       <button onclick="doAction('bevel-emboss')" style="width:100%;margin-top:4px;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>
+     <div class="panel-hdr">Blur options</div>
+     <div class="panel-body" id="blur-opts-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Radius</span>
+         <input class="prop-input highlight" id="inp-blur-radius" style="width:40px;" value="3.0" oninput="doInput('blur-radius',this.value)">px</div>
+       <button onclick="doAction('blur-ok')" style="width:100%;margin-top:4px;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+function stylesMatsUI(){
+  return baseShell(
+    `<span class="menu-item">File</span><span class="menu-item">Edit</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div><div class="tool-btn" style="font-size:10px;font-weight:700;">fx</div>`,
+    `<div class="adobe-canvas"><div class="canvas-doc" style="width:220px;height:155px;background:#1A1A2E;display:flex;align-items:center;justify-content:center;gap:20px;position:relative;">
+      <div id="layer1-vis" style="font-size:20px;font-weight:700;color:#FFF;font-family:Georgia,serif;text-shadow:2px 2px 4px rgba(0,0,0,.8);position:relative;">LOGO<span id="fx1" style="position:absolute;bottom:-10px;right:0;font-size:8px;color:#7AB8F5;">fx</span></div>
+      <div id="layer2-vis" style="font-size:14px;font-weight:400;color:#AAA;font-family:Georgia,serif;position:relative;transition:all .3s;">TITLE<span id="fx2" style="display:none;position:absolute;bottom:-10px;right:0;font-size:8px;color:#7AB8F5;">fx</span></div>
+    </div></div>`,
+    `<div class="panel-hdr">Layers</div>
+     <div class="panel-body">
+       <div class="layer-row" id="layer1-row" onclick="doAction('copy-layer-style')">
+         <span style="font-size:10px;color:#AAA;">👁</span>
+         <div class="layer-thumb" style="background:#1A1A2E;font-size:7px;font-weight:700;color:#FFF;">T</div>
+         <span class="layer-name">Logo</span>
+         <span style="font-size:8px;color:#7AB8F5;">fx</span>
+       </div>
+       <div class="layer-row selected" id="layer2-row" onclick="doAction('paste-layer-style')">
+         <span style="font-size:10px;color:#AAA;">👁</span>
+         <div class="layer-thumb" style="background:#1A1A2E;font-size:7px;color:#AAA;">T</div>
+         <span class="layer-name">Title</span>
+         <span id="fx2-badge" style="display:none;font-size:8px;color:#7AB8F5;">fx</span>
+       </div>
+       <div class="layer-row">
+         <span style="font-size:10px;color:#AAA;">👁</span>
+         <div class="layer-thumb" style="background:#1A1A2E;"></div>
+         <span class="layer-name">Background</span>
+       </div>
+     </div>
+     <div class="panel-hdr">Style management</div>
+     <div class="panel-body">
+       <div class="adj-btn" onclick="doAction('copy-layer-style')">Right-click fx → Copy Layer Style</div>
+       <div class="adj-btn" onclick="doAction('paste-layer-style')">Right-click → Paste Layer Style</div>
+       <div class="adj-btn" onclick="doAction('scale-effects')">Right-click fx → Scale Effects</div>
+       <div class="adj-btn" onclick="doAction('apply-material')">Properties → Materials → Concrete</div>
+       <div class="adj-btn" onclick="doAction('clear-layer-style')">Right-click fx → Clear Layer Style</div>
+     </div>
+     <div class="panel-hdr">Scale Effects</div>
+     <div class="panel-body" id="scale-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Scale</span>
+         <input class="prop-input highlight" id="inp-scale" style="width:40px;" value="100" oninput="doInput('scale-percent',this.value)">%</div>
+       <button onclick="doAction('scale-ok')" style="width:100%;margin-top:4px;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;">OK</button>
+     </div>`
+  );
+}
+
+/* ═══ INTERACTION HANDLERS ═══════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doShiftClick(t){processAction('shift-click',t,t);}
+function doAltClick(t){processAction('alt-click',t,t);}
+function doCanvasSelModify(e){
+  const step=currentTask?.steps[currentStep];
+  if(!step)return;
+  if(step.expectedTarget==='add-to-selection')doShiftClick('add-to-selection');
+  else if(step.expectedTarget==='subtract-selection')doAltClick('subtract-selection');
+}
+
+function applyEffect(target){
+  const map={
+    'select-subject':()=>{document.getElementById('sel-overlay-el')?.style.setProperty('display','block');},
+    'object-selection':()=>{document.getElementById('tb-qs')?.classList.add('active');},
+    'select-color-range':()=>{document.getElementById('color-range-panel')&&(document.getElementById('color-range-panel').style.display='block');},
+    'quick-selection':()=>{document.getElementById('tb-qs')?.classList.add('active');},
+    'add-to-selection':()=>{document.getElementById('mod-sel-add')&&(document.getElementById('mod-sel-add').style.display='block');},
+    'select-modify-feather':()=>{document.getElementById('feather-panel')&&(document.getElementById('feather-panel').style.display='block');},
+    'save-selection':()=>{},
+    'spot-healing':()=>{document.getElementById('tb-spot')?.classList.add('active');},
+    'canvas-heal':()=>{['blemish1','blemish2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});},
+    'clone-stamp':()=>{document.getElementById('tb-clone')?.classList.add('active');},
+    'content-aware-fill':()=>{document.getElementById('caf-panel')&&(document.getElementById('caf-panel').style.display='block');document.getElementById('gap-sel')&&(document.getElementById('gap-sel').style.display='block');},
+    'caf-ok':()=>{document.getElementById('gap-sel')&&(document.getElementById('gap-sel').style.display='none');},
+    'remove-tool':()=>{document.getElementById('tb-remove')?.classList.add('active');},
+    'remove-paint':()=>{document.getElementById('remove-overlay')&&(document.getElementById('remove-overlay').style.display='block');},
+    'find-distractions':()=>{document.getElementById('distraction-mark')&&(document.getElementById('distraction-mark').style.display='block');},
+    'remove-distractions-apply':()=>{document.getElementById('distraction-mark')&&(document.getElementById('distraction-mark').style.display='none');},
+    'dodge-tool':()=>{document.getElementById('tb-dodge')?.classList.add('active');document.getElementById('sponge-opts')&&(document.getElementById('sponge-opts').style.display='none');},
+    'canvas-dodge':()=>{document.getElementById('dodge-overlay')&&(document.getElementById('dodge-overlay').style.display='block');},
+    'burn-tool':()=>{document.getElementById('tb-burn')?.classList.add('active');document.getElementById('tb-dodge')?.classList.remove('active');},
+    'sponge-tool':()=>{document.getElementById('tb-sponge')?.classList.add('active');document.getElementById('tb-burn')?.classList.remove('active');document.getElementById('sponge-opts')&&(document.getElementById('sponge-opts').style.display='block');},
+    'crop-tool':()=>{document.getElementById('tb-crop')?.classList.add('active');document.getElementById('crop-overlay')&&(document.getElementById('crop-overlay').style.display='block');},
+    'nondestructive-crop':()=>{const cb=document.getElementById('del-cropped');if(cb)cb.checked=false;},
+    'commit-crop':()=>{document.getElementById('crop-overlay')&&(document.getElementById('crop-overlay').style.display='none');},
+    'image-canvas-size':()=>{document.getElementById('canvas-size-panel')&&(document.getElementById('canvas-size-panel').style.display='block');},
+    'free-transform':()=>{document.getElementById('ft-handles')&&(document.getElementById('ft-handles').style.display='block');},
+    'warp-option':()=>{const fh=document.getElementById('ft-handles');if(fh)fh.style.background='rgba(49,168,255,.04)';},
+    'filter-blur-gaussian':()=>{document.getElementById('blur-opts-panel')&&(document.getElementById('blur-opts-panel').style.display='block');document.getElementById('fs-so-badge')&&(document.getElementById('fs-so-badge').style.display='inline');},
+    'blur-ok':()=>{document.getElementById('smart-filter-row')&&(document.getElementById('smart-filter-row').style.display='block');const filt=document.getElementById('filter-glow');if(filt)filt.style.display='block';},
+    'fx-drop-shadow':()=>{document.getElementById('ls-dialog')&&(document.getElementById('ls-dialog').style.display='block');const lo=document.getElementById('logo-vis');if(lo)lo.style.filter='drop-shadow(2px 2px 4px rgba(0,0,0,.8))';document.getElementById('fx-badge-vis')&&(document.getElementById('fx-badge-vis').style.display='inline');},
+    'bevel-emboss':()=>{const lo=document.getElementById('logo-vis');if(lo){lo.style.textShadow='1px 1px 0 rgba(255,255,255,.3),-1px -1px 0 rgba(0,0,0,.5)';lo.style.filter='drop-shadow(2px 2px 4px rgba(0,0,0,.8))';};document.getElementById('ls-dialog')&&(document.getElementById('ls-dialog').style.display='none');},
+    'copy-layer-style':()=>{document.getElementById('layer1-row')?.classList.add('selected');document.getElementById('layer2-row')?.classList.remove('selected');},
+    'paste-layer-style':()=>{const l2=document.getElementById('layer2-vis');if(l2){l2.style.textShadow='1px 1px 0 rgba(255,255,255,.2),-1px -1px 0 rgba(0,0,0,.4)';l2.style.filter='drop-shadow(1px 1px 3px rgba(0,0,0,.6))';}document.getElementById('fx2')&&(document.getElementById('fx2').style.display='inline');document.getElementById('fx2-badge')&&(document.getElementById('fx2-badge').style.display='inline');},
+    'scale-effects':()=>{document.getElementById('scale-panel')&&(document.getElementById('scale-panel').style.display='block');},
+    'apply-material':()=>{const c=document.getElementById('style-canvas');if(c)c.style.background='repeating-linear-gradient(45deg,#2A2A2A,#2A2A2A 4px,#1E1E1E 4px,#1E1E1E 8px)';},
+    'clear-layer-style':()=>{const l2=document.getElementById('layer2-vis');if(l2){l2.style.textShadow='';l2.style.filter='';}document.getElementById('fx2')&&(document.getElementById('fx2').style.display='none');document.getElementById('fx2-badge')&&(document.getElementById('fx2-badge').style.display='none');}
+  };
+  if(map[target])map[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask)return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact';
+    const sv=String(value).toLowerCase().trim();const ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';
+    showFB('correct',step.correctFeedback,step.acpContext);
+    updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM){showFB('incorrect',step.incorrectFeedback,step.acpContext);}
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const cls=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${cls}"></div>`;}).join('');
+  const gagne=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${gagne}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit answers</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const sc=document.getElementById('sc-'+currentTask.id.replace(/-/g,''));if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+currentTask.id.replace(/-/g,''));if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#31A8FF'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag">Ps-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('ps-5-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

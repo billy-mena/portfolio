@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment Guide — ACP 2025 Learning System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0D0D1A;--bg1:#111120;--surf:#1A1A2E;--surf2:#252540;
+  --border:rgba(255,255,255,.08);--border-s:rgba(255,255,255,.16);
+  --text:#F0F0FF;--text2:#A8A8C8;--text3:#6868A0;
+  --ps:#31A8FF;--ai:#FF9A00;--id:#00C896;
+  --correct:#00D68F;--warn:#FFB800;--wrong:#FF4D6D;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+  --r:10px;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;padding:0;}
+.site-nav{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:10;}
+.nav-logo{font-weight:700;font-size:.9rem;color:var(--ps);font-family:var(--mono);}
+.nav-link{font-size:.83rem;color:var(--text2);text-decoration:none;padding:.3rem .7rem;border-radius:6px;transition:.15s;}
+.nav-link:hover{background:var(--surf);color:var(--text);}
+.hero{background:linear-gradient(135deg,var(--bg) 0%,#0A1628 100%);padding:2.5rem 0 2rem;border-bottom:0.5px solid var(--border);}
+.container{max-width:860px;margin:0 auto;padding:0 1.5rem;}
+.page-wrap{padding:2rem 0 4rem;}
+h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;}
+h2{font-size:1.2rem;font-weight:600;margin:2rem 0 .75rem;color:var(--text);}
+h3{font-size:1rem;font-weight:600;margin:.875rem 0 .4rem;color:var(--ps);}
+p{color:var(--text2);font-size:.9rem;line-height:1.7;margin-bottom:.75rem;}
+
+/* Step cards */
+.method-section{background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:2rem;}
+.method-header{background:var(--surf2);padding:1rem 1.5rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+.method-badge{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.badge-easy{background:rgba(0,214,143,.12);color:var(--correct);border:0.5px solid rgba(0,214,143,.3);}
+.badge-lms{background:rgba(49,168,255,.1);color:var(--ps);border:0.5px solid rgba(49,168,255,.25);}
+.badge-server{background:rgba(255,184,0,.1);color:var(--warn);border:0.5px solid rgba(255,184,0,.25);}
+.method-title{font-size:1rem;font-weight:600;}
+.method-body{padding:1.25rem 1.5rem;}
+.steps-list{counter-reset:step;list-style:none;}
+.step-item{display:flex;align-items:flex-start;gap:.875rem;padding:.6rem 0;border-bottom:0.5px solid var(--border);}
+.step-item:last-child{border-bottom:none;}
+.step-num{width:26px;height:26px;border-radius:50%;background:rgba(49,168,255,.15);color:var(--ps);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:2px;font-family:var(--mono);}
+.step-body{flex:1;}
+.step-instr{font-size:.9rem;color:var(--text);line-height:1.6;margin-bottom:.25rem;}
+.step-detail{font-size:.82rem;color:var(--text2);line-height:1.6;}
+code{font-family:var(--mono);font-size:.82rem;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;color:var(--ps);}
+.code-block{background:#0A0A18;border:0.5px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:.82rem;color:#B8D4FF;margin:.875rem 0;overflow-x:auto;line-height:1.7;}
+.code-block .comment{color:var(--text3);}
+.code-block .highlight{color:var(--correct);}
+.warn-box{background:rgba(255,184,0,.06);border:0.5px solid rgba(255,184,0,.25);border-radius:8px;padding:.875rem 1rem;margin:.875rem 0;font-size:.85rem;color:var(--warn);line-height:1.6;}
+.info-box{background:rgba(49,168,255,.06);border:0.5px solid rgba(49,168,255,.2);border-radius:8px;padding:.875rem 1rem;margin:.875rem 0;font-size:.85rem;color:var(--text2);line-height:1.6;}
+.success-box{background:rgba(0,214,143,.06);border:0.5px solid rgba(0,214,143,.2);border-radius:8px;padding:.875rem 1rem;margin:.875rem 0;font-size:.85rem;color:var(--correct);line-height:1.6;}
+.file-tree{background:#0A0A18;border:0.5px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:.82rem;color:var(--text2);margin:.875rem 0;line-height:1.8;}
+.file-tree .folder{color:var(--ps);}
+.file-tree .file{color:var(--text2);}
+.file-tree .note{color:var(--text3);}
+.troubleshoot{margin:.5rem 0;}
+.trouble-q{font-size:.9rem;font-weight:600;color:var(--text);padding:.6rem 0 .2rem;}
+.trouble-a{font-size:.85rem;color:var(--text2);padding-left:1rem;border-left:2px solid var(--ps);margin-bottom:.75rem;}
+.tool-row{display:flex;gap:.5rem;align-items:center;padding:.5rem 0;border-bottom:0.5px solid var(--border);font-size:.875rem;}
+.tool-row:last-child{border-bottom:none;}
+.tool-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="nav-logo">ACP 2025</span>
+  <a href="index.html" class="nav-link">← Home</a>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <div style="font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;">Session 9 · Deployment Guide</div>
+    <h1>How to deploy this project</h1>
+    <p style="color:var(--text2);max-width:560px;font-size:.95rem;">A complete step-by-step guide for first-timers. Three methods: GitHub Pages (free, recommended), local file use, and LMS/SCORM upload.</p>
+  </div>
+</div>
+
+<div class="container page-wrap">
+
+  <!-- What you have -->
+  <h2>What you have</h2>
+  <p>A self-contained folder of HTML files. No server is needed to use these — they work directly in a web browser. Here is the folder structure:</p>
+
+  <div class="file-tree">
+<span class="folder">acp-2025-learning-system/</span>
+├── <span class="file">index.html</span>  <span class="note">← The home page. Always start here.</span>
+├── <span class="file">README.md</span>
+├── <span class="file">EXPERT-PROMPT.md</span>
+├── <span class="folder">assets/</span>  <span class="note">← Shared CSS and JavaScript (DO NOT MOVE)</span>
+│   ├── <span class="folder">css/</span>
+│   │   └── <span class="file">global.css</span>
+│   └── <span class="folder">js/</span>
+│       ├── <span class="file">engine.js</span>
+│       ├── <span class="file">progress.js</span>
+│       └── <span class="file">scoring.js</span>
+├── <span class="folder">photoshop/</span>  <span class="note">← Photoshop course</span>
+│   ├── <span class="file">index.html</span>
+│   ├── <span class="folder">simulator/</span>  d2–d6-*.html
+│   ├── <span class="folder">slides/</span>  ps-simulator-slides.html
+│   └── <span class="folder">files/</span>  task-briefs.html
+├── <span class="folder">illustrator/</span>  <span class="note">← Illustrator course</span>
+├── <span class="folder">indesign/</span>  <span class="note">← InDesign course</span>
+├── <span class="folder">shared/</span>  <span class="note">← Design theory module</span>
+└── <span class="folder">evaluation/</span>  <span class="note">← Kirkpatrick L1–L3 toolkits</span>
+  </div>
+
+  <div class="warn-box">
+    ⚠ <strong>Critical:</strong> Keep the folder structure exactly as-is. Every file uses relative paths to load the CSS and JavaScript from <code>assets/</code>. Moving files into different folders will break the styling and interactivity.
+  </div>
+
+  <!-- METHOD 1: Local -->
+  <h2>Method 1 — Use it locally (right now, no setup)</h2>
+
+  <div class="method-section">
+    <div class="method-header">
+      <span class="method-badge badge-easy">Easiest · Works offline · No account needed</span>
+      <span class="method-title">Open directly in a browser</span>
+    </div>
+    <div class="method-body">
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Download and unzip the project folder to your computer.</div>
+            <div class="step-detail">Put it somewhere easy to find — your Desktop or Documents folder is fine.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Open the folder. Find <code>index.html</code> in the root.</div>
+            <div class="step-detail">It will be right at the top level — not inside any subfolder.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-instr">Double-click <code>index.html</code>. It opens in your default browser.</div>
+            <div class="step-detail">Chrome, Edge, Firefox, or Safari all work. If it opens in a text editor, right-click → Open with → your browser.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-instr">You'll see the home page with the three tool cards (Photoshop, Illustrator, InDesign). Click any card to begin.</div>
+            <div class="step-detail">Your progress is saved automatically in the browser's local storage — it will still be there when you come back, as long as you use the same browser on the same computer.</div>
+          </div>
+        </li>
+      </ol>
+      <div class="info-box">
+        <strong>Note:</strong> Local use works perfectly for individual learners. The only limitation is that progress doesn't sync between computers or between learners. For classroom/group use, GitHub Pages (Method 2) is recommended.
+      </div>
+    </div>
+  </div>
+
+  <!-- METHOD 2: GitHub Pages -->
+  <h2>Method 2 — GitHub Pages (free, shareable URL, recommended for instructors)</h2>
+  <p>GitHub Pages hosts static HTML files for free and gives you a public URL like <code>https://yourname.github.io/acp-2025/</code> that you can share with any learner. No coding experience required.</p>
+
+  <div class="method-section">
+    <div class="method-header">
+      <span class="method-badge badge-easy">Free · Public URL · 5–10 min setup</span>
+      <span class="method-title">Step-by-step: GitHub Pages deployment</span>
+    </div>
+    <div class="method-body">
+
+      <h3>Part A — Create a GitHub account (skip if you already have one)</h3>
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Go to <code>github.com</code> and click "Sign up".</div>
+            <div class="step-detail">Choose a username (this will appear in your URL), enter your email and a password.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Verify your email address. GitHub will send a confirmation email — click the link in it.</div>
+          </div>
+        </li>
+      </ol>
+
+      <h3>Part B — Create a new repository</h3>
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Once logged in, click the <strong>+</strong> icon in the top-right corner → "New repository".</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Name the repository (e.g. <code>acp-2025-learning-system</code>). This name appears in your URL.</div>
+            <div class="step-detail">Use lowercase letters and hyphens — no spaces.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-instr">Set visibility to <strong>Public</strong>. (GitHub Pages only works on public repositories with a free account.)</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-instr">Leave "Add a README file" unchecked. Click <strong>"Create repository"</strong>.</div>
+          </div>
+        </li>
+      </ol>
+
+      <h3>Part C — Upload the project files</h3>
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">On your new (empty) repository page, click <strong>"uploading an existing file"</strong> in the centre of the page.</div>
+            <div class="step-detail">If you can't see that link, click the <strong>Add file</strong> dropdown → "Upload files".</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Open your project folder in File Explorer (Windows) or Finder (Mac). Select <strong>all files and folders</strong> inside the project folder and drag them into the GitHub upload area.</div>
+            <div class="step-detail">Make sure you are dragging the <em>contents</em> of the folder, not the folder itself. The upload area should show: <code>index.html</code>, <code>assets/</code>, <code>photoshop/</code>, <code>illustrator/</code>, etc. at the top level.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-instr">Wait for all files to upload (progress bars). Then scroll down and click <strong>"Commit changes"</strong>.</div>
+            <div class="step-detail">You can leave the commit message as the default "Add files via upload".</div>
+          </div>
+        </li>
+      </ol>
+
+      <h3>Part D — Enable GitHub Pages</h3>
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Click the <strong>Settings</strong> tab at the top of your repository.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">In the left sidebar, scroll down and click <strong>Pages</strong>.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-instr">Under "Source", click the dropdown that says "None" and select <strong>"Deploy from a branch"</strong>.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-instr">In the branch dropdown, select <strong>"main"</strong>. In the folder dropdown, select <strong>"/ (root)"</strong>. Click <strong>Save</strong>.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-instr">Wait 1–3 minutes. Refresh the Settings → Pages page. Your live URL will appear:</div>
+            <div class="step-detail"><code>https://YOUR-USERNAME.github.io/acp-2025-learning-system/</code></div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="success-box">
+        ✓ That's it! Share that URL with your learners. The site is live and free. Any time you update a file in the repository (upload a new version), the live site updates within a few minutes automatically.
+      </div>
+
+      <h3>Updating files after initial upload</h3>
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Go to your repository on github.com. Navigate into the subfolder containing the file you want to update (e.g. click <code>photoshop/</code> → <code>files/</code>).</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Click the file name. Then click the <strong>pencil icon</strong> (Edit) in the top-right of the file view, or use the <strong>"..."</strong> menu → "Replace file" to upload a new version.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-instr">Click <strong>Commit changes</strong>. The site updates within 1–3 minutes.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- METHOD 3: LMS/SCORM -->
+  <h2>Method 3 — Upload to an LMS (Moodle, Canvas, Blackboard)</h2>
+  <p>If you want learners to access this through your institution's Learning Management System and track completion, use the SCORM packaging method.</p>
+
+  <div class="method-section">
+    <div class="method-header">
+      <span class="method-badge badge-lms">Moodle · Canvas · Blackboard · Any SCORM LMS</span>
+      <span class="method-title">SCORM packaging for LMS upload</span>
+    </div>
+    <div class="method-body">
+      <div class="info-box">
+        <strong>What SCORM does:</strong> Wraps the HTML files in a package the LMS understands. The slide decks already contain SCORM 1.2 code — they will report "completed" to your LMS when a learner reaches the final slide.
+      </div>
+
+      <h3>Step 1 — Create the manifest file</h3>
+      <p>Create a plain text file called <code>imsmanifest.xml</code> and place it in the <strong>root</strong> of the project folder (same level as <code>index.html</code>). Paste in this content:</p>
+
+      <div class="code-block">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;manifest identifier="acp2025-photoshop" version="1.2"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"&gt;
+  &lt;metadata&gt;
+    &lt;schema&gt;ADL SCORM&lt;/schema&gt;
+    &lt;schemaversion&gt;1.2&lt;/schemaversion&gt;
+  &lt;/metadata&gt;
+  &lt;organizations default="org1"&gt;
+    &lt;organization identifier="org1"&gt;
+      &lt;title&gt;<span class="highlight">ACP 2025 Photoshop</span>&lt;/title&gt;
+      &lt;item identifier="item1" identifierref="res1"&gt;
+        &lt;title&gt;Photoshop Simulator Slides&lt;/title&gt;
+      &lt;/item&gt;
+    &lt;/organization&gt;
+  &lt;/organizations&gt;
+  &lt;resources&gt;
+    &lt;resource identifier="res1" type="webcontent"
+      adlcp:scormtype="sco"
+      href="<span class="highlight">photoshop/slides/ps-simulator-slides.html</span>"&gt;
+      &lt;file href="photoshop/slides/ps-simulator-slides.html"/&gt;
+    &lt;/resource&gt;
+  &lt;/resources&gt;
+&lt;/manifest&gt;</div>
+
+      <p>To package the Illustrator or InDesign slides instead, change the highlighted <code>href</code> values to <code>illustrator/slides/ai-simulator-slides.html</code> or <code>indesign/slides/id-simulator-slides.html</code>.</p>
+
+      <h3>Step 2 — Zip the project</h3>
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Select ALL files and folders inside the project folder. Right-click → "Compress" (Mac) or "Send to → Compressed (zipped) folder" (Windows).</div>
+            <div class="step-detail"><strong>Critical:</strong> The <code>imsmanifest.xml</code> must be at the <em>root</em> of the zip — not inside a subfolder. If you compress the project folder itself, the manifest will be nested one level too deep and the LMS will reject it.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Name the zip file something descriptive: <code>acp-photoshop-slides.zip</code>.</div>
+          </div>
+        </li>
+      </ol>
+
+      <h3>Step 3 — Upload to your LMS</h3>
+      <p>The exact steps vary by platform, but the general process is:</p>
+      <div class="tool-row" style="border:none;padding:.4rem 0;flex-direction:column;align-items:flex-start;gap:.4rem;">
+        <div style="font-weight:600;color:var(--ps);margin-bottom:.25rem;">Moodle</div>
+        <div style="font-size:.85rem;color:var(--text2);">Course → Add activity → SCORM package → Upload the zip → Save. Set "Display package" to "New window".</div>
+      </div>
+      <div class="tool-row" style="border:none;padding:.4rem 0;flex-direction:column;align-items:flex-start;gap:.4rem;margin-top:.5rem;">
+        <div style="font-weight:600;color:var(--ai);margin-bottom:.25rem;">Canvas</div>
+        <div style="font-size:.85rem;color:var(--text2);">Modules → + → External Tool or use the "Upload" option in the LTI tool. Canvas uses its own SCORM player — check with your admin if SCORM is enabled.</div>
+      </div>
+      <div class="tool-row" style="border:none;padding:.4rem 0;flex-direction:column;align-items:flex-start;gap:.4rem;margin-top:.5rem;">
+        <div style="font-weight:600;color:var(--id);margin-bottom:.25rem;">Blackboard</div>
+        <div style="font-size:.85rem;color:var(--text2);">Content → Build Content → SCORM Content Package → Upload the zip → Submit.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What the learner sees -->
+  <h2>What learners see and how to use the system</h2>
+
+  <div class="method-section">
+    <div class="method-header">
+      <span class="method-badge badge-easy">Learner guide</span>
+      <span class="method-title">First-time walkthrough for learners</span>
+    </div>
+    <div class="method-body">
+      <ol class="steps-list">
+        <li class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-instr">Open the home page (<code>index.html</code>). A welcome popup explains the system — read it, then click "Get started".</div>
+            <div class="step-detail">The popup only appears once. Your browser remembers you dismissed it.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-instr">Start with the <strong>Design Theory</strong> module (the blue card near the top). This covers Domain 1 for all three tools — copyright, colour modes, print concepts, design principles.</div>
+            <div class="step-detail">40 multiple-choice questions. Filter by topic. Instant answer feedback.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-instr">Choose a tool: Photoshop, Illustrator, or InDesign. Click its card to see all domains.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-instr">Inside each domain, click <strong>"Start Domain X"</strong> to open the interactive simulator.</div>
+            <div class="step-detail">Simulators have two modes you can switch between at the top of each task:</div>
+            <div style="margin-top:.4rem;">
+              <div style="font-size:.83rem;background:rgba(49,168,255,.06);border-radius:6px;padding:.5rem .75rem;margin-bottom:.3rem;border:0.5px solid rgba(49,168,255,.15);">📚 <strong>Guided mode</strong> — step-by-step instructions with 3-level hints. Use this when learning.</div>
+              <div style="font-size:.83rem;background:rgba(0,200,150,.06);border-radius:6px;padding:.5rem .75rem;border:0.5px solid rgba(0,200,150,.15);">🎯 <strong>Independent mode</strong> — no instructions, simulates exam conditions. Use this for practice.</div>
+            </div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-instr">In <strong>Guided mode</strong>: read the instruction, click the correct element in the simulated Adobe interface, and receive instant feedback. Click Hint 1 → Hint 2 → Hint 3 for progressively more help.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <div class="step-instr">After completing tasks, check the <strong>task briefs</strong> (found in each tool's "Files" section) for detailed answer keys, exact expected values, and a portfolio rubric.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <div class="step-instr">Before the real exam, watch the <strong>slide deck</strong> for each tool (also in the Files section). 20–30 slides, keyboard-navigable, with embedded MC knowledge checks and a final score.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num">8</div>
+          <div class="step-body">
+            <div class="step-instr">Progress dots appear on the home page after each completed task — green = passed (≥70%), amber = started, grey = not attempted.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Troubleshooting -->
+  <h2>Troubleshooting</h2>
+
+  <div class="method-section">
+    <div class="method-header">
+      <span class="method-badge badge-easy">Common issues</span>
+      <span class="method-title">Things that go wrong and how to fix them</span>
+    </div>
+    <div class="method-body">
+      <div class="troubleshoot">
+        <div class="trouble-q">The page looks unstyled — just plain text on a white background.</div>
+        <div class="trouble-a">The browser cannot find <code>assets/css/global.css</code>. This happens when you open a file from inside a subfolder instead of from the root. Close everything and open <code>index.html</code> from the root of the project folder. Never open simulator files directly — always navigate to them from the home page.</div>
+      </div>
+      <div class="troubleshoot">
+        <div class="trouble-q">Clicking a button does nothing in Guided mode.</div>
+        <div class="trouble-a">The simulator expects a specific action. Read the step instruction carefully — it will tell you exactly which panel or button to click. Use the Hint buttons if you're stuck. If the entire page is unresponsive, try refreshing (F5) and reload the task from the sidebar.</div>
+      </div>
+      <div class="troubleshoot">
+        <div class="trouble-q">My progress disappeared.</div>
+        <div class="trouble-a">Progress is stored in the browser's localStorage. It can be lost if you: (a) clear browser cookies/cache, (b) use a different browser, (c) use a different computer, or (d) use a private/incognito window. For persistent cross-device progress, the system would need a backend database — that is out of scope for this v1 system.</div>
+      </div>
+      <div class="troubleshoot">
+        <div class="trouble-q">The GitHub Pages URL shows a 404 error.</div>
+        <div class="trouble-a">Wait 3–5 minutes after enabling Pages — it takes time to deploy. Also check that <code>index.html</code> is in the root of the repository (not inside a folder called "acp-2025-learning-system/"). If you uploaded the folder rather than its contents, the path will be wrong.</div>
+      </div>
+      <div class="troubleshoot">
+        <div class="trouble-q">Fonts look wrong / different from the screenshots.</div>
+        <div class="trouble-a">The system loads Google Fonts (DM Sans) from the internet. If the device has no internet access, the browser will fall back to a system sans-serif font. Functionality is not affected — only the visual appearance changes slightly.</div>
+      </div>
+      <div class="troubleshoot">
+        <div class="trouble-q">The LMS rejects my SCORM zip upload.</div>
+        <div class="trouble-a">The most common cause is that <code>imsmanifest.xml</code> is inside a subfolder rather than at the zip root. Unzip, check the structure (manifest should be at the same level as <code>index.html</code>), then re-zip by selecting all contents of the folder rather than the folder itself.</div>
+      </div>
+      <div class="troubleshoot">
+        <div class="trouble-q">I want to add or edit content — where do I start?</div>
+        <div class="trouble-a">Read <code>EXPERT-PROMPT.md</code> first — it documents the full architecture, task schema, and step-by-step instructions for extending the system. Each simulator is a self-contained HTML file with all its tasks defined in a <code>const TASKS = {...}</code> object near the bottom of the file.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick reference -->
+  <h2>Quick reference — all page URLs</h2>
+  <div class="info-box" style="font-family:var(--mono);font-size:.82rem;line-height:2;">
+    <div><span style="color:var(--text3);">Home page:</span> <code>index.html</code></div>
+    <div><span style="color:var(--text3);">Design theory:</span> <code>shared/theory.html</code></div>
+    <div style="color:var(--ps);margin-top:.5rem;">Photoshop</div>
+    <div><span style="color:var(--text3);">Overview:</span> <code>photoshop/index.html</code></div>
+    <div><span style="color:var(--text3);">Simulators:</span> <code>photoshop/simulator/d2-document-setup.html</code> · d3 · d4 · d5 · d6</div>
+    <div><span style="color:var(--text3);">Slides:</span> <code>photoshop/slides/ps-simulator-slides.html</code></div>
+    <div><span style="color:var(--text3);">Task briefs:</span> <code>photoshop/files/task-briefs.html</code></div>
+    <div><span style="color:var(--ai);margin-top:.5rem;display:block;">Illustrator</span></div>
+    <div><span style="color:var(--text3);">Overview:</span> <code>illustrator/index.html</code></div>
+    <div><span style="color:var(--text3);">Simulators:</span> <code>illustrator/simulator/d2–d5-*.html</code></div>
+    <div><span style="color:var(--text3);">Slides:</span> <code>illustrator/slides/ai-simulator-slides.html</code></div>
+    <div><span style="color:var(--text3);">Task briefs:</span> <code>illustrator/files/ai-task-briefs.html</code></div>
+    <div><span style="color:var(--id);margin-top:.5rem;display:block;">InDesign</span></div>
+    <div><span style="color:var(--text3);">Overview:</span> <code>indesign/index.html</code></div>
+    <div><span style="color:var(--text3);">Simulators:</span> <code>indesign/simulator/d2–d6-*.html</code></div>
+    <div><span style="color:var(--text3);">Slides:</span> <code>indesign/slides/id-simulator-slides.html</code></div>
+    <div><span style="color:var(--text3);">Task briefs:</span> <code>indesign/files/id-task-briefs.html</code></div>
+    <div style="margin-top:.5rem;"><span style="color:var(--text3);">Kirkpatrick evaluation:</span> <code>evaluation/kirkpatrick-ps.html</code> · -ai · -id</div>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>

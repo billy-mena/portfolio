@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ai · Domain 3: Workflow & Interface | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--ai:#FF9A00;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#2A1800 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(255,154,0,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--ai);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--ai);color:#000;border-color:var(--ai);}
+
+/* Illustrator UI chrome */
+.adobe-sim{background:#323232;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3D3D3D;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#FF9A00;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover,.menu-item.active{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 232px;min-height:360px;}
+.adobe-tools{background:#323232;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(255,154,0,.2);color:#FF9A00;}
+.tool-btn.highlight{border:1.5px solid #FF9A00;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#6A6A6A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.artboard{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.adobe-panels{background:#323232;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;overflow:hidden;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;min-width:60px;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#FF9A00;box-shadow:0 0 0 2px rgba(255,154,0,.2);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#FF9A00;color:#FF9A00;}
+.layer-row{display:flex;align-items:center;gap:5px;padding:4px 5px;border-radius:3px;cursor:pointer;margin-bottom:1px;border:1px solid transparent;}
+.layer-row:hover{background:#3A3A3A;}
+.layer-row.selected{background:rgba(255,154,0,.15);border-color:rgba(255,154,0,.3);}
+.layer-eye{font-size:10px;color:#777;width:14px;text-align:center;cursor:pointer;}
+.layer-eye.vis{color:#CCC;}
+.layer-color{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.layer-name{flex:1;color:#CCC;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.layer-lock{font-size:9px;color:#666;cursor:pointer;}
+
+/* Swatches */
+.swatch-grid{display:flex;flex-wrap:wrap;gap:3px;padding:4px;}
+.swatch{width:18px;height:18px;border-radius:2px;cursor:pointer;border:0.5px solid rgba(255,255,255,.1);transition:transform .1s;flex-shrink:0;}
+.swatch:hover{transform:scale(1.2);border-color:#FFF;}
+.swatch.selected{outline:2px solid #FF9A00;outline-offset:1px;}
+.swatch.global::after{content:'';position:absolute;bottom:0;right:0;width:4px;height:4px;background:#FFF;border-radius:50%;}
+.swatch-global-indicator{position:relative;}
+
+/* Gradient editor */
+.gradient-bar{width:100%;height:18px;border-radius:3px;margin-bottom:6px;cursor:pointer;border:0.5px solid #555;}
+.gradient-stop{width:10px;height:16px;background:#FFF;border:1px solid #888;border-radius:2px;position:absolute;bottom:-2px;cursor:pointer;transform:translateX(-50%);}
+
+/* Brush/Symbol rows */
+.brush-row{display:flex;align-items:center;gap:6px;padding:3px 5px;border-radius:3px;cursor:pointer;margin-bottom:2px;}
+.brush-row:hover{background:#3A3A3A;}
+.brush-preview{width:60px;height:8px;border-radius:2px;}
+
+/* Step / feedback / score — shared */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;color:var(--color-text-primary);line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ai active">Illustrator</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-ai">Illustrator</span>
+      <span class="acp-tag" style="color:#FF9A00;border-color:rgba(255,154,0,.3);background:rgba(255,154,0,.08);">Ai · Domain 3</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Workflow &amp; Interface Customization</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">5 objectives · 8 tasks · Guided &amp; Independent modes · ACP 2025 v29.x</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 3 tasks</div>
+
+  <div class="task-item active" onclick="loadTask('ai-3-1a')" id="nav-ai31a">
+    <div class="task-icon" id="icon-ai31a">3.1</div>
+    <div class="task-info"><div class="task-obj">Ai-3.1a</div><div class="task-name">Workspace, panels &amp; preferences</div></div>
+    <div class="task-score" id="sc-ai31a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-2a')" id="nav-ai32a">
+    <div class="task-icon" id="icon-ai32a">3.2</div>
+    <div class="task-info"><div class="task-obj">Ai-3.2a</div><div class="task-name">Guides, grids &amp; drawing modes</div></div>
+    <div class="task-score" id="sc-ai32a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-3a')" id="nav-ai33a">
+    <div class="task-icon" id="icon-ai33a">3.3</div>
+    <div class="task-info"><div class="task-obj">Ai-3.3a/b</div><div class="task-name">Swatches — global, process &amp; spot</div></div>
+    <div class="task-score" id="sc-ai33a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-3b')" id="nav-ai33b">
+    <div class="task-icon" id="icon-ai33b">3.3</div>
+    <div class="task-info"><div class="task-obj">Ai-3.3c/d</div><div class="task-name">Gradients — linear, radial &amp; Mesh</div></div>
+    <div class="task-score" id="sc-ai33b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-4a')" id="nav-ai34a">
+    <div class="task-icon" id="icon-ai34a">3.4</div>
+    <div class="task-info"><div class="task-obj">Ai-3.4a/b</div><div class="task-name">Brushes &amp; graphic styles</div></div>
+    <div class="task-score" id="sc-ai34a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-4b')" id="nav-ai34b">
+    <div class="task-icon" id="icon-ai34b">3.4</div>
+    <div class="task-info"><div class="task-obj">Ai-3.4c/d</div><div class="task-name">Symbols (dynamic &amp; static) &amp; patterns</div></div>
+    <div class="task-score" id="sc-ai34b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-5a')" id="nav-ai35a">
+    <div class="task-icon" id="icon-ai35a">3.5</div>
+    <div class="task-info"><div class="task-obj">Ai-3.5a/b</div><div class="task-name">Layers — manage, merge &amp; collect</div></div>
+    <div class="task-score" id="sc-ai35a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-3-5b')" id="nav-ai35b">
+    <div class="task-icon" id="icon-ai35b">3.5</div>
+    <div class="task-info"><div class="task-obj">Ai-3.5c</div><div class="task-name">Paste Remembers Layers &amp; stacking</div></div>
+    <div class="task-score" id="sc-ai35b">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d2-document-mgmt.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#FF9A00;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 2</div></div>
+  </a>
+  <a href="../../indesign/index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#FF9A00;">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Session 6 → Ai D4&5</div></div>
+  </a>
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+/* ═══ TASK DATA ═══════════════════════════════════════════ */
+const TASKS = {
+
+/* ── 3.1 Workspace & preferences ────────────────────────── */
+'ai-3-1a': {
+  id:'ai-3-1a', tool:'illustrator', domain:3,
+  objective:'3.1a', objectiveText:'Customise the workspace, panels, and preferences',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'workspace',
+  scenario:'Set up Illustrator for a typography project: switch to the Typography workspace, open the Character and Paragraph panels, then change the Type Units preference to Points in Preferences → Units.',
+  steps:[
+    {id:1,instruction:'Switch to the Typography workspace. Go to Window → Workspace → Typography.',
+     expectedAction:'menu-click',expectedTarget:'workspace-typography',
+     hint1:'Go to the Window menu.',hint2:'Window → Workspace → Typography.',hint3:'Window → Workspace → select Typography from the sub-menu.',
+     correctFeedback:'Typography workspace activated. Panels related to type (Character, Paragraph, Glyphs) are now grouped and open.',
+     incorrectFeedback:'Go to Window → Workspace → Typography.',
+     acpContext:'ACP Ai-3.1a: Workspaces save panel layouts for specific tasks. Switching workspaces opens the relevant panels for that workflow automatically.',gagneEvent:4},
+    {id:2,instruction:'Open the Character panel. Go to Window → Type → Character (or press Ctrl/Cmd+T).',
+     expectedAction:'menu-click',expectedTarget:'window-character',
+     hint1:'Go to Window → Type.',hint2:'Window → Type → Character opens the Character panel.',hint3:'Window → Type → Character (shortcut: Ctrl+T / Cmd+T).',
+     correctFeedback:'Character panel open. In Typography workspace this is usually already docked.',
+     incorrectFeedback:'Go to Window → Type → Character.',
+     acpContext:'ACP Ai-3.1a: In Illustrator, Window → Type gives access to all type-related panels: Character, Paragraph, OpenType, Glyphs, Character Styles, Paragraph Styles.',gagneEvent:5},
+    {id:3,instruction:'Open Preferences → Units. Go to Edit → Preferences → Units (Windows) or Illustrator → Preferences → Units (Mac).',
+     expectedAction:'menu-click',expectedTarget:'prefs-units',
+     hint1:'Go to Edit menu (Windows) or Illustrator menu (Mac).',hint2:'Edit → Preferences → Units.',hint3:'Edit → Preferences → Units (Windows) / Illustrator → Preferences → Units (Mac).',
+     correctFeedback:'Preferences → Units panel open. Here you can set independent units for General, Stroke, and Type.',
+     incorrectFeedback:'Go to Edit (or Illustrator on Mac) → Preferences → Units.',
+     acpContext:'ACP Ai-3.1a: Illustrator lets you set different units for General (rulers/positioning), Stroke (line weight), and Type independently. Points are standard for type.',gagneEvent:5},
+    {id:4,instruction:'Set the Type unit to Points. Find the Type dropdown in the Units preferences and select Points.',
+     expectedAction:'select',expectedTarget:'type-units',expectedValue:'points',matchType:'contains',
+     hint1:'In the Units preferences, find the Type dropdown.',hint2:'Find "Type" row → click the dropdown → select Points.',hint3:'Units preference → Type dropdown → select Points → click OK.',
+     correctFeedback:'Type units set to Points. Font sizes and leading will now display in points throughout Illustrator.',
+     incorrectFeedback:'Set the Type unit to Points in the Preferences → Units panel.',
+     acpContext:'ACP Ai-3.1a: Points (pt) is the professional typographic unit. 1 inch = 72 points. Body text is typically 9–12pt; display type 24pt+.',gagneEvent:6},
+    {id:5,instruction:'Click OK to apply the preferences.',
+     expectedAction:'click',expectedTarget:'prefs-ok',
+     hint1:'Click the OK button.',hint2:'Click OK to close and apply preferences.',hint3:'Click OK in the Preferences dialog.',
+     correctFeedback:'Preferences applied. Illustrator now uses Points for type across the document.',
+     incorrectFeedback:'Click OK to save preferences.',
+     acpContext:'ACP Ai-3.1a: Preferences are global — they apply to all documents. Document-specific settings (colour mode, units) are set per document in File → Document Setup.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.2 Guides, grids & drawing modes ──────────────────── */
+'ai-3-2a': {
+  id:'ai-3-2a', tool:'illustrator', domain:3,
+  objective:'3.2a', objectiveText:'Use guides, grids, drawing modes, and design aids',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'guides-grids',
+  scenario:'Set up a precise layout grid: enable Smart Guides, create a horizontal guide at 100px, enable the grid, lock all existing guides, then switch to Draw Behind mode to place a background rectangle.',
+  steps:[
+    {id:1,instruction:'Enable Smart Guides. Go to View → Smart Guides (or Ctrl/Cmd+U).',
+     expectedAction:'menu-click',expectedTarget:'view-smart-guides',
+     hint1:'Go to the View menu.',hint2:'View → Smart Guides. A checkmark appears when active.',hint3:'View → Smart Guides (keyboard: Ctrl+U / Cmd+U).',
+     correctFeedback:'Smart Guides enabled. Objects now snap and show alignment cues (spacing, angles, distances) as you draw and move.',
+     incorrectFeedback:'Go to View → Smart Guides.',
+     acpContext:'ACP Ai-3.2a: Smart Guides show real-time snapping cues for alignment, equal spacing, and angle constraints. Essential for precise vector layout work.',gagneEvent:4},
+    {id:2,instruction:'Create a guide at exactly 100px from the top. Drag from the top ruler, then double-click the guide to set its exact position.',
+     expectedAction:'click',expectedTarget:'drag-guide',
+     hint1:'Click and drag from the ruler at the top of the canvas.',hint2:'Click the top ruler area and drag down into the canvas — a cyan guide line appears.',hint3:'Click top ruler → drag down → release → double-click the guide → set Y position to 100px.',
+     correctFeedback:'Guide placed. Double-click to set exact position to 100px.',
+     incorrectFeedback:'Click and drag from the top ruler into the canvas to create a guide.',
+     acpContext:'ACP Ai-3.2a: Guides are non-printing. Edit → Guides → Lock All Guides prevents accidental moves. View → Guides → Hide/Show toggles visibility.',gagneEvent:6},
+    {id:3,instruction:'Lock all guides so they cannot be accidentally moved. Go to View → Guides → Lock Guides.',
+     expectedAction:'menu-click',expectedTarget:'lock-guides',
+     hint1:'Go to View → Guides.',hint2:'View → Guides → Lock Guides.',hint3:'View → Guides → Lock Guides — a checkmark shows they are locked.',
+     correctFeedback:'All guides locked. They are now visible but cannot be selected or moved until unlocked.',
+     incorrectFeedback:'Go to View → Guides → Lock Guides.',
+     acpContext:'ACP Ai-3.2a: Locking guides prevents accidental dragging. To unlock: View → Guides → Lock Guides (toggle). To clear all: View → Guides → Clear Guides.',gagneEvent:6},
+    {id:4,instruction:'Enable the grid. Go to View → Show Grid (Ctrl/Cmd+").',
+     expectedAction:'menu-click',expectedTarget:'view-show-grid',
+     hint1:'Go to the View menu.',hint2:'View → Show Grid.',hint3:'View → Show Grid (keyboard: Ctrl+" / Cmd+").',
+     correctFeedback:'Grid enabled. A regular grid overlays the artboard for alignment reference — it does not print.',
+     incorrectFeedback:'Go to View → Show Grid.',
+     acpContext:'ACP Ai-3.2a: Grid settings (spacing, subdivisions) are in Preferences → Guides & Grid. Snap to Grid (View → Snap to Grid) snaps objects to grid intersections.',gagneEvent:5},
+    {id:5,instruction:'Switch to Draw Behind mode. At the bottom of the toolbar, click the Drawing Mode icon and select Draw Behind.',
+     expectedAction:'click',expectedTarget:'draw-behind-mode',
+     hint1:'Look at the bottom of the left toolbar for the Drawing Mode icons.',hint2:'The three drawing mode icons are at the bottom of the toolbar. Click the middle one for Draw Behind.',hint3:'Bottom of toolbar → Drawing Mode group → select Draw Behind (the middle icon, Shift+D to cycle).',
+     correctFeedback:'Draw Behind mode active. Any new shapes drawn will be placed behind the currently selected object on the same layer.',
+     incorrectFeedback:'Click the Draw Behind icon at the bottom of the toolbar.',
+     acpContext:'ACP Ai-3.2a: Drawing modes: Draw Normal (standard), Draw Behind (behind selected), Draw Inside (inside a shape as a clipping mask). Shift+D cycles between them.',gagneEvent:6}
+  ]
+},
+
+/* ── 3.3a Swatches ──────────────────────────────────────── */
+'ai-3-3a': {
+  id:'ai-3-3a', tool:'illustrator', domain:3,
+  objective:'3.3a/b', objectiveText:'Create and manage swatches — global, process, and spot colours',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'swatches',
+  scenario:'Build a brand colour palette in the Swatches panel: create a global process colour, a spot colour for print, and organise both into a colour group. Then edit the global swatch to see how it updates all objects.',
+  steps:[
+    {id:1,instruction:'Open the Swatches panel. Go to Window → Swatches.',
+     expectedAction:'menu-click',expectedTarget:'window-swatches',
+     hint1:'Go to the Window menu.',hint2:'Window → Swatches.',hint3:'Window → Swatches opens the panel showing all document colours.',
+     correctFeedback:'Swatches panel open. Document colours, gradients, and patterns are all stored here.',
+     incorrectFeedback:'Go to Window → Swatches.',
+     acpContext:'ACP Ai-3.3a: The Swatches panel is the central colour management hub in Illustrator. Global swatches update all objects using them when edited.',gagneEvent:3},
+    {id:2,instruction:'Create a new global process colour swatch. Click the New Swatch button (+ icon). Set colour values and check "Global".',
+     expectedAction:'click',expectedTarget:'new-swatch-btn',
+     hint1:'Look for a + icon at the bottom of the Swatches panel.',hint2:'Click the New Swatch button (+ at panel bottom) to open the Swatch Options dialog.',hint3:'Click + → Swatch Options opens → set colour → check "Global" → click OK.',
+     correctFeedback:'New Swatch dialog open. Set your brand colour values and check the Global checkbox.',
+     incorrectFeedback:'Click the New Swatch (+) button at the bottom of the Swatches panel.',
+     acpContext:'ACP Ai-3.3a: Global swatches have a white triangle in the corner. Edit the swatch once and ALL objects using it update automatically — essential for brand colours.',gagneEvent:6},
+    {id:3,instruction:'In the Swatch Options, set the colour to C:0 M:70 Y:100 K:0 (brand orange), check "Global", name it "Brand Orange", and click OK.',
+     expectedAction:'input',expectedTarget:'swatch-name',expectedValue:'brand orange',matchType:'contains',
+     hint1:'Find the name field in the Swatch Options dialog.',hint2:'Name the swatch "Brand Orange" and check the Global checkbox.',hint3:'Swatch name: Brand Orange → check Global → set CMYK values → OK.',
+     correctFeedback:'Global process swatch "Brand Orange" created. A white triangle in the corner identifies it as global.',
+     incorrectFeedback:'Name the swatch "Brand Orange" and check the Global checkbox.',
+     acpContext:'ACP Ai-3.3a: Process colours mix from CMYK inks. Spot colours are pre-mixed special inks (Pantone) printed with a dedicated plate. Both can be global.',gagneEvent:7},
+    {id:4,instruction:'Create a Spot Colour. New Swatch → set Colour Type to "Spot Color" → choose a Pantone swatch from the book.',
+     expectedAction:'click',expectedTarget:'spot-colour-type',
+     hint1:'Create another new swatch and look for the Colour Type dropdown.',hint2:'Click + → Swatch Options → Colour Type dropdown → select Spot Color.',hint3:'New swatch → Colour Type: Spot Color → name it → select from Pantone library → OK.',
+     correctFeedback:'Spot colour created. A dot in the corner identifies spot colours in the Swatches panel.',
+     incorrectFeedback:'Create a new swatch and set Colour Type to Spot Color.',
+     acpContext:'ACP Ai-3.3b: Spot colours add a fifth (or sixth) ink to a print job. They are more expensive but essential for exact brand colour matching. Always use Pantone names.',gagneEvent:6},
+    {id:5,instruction:'Create a Colour Group. Select both swatches (Shift+click), then click the Folder icon at the bottom of the Swatches panel.',
+     expectedAction:'click',expectedTarget:'new-colour-group',
+     hint1:'Select swatches in the panel, then look for the folder icon.',hint2:'Shift+click both swatches → click the folder icon at the panel bottom.',hint3:'Shift+click Brand Orange and the Spot swatch → click the New Colour Group folder icon.',
+     correctFeedback:'Colour group created. Groups organise related colours — essential for brand palette management.',
+     incorrectFeedback:'Shift+click both swatches and click the New Colour Group folder icon.',
+     acpContext:'ACP Ai-3.3a: Colour groups appear as folders in the Swatches panel. They can be exported as .ase (Adobe Swatch Exchange) files — Window → Swatches → Save Swatch Library as ASE.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.3b Gradients ─────────────────────────────────────── */
+'ai-3-3b': {
+  id:'ai-3-3b', tool:'illustrator', domain:3,
+  objective:'3.3c/d', objectiveText:'Apply and edit gradients — linear, radial, and Gradient Mesh',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'gradients',
+  scenario:'Apply a linear gradient to a rectangle, convert it to a radial gradient, add a colour stop, then create a Gradient Mesh on a second shape for a realistic shading effect.',
+  steps:[
+    {id:1,instruction:'Open the Gradient panel. Go to Window → Gradient (or press Ctrl/Cmd+F9).',
+     expectedAction:'menu-click',expectedTarget:'window-gradient',
+     hint1:'Go to Window menu.',hint2:'Window → Gradient.',hint3:'Window → Gradient (shortcut: Ctrl+F9 / Cmd+F9).',
+     correctFeedback:'Gradient panel open. The gradient preview bar shows the current gradient.',
+     incorrectFeedback:'Go to Window → Gradient.',
+     acpContext:'ACP Ai-3.3c: The Gradient panel controls type (Linear/Radial/Freeform), angle, opacity, and colour stops. The Gradient tool (G) controls direction and position on the object.',gagneEvent:3},
+    {id:2,instruction:'Apply a linear gradient to the selected rectangle. In the Gradient panel, click the Linear Gradient button (left icon).',
+     expectedAction:'click',expectedTarget:'linear-gradient-btn',
+     hint1:'Find the gradient type buttons in the Gradient panel.',hint2:'The Gradient panel has three buttons: None, Linear, Radial. Click the Linear (middle) button.',hint3:'In the Gradient panel, click the Linear Gradient button.',
+     correctFeedback:'Linear gradient applied. The rectangle now fills with a black-to-white gradient.',
+     incorrectFeedback:'Click the Linear Gradient button in the Gradient panel.',
+     acpContext:'ACP Ai-3.3c: The default linear gradient runs black→white. Edit colour stops by double-clicking them in the gradient bar, then setting colour in the Colour or Swatches panel.',gagneEvent:6},
+    {id:3,instruction:'Change to Radial. Click the Radial Gradient button in the Gradient panel.',
+     expectedAction:'click',expectedTarget:'radial-gradient-btn',
+     hint1:'The Radial button is next to the Linear button in the Gradient panel.',hint2:'Click the Radial Gradient button (circle icon).',hint3:'Gradient panel → Radial button.',
+     correctFeedback:'Converted to radial gradient. The colour radiates from the centre outward.',
+     incorrectFeedback:'Click the Radial Gradient button in the Gradient panel.',
+     acpContext:'ACP Ai-3.3c: Radial gradients are ideal for spheres, spotlights, and glows. The Gradient tool (G) lets you reposition the radial centre by dragging.',gagneEvent:6},
+    {id:4,instruction:'Add a colour stop. Click below the gradient bar at the midpoint to add a new stop, then double-click it to set its colour.',
+     expectedAction:'click',expectedTarget:'add-gradient-stop',
+     hint1:'Click directly below the gradient bar to add a new colour stop.',hint2:'Click on the gradient bar in the Gradient panel beneath the preview — a new diamond stop appears.',hint3:'Click under the gradient bar → a new colour stop appears → double-click it → set colour.',
+     correctFeedback:'New gradient stop added. Double-click it and use the Colour panel or Swatches to set its colour.',
+     incorrectFeedback:'Click below the gradient preview bar to add a new colour stop.',
+     acpContext:'ACP Ai-3.3c: Drag colour stops left/right to adjust position. Drag them down off the bar to delete. Multiple stops create multi-colour gradients.',gagneEvent:6},
+    {id:5,instruction:'Create a Gradient Mesh on the second shape. Select it, then go to Object → Create Gradient Mesh.',
+     expectedAction:'menu-click',expectedTarget:'object-gradient-mesh',
+     hint1:'Select the second shape, then go to Object menu.',hint2:'Object → Create Gradient Mesh.',hint3:'Select shape → Object → Create Gradient Mesh → set rows/columns → OK.',
+     correctFeedback:'Gradient Mesh created. A mesh of control points appears — drag individual points to apply localised colour blending.',
+     incorrectFeedback:'Select the second shape and go to Object → Create Gradient Mesh.',
+     acpContext:'ACP Ai-3.3d: Gradient Mesh creates a multi-directional colour blend with individual control points. It produces the most realistic shading in Illustrator — used for photorealistic illustration.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.4a Brushes & graphic styles ─────────────────────── */
+'ai-3-4a': {
+  id:'ai-3-4a', tool:'illustrator', domain:3,
+  objective:'3.4a/b', objectiveText:'Use brushes and apply graphic styles',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'brushes-styles',
+  scenario:'Apply a Calligraphic brush to a path, create an Art Brush from a custom shape, then apply a Graphic Style to a text object for instant styling. Save the style for reuse.',
+  steps:[
+    {id:1,instruction:'Open the Brushes panel. Go to Window → Brushes (or press F5).',
+     expectedAction:'menu-click',expectedTarget:'window-brushes',
+     hint1:'Go to Window menu.',hint2:'Window → Brushes (F5).',hint3:'Window → Brushes opens the Brushes panel.',
+     correctFeedback:'Brushes panel open. It shows all brushes currently available in the document.',
+     incorrectFeedback:'Go to Window → Brushes.',
+     acpContext:'ACP Ai-3.4a: Illustrator has 5 brush types: Calligraphic (variable-width strokes), Scatter (objects along a path), Art (stretches/tiles artwork), Pattern (repeating pattern), Bristle (painterly).',gagneEvent:3},
+    {id:2,instruction:'Select a path on the canvas, then click a Calligraphic brush in the Brushes panel to apply it.',
+     expectedAction:'click',expectedTarget:'apply-calligraphic',
+     hint1:'Select the path first, then click a brush.',hint2:'Click a path to select it → in the Brushes panel, click a Calligraphic brush (the oval/angle shapes at top).',hint3:'Select the wavy path → click a Calligraphic brush in the panel → the stroke updates.',
+     correctFeedback:'Calligraphic brush applied. The stroke now varies in width based on the brush angle setting.',
+     incorrectFeedback:'Select the path, then click a Calligraphic brush in the Brushes panel.',
+     acpContext:'ACP Ai-3.4a: Brushes are live effects on paths. Double-click a brush to edit its settings. Click "Apply to Strokes" to update existing strokes with the new settings.',gagneEvent:6},
+    {id:3,instruction:'Create a new Art Brush from a custom shape. Select the shape, then drag it into the Brushes panel. Choose Art Brush when prompted.',
+     expectedAction:'click',expectedTarget:'create-art-brush',
+     hint1:'Select a custom shape, then drag it into the Brushes panel.',hint2:'Drag the shape from the canvas into the Brushes panel → a dialog asks which brush type → choose Art Brush.',hint3:'Select shape → drag into Brushes panel → New Brush dialog → select Art Brush → OK.',
+     correctFeedback:'Art Brush created from your shape. It will stretch along any path it is applied to.',
+     incorrectFeedback:'Drag the custom shape into the Brushes panel and choose Art Brush.',
+     acpContext:'ACP Ai-3.4a: Art Brushes stretch the artwork along the full length of the path. Scatter Brushes distribute copies of the artwork randomly along the path.',gagneEvent:7},
+    {id:4,instruction:'Open the Graphic Styles panel. Go to Window → Graphic Styles (or Shift+Ctrl/Cmd+F5).',
+     expectedAction:'menu-click',expectedTarget:'window-graphic-styles',
+     hint1:'Go to Window menu.',hint2:'Window → Graphic Styles.',hint3:'Window → Graphic Styles (Shift+Ctrl+F5 / Shift+Cmd+F5).',
+     correctFeedback:'Graphic Styles panel open. Pre-made and custom appearance combinations are stored here.',
+     incorrectFeedback:'Go to Window → Graphic Styles.',
+     acpContext:'ACP Ai-3.4b: A Graphic Style saves the complete appearance of an object (fill, stroke, effects, transparency) as a reusable one-click style.',gagneEvent:4},
+    {id:5,instruction:'Apply a Graphic Style to the text object. Select the text, then click a style in the Graphic Styles panel.',
+     expectedAction:'click',expectedTarget:'apply-graphic-style',
+     hint1:'Select the text object, then click any style in the Graphic Styles panel.',hint2:'Click the text → click any style thumbnail in the Graphic Styles panel.',hint3:'Select text → click a Graphic Style thumbnail → the full appearance is applied instantly.',
+     correctFeedback:'Graphic Style applied. The text instantly takes on the saved fill, stroke, and effects from the style.',
+     incorrectFeedback:'Select the text and click a Graphic Style thumbnail in the panel.',
+     acpContext:'ACP Ai-3.4b: To save a style: select an object with the desired appearance → click the New Graphic Style button in the panel. Styles update all objects linked to them when edited.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.4b Symbols & patterns ────────────────────────────── */
+'ai-3-4b': {
+  id:'ai-3-4b', tool:'illustrator', domain:3,
+  objective:'3.4c/d', objectiveText:'Use symbols (dynamic and static) and generate patterns',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'symbols-patterns',
+  scenario:'Create a symbol from a brand icon, place it as a dynamic symbol (so edits propagate), convert an instance to a static symbol for independent editing, then generate a seamless repeat pattern.',
+  steps:[
+    {id:1,instruction:'Open the Symbols panel. Go to Window → Symbols (or Shift+Ctrl/Cmd+F11).',
+     expectedAction:'menu-click',expectedTarget:'window-symbols',
+     hint1:'Go to Window menu.',hint2:'Window → Symbols.',hint3:'Window → Symbols (Shift+Ctrl+F11 / Shift+Cmd+F11).',
+     correctFeedback:'Symbols panel open. It shows all symbols available in the document.',
+     incorrectFeedback:'Go to Window → Symbols.',
+     acpContext:'ACP Ai-3.4c: Symbols are reusable artwork instances. Editing a symbol definition updates ALL instances automatically. Dynamic symbols allow per-instance attribute overrides.',gagneEvent:3},
+    {id:2,instruction:'Create a symbol from the brand icon. Select it, then drag it into the Symbols panel.',
+     expectedAction:'click',expectedTarget:'create-symbol',
+     hint1:'Select the artwork, then drag it into the Symbols panel.',hint2:'Drag the icon into the Symbols panel → Symbol Options dialog appears.',hint3:'Select icon → drag into Symbols panel → name it → choose Dynamic Symbol type → OK.',
+     correctFeedback:'Symbol created. The original artwork is replaced by a symbol instance.',
+     incorrectFeedback:'Drag the brand icon into the Symbols panel.',
+     acpContext:'ACP Ai-3.4c: Dynamic Symbols allow per-instance colour and appearance overrides. Static symbols share appearance — editing one changes all. Choose type when creating.',gagneEvent:6},
+    {id:3,instruction:'Place another instance of the symbol on the artboard. Drag it from the Symbols panel onto the canvas.',
+     expectedAction:'click',expectedTarget:'place-symbol-instance',
+     hint1:'Drag from the Symbols panel onto the canvas.',hint2:'Drag the symbol thumbnail from the panel onto the artboard — a new instance is placed.',hint3:'Drag the symbol from the Symbols panel onto the artboard.',
+     correctFeedback:'Symbol instance placed. This is a dynamic symbol — edit the master and this updates.',
+     incorrectFeedback:'Drag the symbol from the Symbols panel onto the artboard.',
+     acpContext:'ACP Ai-3.4c: Symbol instances are linked to the master. Break the link (Object → Expand or panel menu → Break Link) to edit the instance independently.',gagneEvent:6},
+    {id:4,instruction:'Break the link on this instance to make it static. Select the instance, then click "Break Link to Symbol" in the Symbols panel.',
+     expectedAction:'click',expectedTarget:'break-link-symbol',
+     hint1:'Select the symbol instance on the canvas.',hint2:'With the instance selected, click the Break Link icon in the Symbols panel (or Object → Expand).',hint3:'Select instance → Symbols panel → click Break Link to Symbol icon.',
+     correctFeedback:'Link broken. The instance is now independent artwork — editing it will not affect other instances or the symbol definition.',
+     incorrectFeedback:'Select the instance and click Break Link to Symbol in the Symbols panel.',
+     acpContext:'ACP Ai-3.4c: After breaking, the artwork is editable independently. This is "static" usage — useful when one instance needs unique modifications.',gagneEvent:7},
+    {id:5,instruction:'Generate a pattern. Select an object, then go to Object → Pattern → Make to enter the Pattern Editor.',
+     expectedAction:'menu-click',expectedTarget:'object-pattern-make',
+     hint1:'Select an object, then go to Object → Pattern.',hint2:'Object → Pattern → Make opens the Pattern Options panel and puts you in Pattern Editing mode.',hint3:'Select an object → Object → Pattern → Make → the Pattern Editor appears.',
+     correctFeedback:'Pattern Editor active. Adjust tile type, size, and spacing, then click Done to save as a swatch.',
+     incorrectFeedback:'Select an object and go to Object → Pattern → Make.',
+     acpContext:'ACP Ai-3.4d: The Pattern Editor lets you choose tile types (Grid, Brick, Hex) and adjust spacing. When finished, the pattern saves to the Swatches panel automatically.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.5a Layers ─────────────────────────────────────────── */
+'ai-3-5a': {
+  id:'ai-3-5a', tool:'illustrator', domain:3,
+  objective:'3.5a/b', objectiveText:'Manage layers — sublayers, stacking, merge, and collect in new layer',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'layers',
+  scenario:'Organise a multi-element brand document: create sublayers, move objects between layers, change stacking order, merge two layers, and collect selected objects into a new layer.',
+  steps:[
+    {id:1,instruction:'Open the Layers panel. Go to Window → Layers (or press F7).',
+     expectedAction:'menu-click',expectedTarget:'window-layers',
+     hint1:'Go to Window → Layers.',hint2:'Window → Layers (F7).',hint3:'Window → Layers opens the full Layers panel.',
+     correctFeedback:'Layers panel open. Each layer can contain objects and sublayers.',
+     incorrectFeedback:'Go to Window → Layers.',
+     acpContext:'ACP Ai-3.5a: Unlike Photoshop, Illustrator layers can contain sublayers (nested layers) and individual objects. Expand the disclosure triangle to see sublayer structure.',gagneEvent:3},
+    {id:2,instruction:'Create a sublayer inside "Layer 1". Alt+click the New Sublayer button, or use the Layers panel menu → New Sublayer.',
+     expectedAction:'click',expectedTarget:'new-sublayer',
+     hint1:'Find the New Layer button at the bottom of the Layers panel.',hint2:'To create a sublayer inside an existing layer, Alt+click the New Layer button with the parent layer selected.',hint3:'Select Layer 1 → Alt+click New Layer button → creates a sublayer → name it "Icons".',
+     correctFeedback:'Sublayer created inside Layer 1. It appears indented beneath the parent layer.',
+     incorrectFeedback:'Alt+click the New Layer button with Layer 1 selected to create a sublayer.',
+     acpContext:'ACP Ai-3.5a: Sublayers let you organise objects hierarchically. Use sublayers for grouping related objects (e.g. a "Text" sublayer and an "Icons" sublayer within a "UI" layer).',gagneEvent:6},
+    {id:3,instruction:'Change the stacking order of a layer. In the Layers panel, drag "Layer 2" above "Layer 3".',
+     expectedAction:'click',expectedTarget:'reorder-layer',
+     hint1:'Click and drag a layer row in the Layers panel.',hint2:'Click the "Layer 2" row and drag it above "Layer 3" — a thick line shows where it will drop.',hint3:'Drag Layer 2 row upward past Layer 3 → release → Layer 2 is now on top.',
+     correctFeedback:'Layer order changed. Objects on Layer 2 are now drawn on top of Layer 3.',
+     incorrectFeedback:'Drag Layer 2 above Layer 3 in the Layers panel.',
+     acpContext:'ACP Ai-3.5a: Layers at the top of the panel are drawn in front. Within a layer, the topmost object in the sublayer/object list is in front.',gagneEvent:6},
+    {id:4,instruction:'Merge two layers. Select "Layer 2" and "Layer 3" (Ctrl/Cmd+click), then choose Merge Selected from the Layers panel menu.',
+     expectedAction:'click',expectedTarget:'merge-layers',
+     hint1:'Select both layers, then use the panel menu.',hint2:'Ctrl+click (Cmd+click) both Layer 2 and Layer 3 → Layers panel menu (hamburger ≡) → Merge Selected.',hint3:'Select both layers → panel menu → Merge Selected → they combine into one layer.',
+     correctFeedback:'Layers merged. All objects from both layers are now on a single merged layer.',
+     incorrectFeedback:'Ctrl+click both layers, then choose Merge Selected from the Layers panel menu.',
+     acpContext:'ACP Ai-3.5b: Merge Selected combines selected layers into one. The merged layer takes the name of the topmost selected layer. This operation cannot be undone after saving.',gagneEvent:7},
+    {id:5,instruction:'Collect selected objects in a new layer. Select objects on the canvas (Shift+click), then in the Layers panel menu choose Collect in New Layer.',
+     expectedAction:'click',expectedTarget:'collect-new-layer',
+     hint1:'Select objects on the canvas, then use the Layers panel menu.',hint2:'Select the objects → Layers panel menu → Collect in New Layer.',hint3:'Shift+click objects → Layers panel ≡ menu → Collect in New Layer → objects move to new layer.',
+     correctFeedback:'Objects collected into a new layer. This is faster than manually creating a layer and moving objects to it.',
+     incorrectFeedback:'Select objects, then choose Collect in New Layer from the Layers panel menu.',
+     acpContext:'ACP Ai-3.5b: Collect in New Layer instantly groups selected objects onto their own new layer — a time-saving organisation tool not found in Photoshop.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.5b Paste Remembers Layers ─────────────────────────── */
+'ai-3-5b': {
+  id:'ai-3-5b', tool:'illustrator', domain:3,
+  objective:'3.5c', objectiveText:'Use Paste Remembers Layers and manage stacking order',
+  bloomsLevel:'Apply', estimatedMinutes:6, uiType:'paste-layers',
+  scenario:'Copy an object from one document, then use Paste Remembers Layers to paste it back to its original layer. Then adjust stacking order using Arrange commands.',
+  steps:[
+    {id:1,instruction:'Enable Paste Remembers Layers. In the Layers panel menu (≡), check "Paste Remembers Layers".',
+     expectedAction:'click',expectedTarget:'paste-remembers-layers',
+     hint1:'Look in the Layers panel for the panel menu (hamburger icon).',hint2:'Click the ≡ menu icon in the Layers panel → find and check "Paste Remembers Layers".',hint3:'Layers panel → ≡ → Paste Remembers Layers (toggle on — checkmark appears).',
+     correctFeedback:'Paste Remembers Layers enabled. Copied objects will paste onto their original layer, not the active layer.',
+     incorrectFeedback:'Click the Layers panel menu and check Paste Remembers Layers.',
+     acpContext:'ACP Ai-3.5c: Paste Remembers Layers is a critical workflow setting. Without it, pasting always places objects on the currently active layer, breaking layer organisation.',gagneEvent:4},
+    {id:2,instruction:'Copy an object (Ctrl/Cmd+C), then paste it (Ctrl/Cmd+V). Notice it pastes to its original layer, not the active layer.',
+     expectedAction:'menu-click',expectedTarget:'edit-paste',
+     hint1:'Copy an object then paste it.',hint2:'Ctrl+C to copy → Ctrl+V to paste — the object appears on its original layer.',hint3:'Ctrl+C → Ctrl+V (or Edit → Paste) → the Layers panel shows it on the original layer.',
+     correctFeedback:'Object pasted to its original layer. Without Paste Remembers Layers, it would have gone to the active layer.',
+     incorrectFeedback:'Copy an object with Ctrl+C then paste with Ctrl+V.',
+     acpContext:'ACP Ai-3.5c: Paste in Front (Ctrl+F) and Paste in Back (Ctrl+B) also respect layer position while placing the object at the front/back of the stacking order.',gagneEvent:6},
+    {id:3,instruction:'Send the object to the back of its layer. With it selected, go to Object → Arrange → Send to Back.',
+     expectedAction:'menu-click',expectedTarget:'arrange-send-to-back',
+     hint1:'Go to Object → Arrange.',hint2:'Object → Arrange → Send to Back (Shift+Ctrl+[ / Shift+Cmd+[).',hint3:'Select object → Object → Arrange → Send to Back.',
+     correctFeedback:'Object sent to back of its layer. It is now behind all other objects on the same layer.',
+     incorrectFeedback:'Go to Object → Arrange → Send to Back.',
+     acpContext:'ACP Ai-3.5c: Arrange commands: Bring to Front (Shift+Ctrl+]), Send to Back (Shift+Ctrl+[), Bring Forward (Ctrl+]), Send Backward (Ctrl+[). These only affect stacking within the same layer.',gagneEvent:6},
+    {id:4,instruction:'Bring it forward one step. Object → Arrange → Bring Forward (Ctrl/Cmd+]).',
+     expectedAction:'menu-click',expectedTarget:'arrange-bring-forward',
+     hint1:'Go to Object → Arrange.',hint2:'Object → Arrange → Bring Forward (Ctrl+] / Cmd+]).',hint3:'Object → Arrange → Bring Forward — it moves one step forward in stacking.',
+     correctFeedback:'Object brought forward one step.',
+     incorrectFeedback:'Go to Object → Arrange → Bring Forward.',
+     acpContext:'ACP Ai-3.5c: Bring Forward/Send Backward move one step at a time — useful for precise stacking control. Bring to Front/Send to Back jump to the absolute extremes.',gagneEvent:7},
+    {id:5,instruction:'Use Paste in Place to paste a copied object at the exact same position. Edit → Paste in Place (Ctrl/Cmd+Shift+V).',
+     expectedAction:'menu-click',expectedTarget:'paste-in-place',
+     hint1:'Go to Edit menu.',hint2:'Edit → Paste in Place (Shift+Ctrl+V / Shift+Cmd+V).',hint3:'Edit → Paste in Place — object appears at the exact X/Y position of the original.',
+     correctFeedback:'Pasted in place at the exact same coordinates. Ideal for duplicating across artboards or documents while maintaining alignment.',
+     incorrectFeedback:'Go to Edit → Paste in Place.',
+     acpContext:'ACP Ai-3.5c: Paste in Place is essential when moving artwork between artboards or documents — it preserves the exact X/Y position rather than pasting to the centre of the view.',gagneEvent:7}
+  ]
+}
+};
+
+/* ═══ ENGINE ══════════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[];
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array(task.steps.length).fill(null);
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#FF9A00;border-color:rgba(255,154,0,.3);background:rgba(255,154,0,.08);">Ai-${t.objective}</span>
+      <span class="badge badge-ai">Illustrator</span>
+      <span class="badge badge-live">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array(currentTask?.steps?.length||0).fill(null);
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERS ══════════════════════════════════════════ */
+function renderUI(task){
+  const renders={
+    'workspace':workspaceUI,'guides-grids':guidesGridsUI,
+    'swatches':swatchesUI,'gradients':gradientsUI,
+    'brushes-styles':brushesStylesUI,'symbols-patterns':symbolsPatternsUI,
+    'layers':layersUI,'paste-layers':pasteLayersUI
+  };
+  document.getElementById('adobe-sim').innerHTML=renders[task.uiType]?renders[task.uiType]():'';
+}
+
+function aiShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ai</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function defaultTools(){
+  return`<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+    <div class="tool-btn">▭</div><div class="tool-btn">○</div><div class="tool-btn" style="font-weight:700;font-size:12px;">T</div>`;
+}
+
+function workspaceUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('workspace-typography')">Window</span>
+     <span class="menu-item" onclick="doMenu('prefs-units')">Edit</span>
+     <span class="menu-item" onclick="doMenu('window-character')">Type</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:140px;display:flex;flex-direction:column;gap:4px;padding:10px;">
+        <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:#1A1A2E;">Headline Text</div>
+        <div style="font-size:10px;color:#666;line-height:1.5;">Body copy demonstrating the typography workspace configuration with correct units and panel setup.</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Workspace</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('workspace-typography')">Window → Workspace → Typography</div>
+       <div class="adj-btn" onclick="doMenu('window-character')">Window → Type → Character</div>
+       <div class="adj-btn" onclick="doMenu('prefs-units')">Edit → Preferences → Units</div>
+     </div>
+     <div class="panel-hdr">Units Prefs</div>
+     <div class="panel-body" id="units-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">General</span>
+         <select class="prop-select"><option>Pixels</option><option>Millimeters</option><option>Inches</option></select></div>
+       <div class="prop-row"><span class="prop-label">Stroke</span>
+         <select class="prop-select"><option>Points</option><option>Pixels</option></select></div>
+       <div class="prop-row"><span class="prop-label">Type</span>
+         <select class="prop-select highlight" id="sel-type-units" onchange="doSelect('type-units',this.value.toLowerCase())">
+           <option value="pixels">Pixels</option>
+           <option value="points">Points</option>
+           <option value="millimeters">Millimeters</option>
+         </select></div>
+       <button onclick="doAction('prefs-ok')" style="width:100%;margin-top:5px;padding:4px;background:#FF9A00;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+function guidesGridsUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('view-smart-guides')">View</span>
+     <span class="menu-item">Edit</span><span class="menu-item">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn">▭</div><div class="tool-sep"></div>
+     <div style="display:flex;flex-direction:column;gap:2px;margin-top:4px;padding:0 5px;">
+       <div style="width:24px;height:8px;background:#3A3A3A;border-radius:2px;cursor:pointer;font-size:7px;color:#AAA;display:flex;align-items:center;justify-content:center;" title="Draw Normal">N</div>
+       <div id="draw-behind-btn" style="width:24px;height:8px;background:#3A3A3A;border-radius:2px;cursor:pointer;font-size:7px;color:#AAA;display:flex;align-items:center;justify-content:center;" onclick="doAction('draw-behind-mode')" title="Draw Behind">B</div>
+       <div style="width:24px;height:8px;background:#3A3A3A;border-radius:2px;cursor:pointer;font-size:7px;color:#AAA;display:flex;align-items:center;justify-content:center;" title="Draw Inside">I</div>
+     </div>`,
+    `<div class="adobe-canvas" style="position:relative;">
+      <div class="artboard" style="width:200px;height:140px;position:relative;overflow:hidden;" id="canvas-ab">
+        <div id="guide-h" style="display:none;position:absolute;left:0;right:0;top:40px;height:1px;background:rgba(0,150,255,.7);pointer-events:none;"></div>
+        <div id="grid-overlay" style="display:none;position:absolute;inset:0;background-image:linear-gradient(rgba(0,100,200,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(0,100,200,.15) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;"></div>
+        <div id="smart-guide-indicator" style="display:none;position:absolute;top:2px;left:2px;font-size:8px;color:#0096FF;background:rgba(0,0,0,.6);padding:2px 4px;border-radius:2px;">Smart Guides ON</div>
+      </div>
+      <div id="ruler-top" style="position:absolute;top:0;left:44px;right:0;height:14px;background:#3A3A3A;border-bottom:1px solid #1A1A1A;cursor:crosshair;font-size:8px;color:#888;display:flex;align-items:center;padding-left:4px;" onclick="doAction('drag-guide')">← Click here to drag guide</div>
+    </div>`,
+    `<div class="panel-hdr">View controls</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('view-smart-guides')">View → Smart Guides (Ctrl+U)</div>
+       <div class="adj-btn" onclick="doAction('drag-guide')">Drag from ruler → create guide</div>
+       <div class="adj-btn" onclick="doMenu('lock-guides')">View → Guides → Lock Guides</div>
+       <div class="adj-btn" onclick="doMenu('view-show-grid')">View → Show Grid (Ctrl+")</div>
+       <div class="adj-btn" onclick="doAction('draw-behind-mode')">Draw Behind mode (bottom toolbar)</div>
+     </div>`
+  );
+}
+
+function swatchesUI(){
+  const colours=['#FF9A00','#E07800','#FFB84D','#1A1A2E','#31A8FF','#00D68F','#FF4D6D','#9B8EF0','#FFF','#000'];
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-swatches')">Window</span>
+     <span class="menu-item">Edit</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:140px;display:flex;align-items:center;justify-content:center;position:relative;">
+        <div id="rect-fill" style="width:100px;height:70px;background:#FF9A00;border-radius:4px;transition:background .3s;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Swatches</div>
+     <div class="swatch-grid" id="swatch-grid">
+       ${colours.map((c,i)=>`<div class="swatch" style="background:${c};" onclick="doAction('select-swatch-'+i)" title="${c}"></div>`).join('')}
+       <div class="swatch" style="background:repeating-linear-gradient(45deg,#FFF,#FFF 2px,#F00 2px,#F00 4px);border:0.5px solid #555;cursor:pointer;" title="Spot colour" onclick="doAction('spot-colour-type')"></div>
+     </div>
+     <div class="panel-body">
+       <div style="display:flex;gap:4px;">
+         <div class="adj-btn" onclick="doMenu('window-swatches')" style="flex:1;">Open Swatches</div>
+         <div class="adj-btn" onclick="doAction('new-swatch-btn')" style="flex:1;">+ New Swatch</div>
+       </div>
+       <div class="adj-btn highlight" onclick="doAction('new-colour-group')">📁 New Colour Group</div>
+     </div>
+     <div class="panel-hdr">Swatch Options</div>
+     <div class="panel-body" id="swatch-opts" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Name</span>
+         <input class="prop-input highlight" id="inp-sw-name" style="width:100px;" oninput="doInput('swatch-name',this.value.toLowerCase())"></div>
+       <div class="prop-row"><span class="prop-label">Type</span>
+         <select class="prop-select highlight" id="sel-sw-type" onchange="doSelect('spot-colour-type',this.value.toLowerCase())">
+           <option value="process">Process Color</option>
+           <option value="spot color">Spot Color</option>
+         </select></div>
+       <label style="display:flex;align-items:center;gap:5px;font-size:10px;color:#CCC;margin-bottom:5px;">
+         <input type="checkbox" id="cb-global" style="accent-color:#FF9A00;"> Global</label>
+       <button onclick="doAction('swatch-ok')" style="width:100%;padding:4px;background:#FF9A00;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+function gradientsUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-gradient')">Window</span>
+     <span class="menu-item" onclick="doMenu('object-gradient-mesh')">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" onclick="doTool('gradient-tool')" title="Gradient (G)">◑</div>
+     <div class="tool-btn" onclick="doTool('mesh-tool')" title="Mesh (U)">⊞</div>`,
+    `<div class="adobe-canvas" style="gap:1rem;padding:.5rem;">
+      <div style="position:relative;">
+        <div class="artboard" style="width:90px;height:90px;" id="grad-rect">
+          <div id="grad-fill" style="width:100%;height:100%;background:linear-gradient(90deg,#000,#FFF);transition:background .4s;"></div>
+        </div>
+        <div style="font-size:8px;color:#AAA;text-align:center;margin-top:2px;">Gradient shape</div>
+      </div>
+      <div style="position:relative;">
+        <div class="artboard" style="width:90px;height:90px;">
+          <div id="mesh-rect" style="width:100%;height:100%;background:radial-gradient(circle at 35% 35%,#FFE080,#FF8800 50%,#C05000);"></div>
+        </div>
+        <div style="font-size:8px;color:#AAA;text-align:center;margin-top:2px;">Mesh shape</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Gradient</div>
+     <div class="panel-body">
+       <div style="display:flex;gap:4px;margin-bottom:6px;">
+         <div style="width:18px;height:18px;background:#888;border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:#FFF;" onclick="doAction('no-gradient')">✕</div>
+         <div style="width:18px;height:18px;background:linear-gradient(90deg,#000,#FFF);border-radius:2px;cursor:pointer;border:0.5px solid #666;" id="lin-btn" onclick="doAction('linear-gradient-btn')" title="Linear"></div>
+         <div style="width:18px;height:18px;background:radial-gradient(circle,#FFF,#000);border-radius:50%;cursor:pointer;border:0.5px solid #666;" id="rad-btn" onclick="doAction('radial-gradient-btn')" title="Radial"></div>
+       </div>
+       <div style="position:relative;margin-bottom:8px;">
+         <div class="gradient-bar" id="grad-bar" style="background:linear-gradient(90deg,#000,#FFF);" onclick="doAction('add-gradient-stop')"></div>
+         <div style="position:absolute;bottom:0;left:8px;width:10px;height:12px;background:#000;border:1px solid #888;border-radius:2px;"></div>
+         <div style="position:absolute;bottom:0;right:8px;width:10px;height:12px;background:#FFF;border:1px solid #888;border-radius:2px;"></div>
+       </div>
+       <div class="prop-row"><span class="prop-label">Angle</span>
+         <input class="prop-input" style="width:50px;" value="0°"></div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('window-gradient')">Window → Gradient</div>
+       <div class="adj-btn" onclick="doMenu('object-gradient-mesh')">Object → Create Gradient Mesh</div>
+     </div>`
+  );
+}
+
+function brushesStylesUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-brushes')">Window</span>
+     <span class="menu-item" onclick="doMenu('window-graphic-styles')">Window</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" onclick="doTool('paintbrush')" title="Paintbrush (B)">✍</div>`,
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:140px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+        <svg width="160" height="30" viewBox="0 0 160 30">
+          <path id="brush-path" d="M10,15 C40,5 80,25 120,10 S150,20 155,15" fill="none" stroke="#333" stroke-width="2"/>
+        </svg>
+        <div id="styled-text" style="font-size:14px;font-weight:700;color:#1A1A2E;font-family:Georgia,serif;transition:all .3s;">Brand Text</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Brushes</div>
+     <div class="panel-body" id="brushes-panel">
+       <div class="adj-btn highlight" onclick="doMenu('window-brushes')">Window → Brushes (F5)</div>
+       <div style="margin-top:4px;">
+         <div class="brush-row" onclick="doAction('apply-calligraphic')">
+           <div class="brush-preview" style="background:linear-gradient(90deg,transparent,#333 30%,#333 70%,transparent);height:6px;border-radius:3px;"></div>
+           <span style="font-size:9px;color:#CCC;">Calligraphic 5pt</span>
+         </div>
+         <div class="brush-row" onclick="doAction('apply-calligraphic')">
+           <div class="brush-preview" style="background:linear-gradient(90deg,transparent,#333 20%,#666 50%,#333 80%,transparent);height:4px;border-radius:2px;"></div>
+           <span style="font-size:9px;color:#CCC;">Calligraphic 10pt</span>
+         </div>
+         <div class="brush-row" onclick="doAction('create-art-brush')">
+           <div class="brush-preview" style="background:repeating-linear-gradient(90deg,#888 0,#888 2px,transparent 2px,transparent 6px);height:8px;"></div>
+           <span style="font-size:9px;color:#CCC;">+ Create Art Brush</span>
+         </div>
+       </div>
+     </div>
+     <div class="panel-hdr">Graphic Styles</div>
+     <div class="panel-body" id="gs-panel" style="display:none;">
+       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:4px;">
+         ${['#FF9A00','#31A8FF','#00D68F','#9B8EF0'].map(c=>`<div style="width:26px;height:26px;background:${c};border-radius:4px;cursor:pointer;border:0.5px solid #555;" onclick="doAction('apply-graphic-style')"></div>`).join('')}
+       </div>
+       <div class="adj-btn" onclick="doAction('apply-graphic-style')">Click style → apply to selection</div>
+     </div>`
+  );
+}
+
+function symbolsPatternsUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-symbols')">Window</span>
+     <span class="menu-item" onclick="doMenu('object-pattern-make')">Object</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="flex-wrap:wrap;gap:8px;padding:.5rem;">
+      <div class="artboard" style="width:180px;height:130px;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;">
+        <div id="sym-instance-1" style="width:36px;height:36px;background:#FF9A00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;" onclick="doAction('place-symbol-instance')">★</div>
+        <div id="sym-instance-2" style="display:none;width:36px;height:36px;background:#FF9A00;border-radius:8px;display:none;align-items:center;justify-content:center;font-size:18px;" >★</div>
+        <div id="pattern-preview" style="display:none;position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,154,0,.15) 0,rgba(255,154,0,.15) 4px,transparent 4px,transparent 16px),repeating-linear-gradient(-45deg,rgba(255,154,0,.15) 0,rgba(255,154,0,.15) 4px,transparent 4px,transparent 16px);"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Symbols</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('window-symbols')">Window → Symbols</div>
+       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:4px 0;">
+         <div style="width:26px;height:26px;background:#FF9A00;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;" onclick="doAction('create-symbol')">★</div>
+         <div style="width:26px;height:26px;background:#3A3A3A;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;border:0.5px dashed #555;cursor:pointer;" onclick="doAction('place-symbol-instance')">+</div>
+       </div>
+       <div class="adj-btn" onclick="doAction('break-link-symbol')">Break Link to Symbol</div>
+     </div>
+     <div class="panel-hdr">Pattern</div>
+     <div class="panel-body">
+       <div class="adj-btn" onclick="doMenu('object-pattern-make')">Object → Pattern → Make</div>
+       <div id="pattern-opts" style="display:none;">
+         <div class="prop-row"><span class="prop-label">Tile Type</span>
+           <select class="prop-select"><option>Grid</option><option>Brick by Row</option><option>Hex by Column</option></select></div>
+         <button onclick="doAction('pattern-done')" style="width:100%;margin-top:4px;padding:4px;background:#FF9A00;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">Done</button>
+       </div>
+     </div>`
+  );
+}
+
+function layersUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-layers')">Window</span>
+     <span class="menu-item">Object</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:140px;position:relative;">
+        <div style="position:absolute;bottom:10px;left:10px;right:10px;height:60px;background:#E8F0E4;border-radius:4px;"></div>
+        <div style="position:absolute;top:10px;left:10px;width:80px;height:40px;background:#FF9A00;border-radius:4px;opacity:.9;"></div>
+        <div style="position:absolute;top:20px;left:50px;width:80px;height:40px;background:#31A8FF;border-radius:4px;opacity:.8;"></div>
+        <div style="position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;color:#1A1A2E;">LOGO</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Layers <span style="font-size:8px;cursor:pointer;color:#666;" onclick="doMenu('window-layers')">F7</span></div>
+     <div class="panel-body" id="layers-panel-body">
+       <div class="layer-row selected" id="lr-1" onclick="doAction('select-layer-1')">
+         <span class="layer-eye vis">👁</span>
+         <div class="layer-color" style="background:#FF9A00;"></div>
+         <span class="layer-name">Layer 1</span>
+         <span class="layer-lock">🔓</span>
+       </div>
+       <div class="layer-row" id="lr-sub" style="padding-left:16px;display:none;">
+         <span class="layer-eye vis">👁</span>
+         <div class="layer-color" style="background:#FFCC66;"></div>
+         <span class="layer-name">Icons (sublayer)</span>
+       </div>
+       <div class="layer-row" id="lr-2" onclick="doAction('reorder-layer')">
+         <span class="layer-eye vis">👁</span>
+         <div class="layer-color" style="background:#31A8FF;"></div>
+         <span class="layer-name">Layer 2</span>
+         <span class="layer-lock">🔓</span>
+       </div>
+       <div class="layer-row" id="lr-3">
+         <span class="layer-eye vis">👁</span>
+         <div class="layer-color" style="background:#00D68F;"></div>
+         <span class="layer-name">Layer 3</span>
+         <span class="layer-lock">🔓</span>
+       </div>
+     </div>
+     <div style="display:flex;gap:3px;padding:5px 8px;border-top:1px solid #1A1A1A;">
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doMenu('window-layers')">F7: Open</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('new-sublayer')">+ Sub</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('merge-layers')">Merge</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('collect-new-layer')">Collect</div>
+     </div>`
+  );
+}
+
+function pasteLayersUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('edit-paste')">Edit</span>
+     <span class="menu-item" onclick="doMenu('arrange-send-to-back')">Object</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:140px;position:relative;">
+        <div id="obj-pos" style="position:absolute;top:30px;left:40px;width:60px;height:50px;background:#FF9A00;border-radius:4px;transition:all .4s;"></div>
+        <div style="position:absolute;top:60px;left:80px;width:60px;height:50px;background:#31A8FF;border-radius:4px;opacity:.6;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Layers</div>
+     <div class="panel-body">
+       <div class="layer-row selected">
+         <span class="layer-eye vis">👁</span>
+         <div class="layer-color" style="background:#FF9A00;"></div>
+         <span class="layer-name">Brand Layer</span>
+       </div>
+       <div class="layer-row">
+         <span class="layer-eye vis">👁</span>
+         <div class="layer-color" style="background:#31A8FF;"></div>
+         <span class="layer-name">Layout Layer</span>
+       </div>
+     </div>
+     <div class="panel-hdr">Controls</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doAction('paste-remembers-layers')">Layers ≡ → Paste Remembers Layers</div>
+       <div class="adj-btn" onclick="doMenu('edit-paste')">Edit → Paste (Ctrl+V)</div>
+       <div class="adj-btn" onclick="doMenu('arrange-send-to-back')">Object → Arrange → Send to Back</div>
+       <div class="adj-btn" onclick="doMenu('arrange-bring-forward')">Object → Arrange → Bring Forward</div>
+       <div class="adj-btn" onclick="doMenu('paste-in-place')">Edit → Paste in Place (Shift+Ctrl+V)</div>
+     </div>`
+  );
+}
+
+/* ═══ ACTIONS & EFFECTS ══════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+function applyEffect(target){
+  const fx={
+    'workspace-typography':()=>{},
+    'window-character':()=>{},
+    'prefs-units':()=>{const p=document.getElementById('units-panel');if(p)p.style.display='block';},
+    'prefs-ok':()=>{const p=document.getElementById('units-panel');if(p)p.style.display='none';},
+    'view-smart-guides':()=>{const el=document.getElementById('smart-guide-indicator');if(el)el.style.display='block';},
+    'drag-guide':()=>{const el=document.getElementById('guide-h');if(el)el.style.display='block';},
+    'lock-guides':()=>{},
+    'view-show-grid':()=>{const el=document.getElementById('grid-overlay');if(el)el.style.display='block';},
+    'draw-behind-mode':()=>{const el=document.getElementById('draw-behind-btn');if(el){el.style.background='rgba(255,154,0,.25)';el.style.color='#FF9A00';}},
+    'window-swatches':()=>{},
+    'new-swatch-btn':()=>{const p=document.getElementById('swatch-opts');if(p)p.style.display='block';},
+    'spot-colour-type':()=>{const sel=document.getElementById('sel-sw-type');if(sel)sel.value='spot color';},
+    'new-colour-group':()=>{},
+    'swatch-name':()=>{},
+    'swatch-ok':()=>{const p=document.getElementById('swatch-opts');if(p)p.style.display='none';},
+    'window-gradient':()=>{},
+    'linear-gradient-btn':()=>{const f=document.getElementById('grad-fill');if(f)f.style.background='linear-gradient(90deg,#FF9A00,#FFF)';const b=document.getElementById('grad-bar');if(b)b.style.background='linear-gradient(90deg,#FF9A00,#FFF)';},
+    'radial-gradient-btn':()=>{const f=document.getElementById('grad-fill');if(f)f.style.background='radial-gradient(circle,#FFF 0%,#FF9A00 100%)';},
+    'add-gradient-stop':()=>{},
+    'object-gradient-mesh':()=>{const el=document.getElementById('mesh-rect');if(el)el.style.outline='2px solid #FF9A00';},
+    'window-brushes':()=>{const p=document.getElementById('brushes-panel');if(p){p.style.border='0.5px solid rgba(255,154,0,.3)';p.style.borderRadius='4px';}},
+    'apply-calligraphic':()=>{const p=document.getElementById('brush-path');if(p){p.setAttribute('stroke-width','6');p.setAttribute('stroke','#FF9A00');}},
+    'create-art-brush':()=>{},
+    'window-graphic-styles':()=>{const p=document.getElementById('gs-panel');if(p)p.style.display='block';},
+    'apply-graphic-style':()=>{const el=document.getElementById('styled-text');if(el){el.style.color='#FF9A00';el.style.textShadow='1px 1px 0 #000,-1px -1px 0 rgba(255,154,0,.3)';}},
+    'window-symbols':()=>{},
+    'create-symbol':()=>{},
+    'place-symbol-instance':()=>{const el=document.getElementById('sym-instance-2');if(el){el.style.display='flex';el.style.marginLeft='8px';}},
+    'break-link-symbol':()=>{const el=document.getElementById('sym-instance-2');if(el){el.style.border='2px dashed #AAA';el.style.borderRadius='8px';}},
+    'object-pattern-make':()=>{const p=document.getElementById('pattern-opts');if(p)p.style.display='block';},
+    'pattern-done':()=>{const el=document.getElementById('pattern-preview');if(el)el.style.display='block';},
+    'window-layers':()=>{},
+    'select-layer-1':()=>{document.getElementById('lr-1')?.classList.add('selected');},
+    'new-sublayer':()=>{const el=document.getElementById('lr-sub');if(el)el.style.display='flex';},
+    'reorder-layer':()=>{},
+    'merge-layers':()=>{const l3=document.getElementById('lr-3');if(l3)l3.style.opacity='.3';const l2=document.getElementById('lr-2');if(l2)l2.querySelector('.layer-name').textContent='Layer 2+3 (merged)';},
+    'collect-new-layer':()=>{},
+    'paste-remembers-layers':()=>{},
+    'edit-paste':()=>{},
+    'arrange-send-to-back':()=>{const el=document.getElementById('obj-pos');if(el){el.style.top='60px';el.style.left='80px';el.style.zIndex='0';}},
+    'arrange-bring-forward':()=>{const el=document.getElementById('obj-pos');if(el){el.style.top='30px';el.style.left='40px';}},
+    'paste-in-place':()=>{}
+  };
+  if(fx[target])fx[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask)return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const sc=document.getElementById('sc-'+currentTask.id.replace(/-/g,''));if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+currentTask.id.replace(/-/g,''));if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#FF9A00'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#FF9A00;border-color:rgba(255,154,0,.3);background:rgba(255,154,0,.08);">Ai-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('ai-3-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

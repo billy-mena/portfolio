@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Id · Domain 4: Text & Tables | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--id:#00C896;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#001A10 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,200,150,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--id);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--id);color:#000;border-color:var(--id);}
+/* Adobe chrome */
+.adobe-sim{background:#303030;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3A3A3A;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#00C896;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 240px;min-height:360px;}
+.adobe-tools{background:#303030;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(0,200,150,.2);color:#00C896;}
+.tool-btn.highlight{border:1.5px solid #00C896;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#5A5A5A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.id-page{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.adobe-panels{background:#303030;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;overflow-y:auto;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;cursor:pointer;flex-shrink:0;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;min-width:55px;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#00C896;}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:#00C896;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#00C896;color:#00C896;}
+/* Text frame simulation */
+.id-text-frame{position:absolute;border:0.5px solid rgba(0,100,200,.3);background:transparent;font-size:7px;color:#333;overflow:hidden;padding:3px;}
+.id-text-frame.overflow::after{content:'+';position:absolute;bottom:0;right:0;width:10px;height:10px;background:#FF4D6D;color:#FFF;font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.thread-line{position:absolute;border-top:1px solid #31A8FF;pointer-events:none;}
+/* Style rows */
+.style-row{display:flex;align-items:center;gap:5px;padding:3px 6px;border-bottom:0.5px solid #1A1A1A;cursor:pointer;font-size:10px;color:#CCC;}
+.style-row:hover,.style-row.applied{background:rgba(0,200,150,.08);color:#00C896;}
+/* Table */
+.id-table{border-collapse:collapse;font-size:8px;width:100%;}
+.id-table td,.id-table th{border:0.5px solid #AAA;padding:3px 5px;}
+.id-table th{background:#E8E8E8;font-weight:600;}
+/* Step / feedback / score */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link id active">InDesign</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-id">InDesign</span>
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id · Domain 4</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Text &amp; Tables</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">4 objectives · 8 tasks · Guided &amp; Independent modes · ACP 2025 v20.x</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+<aside class="task-list">
+  <div class="task-list-title">Domain 4 tasks</div>
+  <div class="task-item active" onclick="loadTask('id-4-1a')" id="nav-id41a">
+    <div class="task-icon" id="icon-id41a">4.1</div>
+    <div class="task-info"><div class="task-obj">Id-4.1a</div><div class="task-name">Thread text frames &amp; manage overflow</div></div>
+    <div class="task-score" id="sc-id41a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-4-1b')" id="nav-id41b">
+    <div class="task-icon" id="icon-id41b">4.1</div>
+    <div class="task-info"><div class="task-obj">Id-4.1b</div><div class="task-name">Text frame options — inset &amp; columns</div></div>
+    <div class="task-score" id="sc-id41b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-4-2a')" id="nav-id42a">
+    <div class="task-icon" id="icon-id42a">4.2</div>
+    <div class="task-info"><div class="task-obj">Id-4.2a</div><div class="task-name">Paragraph Styles — create &amp; apply</div></div>
+    <div class="task-score" id="sc-id42a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-4-2b')" id="nav-id42b">
+    <div class="task-icon" id="icon-id42b">4.2</div>
+    <div class="task-info"><div class="task-obj">Id-4.2b</div><div class="task-name">Character Styles &amp; style sync</div></div>
+    <div class="task-score" id="sc-id42b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-4-3a')" id="nav-id43a">
+    <div class="task-icon" id="icon-id43a">4.3</div>
+    <div class="task-info"><div class="task-obj">Id-4.3a</div><div class="task-name">Tables — create &amp; format</div></div>
+    <div class="task-score" id="sc-id43a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-4-4a')" id="nav-id44a">
+    <div class="task-icon" id="icon-id44a">4.4</div>
+    <div class="task-info"><div class="task-obj">Id-4.4a</div><div class="task-name">Story Editor &amp; Find/Change</div></div>
+    <div class="task-score" id="sc-id44a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-4-mc')" id="nav-id4mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 4</div><div class="task-name">Knowledge check</div></div>
+    <div class="task-score" id="sc-id4mc">—</div>
+  </div>
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d3-master-pages.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 3</div></div>
+  </a>
+  <a href="d5-visual-elements.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Domain 5 →</div></div>
+  </a>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS={
+
+'id-4-1a':{
+  id:'id-4-1a',tool:'indesign',domain:4,
+  objective:'4.1a',objectiveText:'Thread text frames and manage overflow',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'threading',
+  scenario:'A long magazine article overflows its first text frame. Thread the overflow into a second frame on the next page, and view the thread connections.',
+  steps:[
+    {id:1,instruction:'Identify the overflow. A red plus (+) in the out-port (lower-right) of the text frame indicates overflow. Click it.',
+     expectedAction:'click',expectedTarget:'overflow-outport',
+     hint1:'Look at the lower-right corner of the text frame.',hint2:'A small red + in the lower-right out-port means text is overflowing. Click it to load the thread cursor.',hint3:'Click the red + out-port at the lower-right of the first text frame.',
+     correctFeedback:'Thread cursor loaded. The cursor now carries the overflow text — click another frame or draw a new one to thread.',
+     incorrectFeedback:'Click the red + out-port at the lower-right corner of the overflowing frame.',
+     acpContext:'ACP Id-4.1a: The out-port is the small box at the lower-right of every text frame. Empty = no more text. Arrow = text continues in a linked frame. Red + = overflow — more text than fits.',gagneEvent:4},
+    {id:2,instruction:'Navigate to page 2. Click the page 2 thumbnail in the Pages panel.',
+     expectedAction:'click',expectedTarget:'goto-page2-thread',
+     hint1:'Use the Pages panel to navigate.',hint2:'Click the page 2 thumbnail in the Pages panel.',hint3:'Pages panel → double-click page 2 to navigate there.',
+     correctFeedback:'On page 2. The thread cursor is still active — click anywhere to create a new linked frame, or click an existing empty frame.',
+     incorrectFeedback:'Navigate to page 2 using the Pages panel.',
+     acpContext:'ACP Id-4.1a: You can navigate pages while the thread cursor is active. The cursor remains loaded until you place it or press Esc.',gagneEvent:5},
+    {id:3,instruction:'Click on page 2 to place the threaded frame. The overflow text flows into the new frame.',
+     expectedAction:'click',expectedTarget:'place-threaded-frame',
+     hint1:'Click anywhere on page 2 with the thread cursor.',hint2:'Click on the page — InDesign creates a frame and flows the overflow text into it.',hint3:'Click on the page 2 artboard — a new text frame appears with the continued text.',
+     correctFeedback:'Text threaded. A connecting line between the two frames shows the thread. The frames are now linked.',
+     incorrectFeedback:'Click on page 2 to place the threaded frame.',
+     acpContext:'ACP Id-4.1a: To see thread connections: View → Extras → Show Text Threads (Alt+Ctrl+Y). Arrows between frames show the flow direction.',gagneEvent:6},
+    {id:4,instruction:'Show the text threads. View → Extras → Show Text Threads.',
+     expectedAction:'menu-click',expectedTarget:'show-text-threads',
+     hint1:'Go to View → Extras.',hint2:'View → Extras → Show Text Threads (Alt+Ctrl+Y).',hint3:'View → Extras → Show Text Threads — blue lines connect threaded frames.',
+     correctFeedback:'Text threads visible. Blue arrows connect the frames showing the flow direction.',
+     incorrectFeedback:'Go to View → Extras → Show Text Threads.',
+     acpContext:'ACP Id-4.1a: Text Threads show the narrative flow. In a long publication, you can have many frames across many pages all linked in a single story.',gagneEvent:7},
+    {id:5,instruction:'Break the thread. Click the out-port of frame 1 (the arrow icon), then click on frame 1 again to break the link.',
+     expectedAction:'click',expectedTarget:'break-thread',
+     hint1:'Click the out-port arrow of the first frame.',hint2:'Click the arrow out-port of frame 1 → then click back on frame 1 to break the thread.',hint3:'Click frame 1 out-port (arrow) → cursor changes → click frame 1 to unlink.',
+     correctFeedback:'Thread broken. The frames are now independent. Text that no longer fits in frame 1 is hidden (overflow).',
+     incorrectFeedback:'Click the out-port of frame 1, then click frame 1 again to break the thread.',
+     acpContext:'ACP Id-4.1a: Breaking a thread does not delete text — it just hides overflow. The text is still there and can be re-threaded. To remove a frame from a thread without losing content: select and delete the frame (InDesign re-threads around it).',gagneEvent:8}
+  ]
+},
+
+'id-4-1b':{
+  id:'id-4-1b',tool:'indesign',domain:4,
+  objective:'4.1b',objectiveText:'Set text frame options — inset spacing and column count',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'frame-options',
+  scenario:'Configure a sidebar text frame: 6mm inset on all sides, 2 columns with 4mm gutter, and vertical alignment centred.',
+  steps:[
+    {id:1,instruction:'Select the sidebar text frame. Then open Text Frame Options: Object → Text Frame Options (Ctrl+B / Cmd+B).',
+     expectedAction:'menu-click',expectedTarget:'text-frame-options',
+     hint1:'Select the frame, then go to Object menu.',hint2:'Object → Text Frame Options (Ctrl+B).',hint3:'Select frame → Object → Text Frame Options (Ctrl+B / Cmd+B).',
+     correctFeedback:'Text Frame Options dialog open. Four tabs: General, Baseline Options, Auto-Size, Footnotes.',
+     incorrectFeedback:'Go to Object → Text Frame Options.',
+     acpContext:'ACP Id-4.1b: Text Frame Options controls the frame container properties (inset, columns, vertical alignment). This is separate from the type formatting — it affects the frame, not the text style.',gagneEvent:4},
+    {id:2,instruction:'Set Inset Spacing to 6mm on all sides. Click the chain-link icon to link all four fields, then type 6mm in the Top field.',
+     expectedAction:'input',expectedTarget:'inset-top',expectedValue:'6',matchType:'exact',
+     hint1:'Find the Inset Spacing section in the General tab.',hint2:'Click the chain-link icon to link all inset values, then type 6 in the Top field.',hint3:'Chain icon → Top inset: 6mm → all four become 6mm.',
+     correctFeedback:'6mm inset set on all sides. Text will sit 6mm inside all four frame edges.',
+     incorrectFeedback:'Set the top inset to 6mm with the chain icon linked.',
+     acpContext:'ACP Id-4.1b: Inset spacing is the padding between the frame edge and where the text begins. Essential for sidebar boxes, callout frames, and any text-in-a-box layout.',gagneEvent:6},
+    {id:3,instruction:'Set Columns to 2, Gutter to 4mm.',
+     expectedAction:'input',expectedTarget:'frame-columns',expectedValue:'2',matchType:'exact',
+     hint1:'Find the Columns section in the same dialog.',hint2:'Columns Number: 2, Gutter: 4mm.',hint3:'Number of Columns: 2 → Gutter: 4mm.',
+     correctFeedback:'Two columns set within the single frame. Text flows from the left column to the right column automatically.',
+     incorrectFeedback:'Set the column count to 2 and gutter to 4mm in Text Frame Options.',
+     acpContext:'ACP Id-4.1b: Frame columns subdivide a single text frame into columns. Unlike creating separate threaded frames, text flows automatically between them. This is faster for simple two-column layouts.',gagneEvent:6},
+    {id:4,instruction:'Set Vertical Justification to Center. Find the Vertical Justification dropdown and select Center.',
+     expectedAction:'select',expectedTarget:'vertical-justify',expectedValue:'center',matchType:'contains',
+     hint1:'Find the Vertical Justification dropdown.',hint2:'Vertical Justification dropdown → Center.',hint3:'Vertical Justification: Center → text sits in the middle of the frame height.',
+     correctFeedback:'Vertical justification set to Center. Short text will sit in the middle of the frame.',
+     incorrectFeedback:'Set Vertical Justification to Center in Text Frame Options.',
+     acpContext:'ACP Id-4.1b: Vertical justification options: Top (default), Center, Bottom, Justify (stretches leading to fill the frame). Used for pull quotes, captions, and sidebar boxes.',gagneEvent:7},
+    {id:5,instruction:'Click OK to apply all Text Frame Options.',
+     expectedAction:'click',expectedTarget:'tfo-ok',
+     hint1:'Click OK.',hint2:'Click OK to close the dialog and apply all settings.',hint3:'Click OK — the frame updates with 6mm inset, 2 columns, centred vertical alignment.',
+     correctFeedback:'Text Frame Options applied. The sidebar now has correct inset, two columns, and centred alignment.',
+     incorrectFeedback:'Click OK to apply the Text Frame Options.',
+     acpContext:'ACP Id-4.1b: Check the Preview checkbox in any InDesign dialog to see changes live before clicking OK — this is a consistent workflow shortcut worth knowing for the exam.',gagneEvent:7}
+  ]
+},
+
+'id-4-2a':{
+  id:'id-4-2a',tool:'indesign',domain:4,
+  objective:'4.2a',objectiveText:'Create and apply Paragraph Styles',
+  bloomsLevel:'Apply',estimatedMinutes:9,uiType:'para-styles',
+  scenario:'Build a typographic system for a magazine: create Body Text, Heading 1, and Pull Quote Paragraph Styles. Apply them consistently to format an article.',
+  steps:[
+    {id:1,instruction:'Open Paragraph Styles panel. Window → Styles → Paragraph Styles (F11).',
+     expectedAction:'menu-click',expectedTarget:'window-para-styles',
+     hint1:'Go to Window → Styles.',hint2:'Window → Styles → Paragraph Styles (F11).',hint3:'Window → Styles → Paragraph Styles.',
+     correctFeedback:'Paragraph Styles panel open. Default styles: [Basic Paragraph] is the baseline. All custom styles are based on it by default.',
+     incorrectFeedback:'Go to Window → Styles → Paragraph Styles.',
+     acpContext:'ACP Id-4.2a: Paragraph Styles in InDesign store ALL paragraph-level formatting: font, size, leading, alignment, spacing before/after, indents, rules, tabs, and nested/GREP styles.',gagneEvent:3},
+    {id:2,instruction:'Create the Body Text style. Format a paragraph of body text manually first (font, size, leading). Then click the New Style button (+) in the panel.',
+     expectedAction:'click',expectedTarget:'new-para-style',
+     hint1:'Format a paragraph, then click + in the Paragraph Styles panel.',hint2:'Format body text → click + at the panel bottom → New Paragraph Style dialog opens with current formatting pre-loaded.',hint3:'Format body text → Paragraph Styles panel → + button → name: Body Text → OK.',
+     correctFeedback:'New Paragraph Style dialog open with your formatting pre-loaded. Name it "Body Text".',
+     incorrectFeedback:'Click the + button in the Paragraph Styles panel.',
+     acpContext:'ACP Id-4.2a: Always format one example paragraph manually first, then create the style from it — this ensures the style definition matches what you see. Never build styles from scratch in the dialog.',gagneEvent:6},
+    {id:3,instruction:'Name the style "Body Text" and set Based On to [No Paragraph Style]. Click OK.',
+     expectedAction:'input',expectedTarget:'para-style-name',expectedValue:'body text',matchType:'contains',
+     hint1:'Find the style name field.',hint2:'Type "Body Text" in the Style Name field. Set Based On to [No Paragraph Style].',hint3:'Style Name: Body Text → Based On: [No Paragraph Style] → OK.',
+     correctFeedback:'"Body Text" style created. It appears in the Paragraph Styles panel.',
+     incorrectFeedback:'Name the style "Body Text" and click OK.',
+     acpContext:'ACP Id-4.2a: "Based On" creates a style hierarchy. If Body Text is based on [No Paragraph Style], it is independent. If based on another style, it inherits and overrides selectively.',gagneEvent:7},
+    {id:4,instruction:'Create a Heading 1 style. Format a heading, then click + to save as "Heading 1". Set Next Style to "Body Text".',
+     expectedAction:'click',expectedTarget:'new-para-style-h1',
+     hint1:'Format a heading, then click + in the panel.',hint2:'Format the heading → + → name: Heading 1 → Next Style: Body Text → OK.',hint3:'Format heading → + → Style Name: Heading 1 → Next Style: Body Text → OK.',
+     correctFeedback:'"Heading 1" saved. Setting Next Style to Body Text means pressing Enter after a heading automatically applies Body Text to the next paragraph.',
+     incorrectFeedback:'Format a heading and click + to create a Heading 1 style.',
+     acpContext:'ACP Id-4.2a: Next Style is one of the most powerful Paragraph Style features. When you press Enter at the end of a paragraph, the NEXT paragraph automatically uses the specified style.',gagneEvent:7},
+    {id:5,instruction:'Apply the Body Text style to a paragraph. Click inside a body paragraph, then click "Body Text" in the Paragraph Styles panel.',
+     expectedAction:'click',expectedTarget:'apply-para-style',
+     hint1:'Click inside a paragraph, then click the style name.',hint2:'Click in a paragraph → click Body Text in the Paragraph Styles panel → all formatting applies.',hint3:'Place cursor in paragraph → click Body Text in panel → the paragraph updates instantly.',
+     correctFeedback:'Paragraph Style applied. The paragraph now matches the Body Text style definition.',
+     incorrectFeedback:'Click inside a paragraph and then click the Body Text style in the panel.',
+     acpContext:'ACP Id-4.2a: Click once in a paragraph to apply the style to that paragraph. Select multiple paragraphs first to apply to many at once. A "+" next to the style name means local overrides exist.',gagneEvent:8}
+  ]
+},
+
+'id-4-2b':{
+  id:'id-4-2b',tool:'indesign',domain:4,
+  objective:'4.2b',objectiveText:'Create Character Styles and sync styles between documents',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'char-styles',
+  scenario:'Create a Character Style for bold pull-quote emphasis (bold, brand colour). Apply it to selected words. Then sync styles to another document via a Book panel.',
+  steps:[
+    {id:1,instruction:'Open Character Styles panel. Window → Styles → Character Styles (Shift+F11).',
+     expectedAction:'menu-click',expectedTarget:'window-char-styles',
+     hint1:'Go to Window → Styles.',hint2:'Window → Styles → Character Styles (Shift+F11).',hint3:'Window → Styles → Character Styles.',
+     correctFeedback:'Character Styles panel open. Unlike Paragraph Styles which apply to whole paragraphs, Character Styles apply to selected ranges of text.',
+     incorrectFeedback:'Go to Window → Styles → Character Styles.',
+     acpContext:'ACP Id-4.2b: Character Styles only override specific character attributes (font, size, colour, etc.). They layer ON TOP of a Paragraph Style — so a Character Style only needs to contain the attributes that differ.',gagneEvent:3},
+    {id:2,instruction:'Create an "Emphasis" Character Style. Select a word, make it bold and colour it with the brand colour swatch. Click + in the Character Styles panel.',
+     expectedAction:'click',expectedTarget:'new-char-style',
+     hint1:'Select a word, format it, then click + in the Character Styles panel.',hint2:'Select word → bold + brand colour → Character Styles panel → + button.',hint3:'Select text → bold + brand colour → + in Character Styles panel → name: Emphasis → OK.',
+     correctFeedback:'"Emphasis" Character Style created.',
+     incorrectFeedback:'Select text, format it, then click + in the Character Styles panel.',
+     acpContext:'ACP Id-4.2b: Character Styles should only include the minimum formatting needed. A style that only sets Bold and Colour applies cleanly on top of any Paragraph Style. Over-specified Character Styles cause maintenance problems.',gagneEvent:6},
+    {id:3,instruction:'Apply the Emphasis style to selected text. Select a word or phrase, then click "Emphasis" in the Character Styles panel.',
+     expectedAction:'click',expectedTarget:'apply-char-style',
+     hint1:'Select some text, then click the style.',hint2:'Select text → click Emphasis in the Character Styles panel.',hint3:'Select text → Character Styles panel → click Emphasis.',
+     correctFeedback:'Character Style applied to the selected text. It takes on the bold and colour from the style.',
+     incorrectFeedback:'Select text and click the Emphasis style in the Character Styles panel.',
+     acpContext:'ACP Id-4.2b: Character Styles apply to any selected range — a letter, a word, a phrase. They do not affect the surrounding Paragraph Style formatting.',gagneEvent:7},
+    {id:4,instruction:'Sync styles via Book panel. File → New → Book creates a .indb file. Add documents to the book. Right-click the style source document → Synchronize.',
+     expectedAction:'menu-click',expectedTarget:'file-new-book',
+     hint1:'Go to File → New → Book.',hint2:'File → New → Book → creates a .indb file → add documents → right-click source → Synchronize.',hint3:'File → New → Book → save .indb → Add Documents → Synchronize.',
+     correctFeedback:'Book panel: a .indb file links multiple InDesign documents. The document with the bookmark icon is the style source. Synchronizing pushes styles from the source to all other documents in the book.',
+     incorrectFeedback:'Go to File → New → Book to create a Book file.',
+     acpContext:'ACP Id-4.2b: Book synchronization is how professional publishing workflows maintain consistent styles across chapters. The source document is marked with a bookmark icon in the Book panel.',gagneEvent:7}
+  ]
+},
+
+'id-4-3a':{
+  id:'id-4-3a',tool:'indesign',domain:4,
+  objective:'4.3a',objectiveText:'Create and format tables in InDesign',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'tables',
+  scenario:'Insert a 4-column, 5-row data table, format the header row, apply alternating row fills, and set column stroke weights.',
+  steps:[
+    {id:1,instruction:'Insert a table. Place cursor in a text frame. Table → Insert Table. Set 5 rows, 4 columns, 1 header row.',
+     expectedAction:'menu-click',expectedTarget:'insert-table',
+     hint1:'Place the text cursor inside a text frame first.',hint2:'Table → Insert Table (Ctrl+Alt+Shift+T).',hint3:'Click inside a text frame → Table → Insert Table → Body Rows: 5, Columns: 4, Header Rows: 1 → OK.',
+     correctFeedback:'Table inserted inside the text frame. InDesign tables live inside text frames — they are not standalone objects.',
+     incorrectFeedback:'Click inside a text frame, then go to Table → Insert Table.',
+     acpContext:'ACP Id-4.3a: InDesign tables live inside text frames — they are part of the text flow. This means they can thread across pages, have their rows break across frames, and inherit text frame properties.',gagneEvent:4},
+    {id:2,instruction:'Select the header row. Click in the first cell, then Table → Select → Row.',
+     expectedAction:'menu-click',expectedTarget:'select-header-row',
+     hint1:'Click inside the header row, then use Table → Select.',hint2:'Click in the header row → Table → Select → Row.',hint3:'Click in any header cell → Table → Select → Row.',
+     correctFeedback:'Header row selected. Apply formatting to the entire row at once.',
+     incorrectFeedback:'Click in the header row, then go to Table → Select → Row.',
+     acpContext:'ACP Id-4.3a: Table selection shortcuts: click+drag to select cells, Table → Select → Row/Column/All. Shift+click extends selection. The Type tool must be active to work inside tables.',gagneEvent:5},
+    {id:3,instruction:'Fill the header row. With the row selected, open the Swatches panel and click a dark fill colour.',
+     expectedAction:'click',expectedTarget:'header-row-fill',
+     hint1:'With the row selected, apply a fill from the Swatches panel.',hint2:'Row selected → Swatches panel → click a dark colour → the header row fills.',hint3:'Select header row → Swatches panel → click brand dark colour → header fills.',
+     correctFeedback:'Header row filled. The fill applies to all cells in the selected row.',
+     incorrectFeedback:'With the header row selected, click a fill colour in the Swatches panel.',
+     acpContext:'ACP Id-4.3a: Cell fills, strokes, and text formatting all apply to selected cells. For quick row-level formatting: select the row, then apply fill/stroke from panels or the Cell Options dialog.',gagneEvent:6},
+    {id:4,instruction:'Apply alternating row fills. Table → Table Options → Alternating Fills. Set alternating colour for odd rows.',
+     expectedAction:'menu-click',expectedTarget:'alternating-fills',
+     hint1:'Go to Table → Table Options.',hint2:'Table → Table Options → Alternating Fills.',hint3:'Table → Table Options → Alternating Fills → set odd row colour → OK.',
+     correctFeedback:'Alternating fills configured. Every other row now has a light tint, improving readability.',
+     incorrectFeedback:'Go to Table → Table Options → Alternating Fills.',
+     acpContext:'ACP Id-4.3a: Table Options (Ctrl+Alt+Shift+B) controls the entire table structure and alternating fills/strokes. Cell Options (Ctrl+Alt+B) controls individual or selected cells.',gagneEvent:7},
+    {id:5,instruction:'Set column stroke weight. Select a column. Table → Cell Options → Strokes and Fills. Set the stroke weight to 0.5pt.',
+     expectedAction:'menu-click',expectedTarget:'cell-options-strokes',
+     hint1:'Select a column, then go to Table → Cell Options.',hint2:'Select column → Table → Cell Options → Strokes and Fills → set stroke weight.',hint3:'Select column → Table → Cell Options → Strokes and Fills tab → Weight: 0.5pt → OK.',
+     correctFeedback:'Column stroke weight set to 0.5pt — a refined, professional stroke weight.',
+     incorrectFeedback:'Select a column and go to Table → Cell Options → Strokes and Fills.',
+     acpContext:'ACP Id-4.3a: The proxy diagram in Cell Options shows which borders the stroke applies to — click border segments in the proxy to select/deselect which borders to style.',gagneEvent:7}
+  ]
+},
+
+'id-4-4a':{
+  id:'id-4-4a',tool:'indesign',domain:4,
+  objective:'4.4a',objectiveText:'Use Story Editor, spell check, and Find/Change',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'story-editor',
+  scenario:'Edit a long article efficiently using Story Editor, run spell check, and use Find/Change to replace all instances of "colour" with "color" throughout the document.',
+  steps:[
+    {id:1,instruction:'Open Story Editor. Select a text frame, then Edit → Edit in Story Editor (Ctrl+Y / Cmd+Y).',
+     expectedAction:'menu-click',expectedTarget:'edit-story-editor',
+     hint1:'Select a text frame, then go to Edit menu.',hint2:'Edit → Edit in Story Editor (Ctrl+Y).',hint3:'Select the text frame → Edit → Edit in Story Editor.',
+     correctFeedback:'Story Editor open. It shows a clean word-processor view with Paragraph Style names in the left margin. Much faster for editing long articles than the layout view.',
+     incorrectFeedback:'Select a text frame and go to Edit → Edit in Story Editor.',
+     acpContext:'ACP Id-4.4a: Story Editor shows the full text of a story (all linked frames) in one window, with style names in the left column. Overset text appears after a red line at the bottom.',gagneEvent:4},
+    {id:2,instruction:'Close Story Editor and run Spell Check. Edit → Spelling → Check Spelling (Ctrl+I / Cmd+I).',
+     expectedAction:'menu-click',expectedTarget:'check-spelling',
+     hint1:'Go to Edit → Spelling.',hint2:'Edit → Spelling → Check Spelling (Ctrl+I).',hint3:'Edit → Spelling → Check Spelling.',
+     correctFeedback:'Spell Check dialog open. It highlights suspicious words and offers corrections, ignore, or add-to-dictionary options.',
+     incorrectFeedback:'Go to Edit → Spelling → Check Spelling.',
+     acpContext:'ACP Id-4.4a: InDesign spell check also catches repeated words and capitalisation errors. Enable Dynamic Spelling (Edit → Spelling → Dynamic Spelling) to underline errors as you type.',gagneEvent:5},
+    {id:3,instruction:'Open Find/Change. Edit → Find/Change (Ctrl+F / Cmd+F). Set Find: "colour", Change To: "color". Click Change All.',
+     expectedAction:'menu-click',expectedTarget:'find-change',
+     hint1:'Go to Edit → Find/Change.',hint2:'Edit → Find/Change (Ctrl+F).',hint3:'Edit → Find/Change → Find: colour → Change To: color → Change All.',
+     correctFeedback:'Find/Change dialog open. InDesign\'s Find/Change supports text, GREP (regex), glyphs, and object attributes.',
+     incorrectFeedback:'Go to Edit → Find/Change.',
+     acpContext:'ACP Id-4.4a: Find/Change scope: Story (current story), Document (all stories in this file), All Documents (all open InDesign files). Always check the scope before running Change All.',gagneEvent:6},
+    {id:4,instruction:'Set the search scope to "Document". Find "colour", Change To "color", then click Change All.',
+     expectedAction:'click',expectedTarget:'change-all',
+     hint1:'Set scope to Document, then click Change All.',hint2:'Scope dropdown: Document → Find: colour → Change To: color → Change All.',hint3:'Document scope → type search and replacement terms → Change All → a count dialog confirms how many replacements were made.',
+     correctFeedback:'All instances replaced. InDesign reports the number of replacements made.',
+     incorrectFeedback:'Click Change All with Document scope selected.',
+     acpContext:'ACP Id-4.4a: Change All is immediate and cannot be undone in stages — each replacement is one undo step. For large documents, do a Find All first to review matches before committing to Change All.',gagneEvent:7},
+    {id:5,instruction:'Use GREP Find/Change to find all instances of two or more spaces. In Find/Change, click the GREP tab. Set Find: " {2,}" (two or more spaces). Change To: " " (single space).',
+     expectedAction:'click',expectedTarget:'grep-tab',
+     hint1:'Click the GREP tab in the Find/Change dialog.',hint2:'GREP tab → Find what: " {2,}" → Change To: " " → Change All.',hint3:'GREP tab → Find: space+{2,} → Change To: single space → Change All.',
+     correctFeedback:'GREP Find/Change executed. All double-spaces replaced with single spaces.',
+     incorrectFeedback:'Click the GREP tab in the Find/Change dialog.',
+     acpContext:'ACP Id-4.4a: GREP (Global Regular Expression Print) enables pattern-based searches — find any phone number format, any email, any two-digit number at the start of a line. The ACP exam tests awareness of GREP as a Find/Change mode.',gagneEvent:8}
+  ]
+},
+
+'id-4-mc':{
+  id:'id-4-mc',tool:'indesign',domain:4,
+  objective:'4.1–4.4',objectiveText:'Domain 4 knowledge check',
+  bloomsLevel:'Understand',estimatedMinutes:8,uiType:'mc',
+  questions:[
+    {q:'A red plus (+) in the lower-right corner of a text frame indicates:',options:['The frame is part of a Book','The frame uses a Paragraph Style','Text is overflowing — more text exists than the frame can show','The frame is on a locked layer'],correct:2,explanation:'The red + in the out-port means text is overflowing. Click it to load the thread cursor, then click another frame (or draw a new one) to flow the overflow text into it.',acpObj:'Id-4.1a'},
+    {q:'What does "Next Style" in a Paragraph Style definition do?',options:['Sets the style for the previous paragraph','When you press Enter at the end of a paragraph, the next paragraph automatically uses the specified style','Links the style to a Character Style','Defines which style overrides this one'],correct:1,explanation:'"Next Style" automates typographic flow — a Heading style can automatically apply Body Text to the paragraph that follows it when you press Enter.',acpObj:'Id-4.2a'},
+    {q:'Which dialog sets the number of columns within a single InDesign text frame?',options:['Layout → Margins and Columns','Object → Text Frame Options (Ctrl+B)','Table → Insert Table','Window → Styles → Paragraph Styles'],correct:1,explanation:'Object → Text Frame Options (Ctrl+B) controls the text frame container: inset spacing, column count, gutter, and vertical justification. This is different from document-wide column guides set in Layout → Margins and Columns.',acpObj:'Id-4.1b'},
+    {q:'Where do InDesign tables live?',options:['As standalone objects on the page','Inside text frames — they are part of the text flow','Inside image frames','On their own separate layer'],correct:1,explanation:'InDesign tables are embedded in text frames. They flow with the text story, can thread across pages, and inherit text frame properties. This is fundamentally different from how tables work in page layout applications like QuarkXPress.',acpObj:'Id-4.3a'},
+    {q:'What is the key advantage of Story Editor over editing text directly on the layout?',options:['Story Editor is the only place Paragraph Styles work','Story Editor shows all text in a linked story in one clean window — including overset text — making long-form editing much faster','Story Editor spell-checks as you type','Story Editor allows formatting that the layout does not'],correct:1,explanation:'Story Editor shows the complete story (all linked frames) in a single distraction-free window with style names in the left margin. Overset text appears after a red line — impossible to see in the normal layout view.',acpObj:'Id-4.4a'},
+    {q:'A Character Style should contain:',options:['All character formatting including font, size, leading, and colour','Only the minimum attributes that differ from the Paragraph Style — e.g. bold and colour only','The same formatting as the Paragraph Style it will be used with','At least five formatting attributes to be valid'],correct:1,explanation:'Character Styles should be minimal — only the attributes that need to override the Paragraph Style. Over-specifying (including font family, size, etc.) creates maintenance problems when the base Paragraph Style changes.',acpObj:'Id-4.2b'}
+  ]
+}
+};
+
+/* ═══ SHARED ENGINE ══════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[],mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array((task.steps||[]).length).fill(null);mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${t.objective}</span>
+      <span class="badge badge-id">InDesign</span>
+      <span class="badge badge-live">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+function renderUI(t){
+  if(t.uiType==='mc'){document.getElementById('adobe-sim').innerHTML='';return;}
+  const map={
+    'threading':threadingUI,'frame-options':frameOptionsUI,
+    'para-styles':paraStylesUI,'char-styles':charStylesUI,
+    'tables':tablesUI,'story-editor':storyEditorUI
+  };
+  document.getElementById('adobe-sim').innerHTML=map[t.uiType]?map[t.uiType]():'';
+}
+
+function idShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Id</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function defaultTools(){
+  return`<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+    <div class="tool-btn highlight" id="tb-type" onclick="doTool('type-tool')" style="font-weight:700;font-size:12px;">T</div>
+    <div class="tool-btn">▭</div>`;
+}
+
+function threadingUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('show-text-threads')">View</span>
+     <span class="menu-item">Window</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;flex-wrap:wrap;align-content:center;justify-content:center;">
+      <div style="position:relative;">
+        <div class="id-page" style="width:95px;height:120px;position:relative;">
+          <div class="id-text-frame overflow" id="frame1" style="left:6px;top:6px;right:6px;height:80px;" onclick="doAction('overflow-outport')">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...
+          </div>
+          <div id="thread-arrow1" style="display:none;position:absolute;right:6px;bottom:26px;font-size:8px;color:#31A8FF;">→</div>
+          <div style="position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:7px;color:#AAA;">Page 1</div>
+        </div>
+      </div>
+      <div style="position:relative;">
+        <div class="id-page" style="width:95px;height:120px;position:relative;">
+          <div class="id-text-frame" id="frame2" style="left:6px;top:6px;right:6px;height:80px;border-color:rgba(0,100,200,.15);cursor:pointer;" onclick="doAction('place-threaded-frame')">
+            <span id="frame2-content" style="color:#CCC;font-style:italic;">Click to thread here</span>
+          </div>
+          <div id="thread-line" style="display:none;position:absolute;top:40%;left:-8px;width:8px;height:1px;background:#31A8FF;"></div>
+          <div style="position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:7px;color:#AAA;">Page 2</div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Threading</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doAction('overflow-outport')">Click red + out-port</div>
+       <div class="adj-btn" onclick="doAction('goto-page2-thread')">Navigate to page 2</div>
+       <div class="adj-btn" onclick="doAction('place-threaded-frame')">Click to place thread</div>
+       <div class="adj-btn" onclick="doMenu('show-text-threads')">View → Show Text Threads</div>
+       <div class="adj-btn" onclick="doAction('break-thread')">Click out-port to break thread</div>
+     </div>`
+  );
+}
+
+function frameOptionsUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('text-frame-options')">Object</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:150px;display:flex;align-items:center;justify-content:center;">
+        <div id="sidebar-frame" style="width:140px;height:100px;border:0.5px solid #888;padding:4px;font-size:7px;color:#333;position:relative;transition:all .4s;">
+          <div id="sidebar-content">Sidebar text content here. With default frame options.</div>
+          <div id="col-divider" style="display:none;position:absolute;top:4px;bottom:4px;left:50%;width:1px;background:rgba(0,100,200,.3);"></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Text Frame Options</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('text-frame-options')">Object → Text Frame Options (Ctrl+B)</div>
+       <div class="prop-row" style="margin-top:4px;"><span class="prop-label">Inset</span>
+         <input class="prop-input highlight" id="inp-inset" style="width:50px;" oninput="doInput('inset-top',this.value)" placeholder="6mm"></div>
+       <div class="prop-row"><span class="prop-label">Columns</span>
+         <input class="prop-input" id="inp-cols" style="width:50px;" oninput="doInput('frame-columns',this.value)" placeholder="2"></div>
+       <div class="prop-row"><span class="prop-label">Vert align</span>
+         <select class="prop-select highlight" onchange="doSelect('vertical-justify',this.value.toLowerCase())">
+           <option value="top">Top</option>
+           <option value="center">Center</option>
+           <option value="bottom">Bottom</option>
+         </select></div>
+       <button onclick="doAction('tfo-ok')" style="width:100%;margin-top:4px;padding:4px;background:#00C896;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+function paraStylesUI(){
+  const styles=['[Basic Paragraph]','Body Text','Heading 1','Pull Quote'];
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-para-styles')">Window</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:155px;padding:8px;overflow:hidden;">
+        <div id="heading-text" style="font-size:11px;font-weight:600;color:#1A1A2E;margin-bottom:3px;cursor:pointer;transition:all .3s;" onclick="doAction('apply-para-style')">Article Headline</div>
+        <div id="body-text" style="font-size:7.5px;color:#333;line-height:1.5;cursor:pointer;transition:all .3s;" onclick="doAction('apply-para-style')">Body text paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</div>
+        <div id="pullquote-text" style="font-size:9px;font-style:italic;color:#666;margin-top:5px;cursor:pointer;transition:all .3s;" onclick="doAction('new-para-style-h1')">"A powerful pull quote sits here."</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Paragraph Styles <span style="font-size:8px;color:#666;">(F11)</span></div>
+     <div id="para-styles-list">
+       ${styles.map((s,i)=>`<div class="style-row" id="pstyle-${i}" onclick="doAction('apply-para-style')">${s}</div>`).join('')}
+     </div>
+     <div style="display:flex;gap:3px;padding:5px 6px;border-top:0.5px solid #1A1A1A;">
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doMenu('window-para-styles')">Open</div>
+       <div class="adj-btn highlight" style="margin:0;flex:1;" onclick="doAction('new-para-style')">+ New</div>
+     </div>
+     <div class="panel-body">
+       <div class="prop-row"><span class="prop-label">Style name</span>
+         <input class="prop-input highlight" id="inp-ps-name" style="width:90px;" oninput="doInput('para-style-name',this.value.toLowerCase())"></div>
+     </div>`
+  );
+}
+
+function charStylesUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-char-styles')">Window</span>
+     <span class="menu-item" onclick="doMenu('file-new-book')">File</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:155px;padding:8px;overflow:hidden;">
+        <div style="font-size:8px;color:#333;line-height:1.6;">Body text with <span id="emphasis-text" style="cursor:pointer;transition:all .3s;" onclick="doAction('apply-char-style')">important emphasis text</span> and more body text flowing after it. The styled words stand out clearly.</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Character Styles <span style="font-size:8px;color:#666;">(Shift+F11)</span></div>
+     <div id="char-styles-list">
+       <div class="style-row">[None]</div>
+       <div class="style-row" id="emphasis-style-row" style="display:none;" onclick="doAction('apply-char-style')">Emphasis</div>
+     </div>
+     <div style="display:flex;gap:3px;padding:5px 6px;border-top:0.5px solid #1A1A1A;">
+       <div class="adj-btn highlight" style="margin:0;flex:1;" onclick="doAction('new-char-style')">+ New</div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn" onclick="doMenu('file-new-book')">File → New → Book</div>
+       <div style="font-size:9px;color:#888;margin-top:3px;line-height:1.5;">Book → Synchronize → styles push to all documents in the book</div>
+     </div>`
+  );
+}
+
+function tablesUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('insert-table')">Table</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:155px;padding:8px;display:flex;align-items:center;justify-content:center;">
+        <div id="table-placeholder" style="font-size:8px;color:#888;text-align:center;">Table → Insert Table to create</div>
+        <table class="id-table" id="main-table" style="display:none;width:100%;">
+          <thead><tr id="header-row">
+            <th>Name</th><th>Q1</th><th>Q2</th><th>Total</th>
+          </tr></thead>
+          <tbody>
+            <tr id="row-1"><td>Alice</td><td>42</td><td>38</td><td>80</td></tr>
+            <tr id="row-2"><td>Bob</td><td>35</td><td>44</td><td>79</td></tr>
+            <tr id="row-3"><td>Carol</td><td>48</td><td>46</td><td>94</td></tr>
+            <tr id="row-4"><td>David</td><td>31</td><td>39</td><td>70</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Table</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('insert-table')">Table → Insert Table</div>
+       <div class="adj-btn" onclick="doMenu('select-header-row')">Table → Select → Row</div>
+       <div class="adj-btn" onclick="doAction('header-row-fill')">Apply fill to header</div>
+       <div class="adj-btn" onclick="doMenu('alternating-fills')">Table → Table Options → Alternating Fills</div>
+       <div class="adj-btn" onclick="doMenu('cell-options-strokes')">Table → Cell Options → Strokes</div>
+     </div>`
+  );
+}
+
+function storyEditorUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('edit-story-editor')">Edit</span>
+     <span class="menu-item" onclick="doMenu('check-spelling')">Edit</span>
+     <span class="menu-item" onclick="doMenu('find-change')">Edit</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="flex-direction:column;padding:.5rem;gap:.5rem;">
+      <div class="id-page" style="width:200px;height:100px;padding:8px;font-size:7.5px;color:#333;line-height:1.5;">
+        The quick brown fox. Some text has colour differences in spelling. Double spacing  here needs fixing.
+      </div>
+      <div id="story-editor-panel" style="display:none;background:#1A1A1A;border:0.5px solid #444;border-radius:4px;width:200px;padding:6px 8px;">
+        <div style="font-size:8px;color:#888;margin-bottom:3px;">Story Editor</div>
+        <div style="display:flex;gap:4px;">
+          <div style="font-size:8px;color:#00C896;min-width:55px;">Body Text</div>
+          <div style="font-size:8px;color:#CCC;">The quick brown fox. Some text has colour differences...</div>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:2px;">
+          <div style="font-size:8px;color:#00C896;min-width:55px;">Body Text</div>
+          <div style="font-size:8px;color:#CCC;">Double spacing  here needs fixing.</div>
+        </div>
+        <div style="height:1px;background:#FF4D6D;margin:4px 0;"></div>
+        <div style="font-size:7px;color:#FF4D6D;">↑ Overset text begins here</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Edit tools</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('edit-story-editor')">Edit → Story Editor (Ctrl+Y)</div>
+       <div class="adj-btn" onclick="doMenu('check-spelling')">Edit → Spelling → Check Spelling</div>
+       <div class="adj-btn" onclick="doMenu('find-change')">Edit → Find/Change (Ctrl+F)</div>
+       <div class="adj-btn" onclick="doAction('change-all')">Find: colour → Change All</div>
+       <div class="adj-btn" onclick="doAction('grep-tab')">GREP tab for pattern search</div>
+     </div>
+     <div class="panel-hdr" id="fc-hdr" style="display:none;">Find/Change</div>
+     <div class="panel-body" id="fc-panel" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Find</span>
+         <input class="prop-input" style="width:80px;" value="colour"></div>
+       <div class="prop-row"><span class="prop-label">Change to</span>
+         <input class="prop-input highlight" style="width:80px;" value="color"></div>
+       <div class="prop-row"><span class="prop-label">Scope</span>
+         <select class="prop-select"><option>Story</option><option selected>Document</option></select></div>
+       <button onclick="doAction('change-all')" style="width:100%;margin-top:4px;padding:4px;background:#00C896;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">Change All</button>
+     </div>`
+  );
+}
+
+/* ═══ ACTIONS ══════════════════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+function applyEffect(t){
+  const fx={
+    'overflow-outport':()=>{const f=document.getElementById('frame1');if(f)f.style.borderColor='#31A8FF';},
+    'goto-page2-thread':()=>{},
+    'place-threaded-frame':()=>{
+      const f=document.getElementById('frame2-content');if(f){f.textContent='...aliquet risus. Nulla fringilla purus at leo dignissim congue.';f.style.color='#333';f.style.fontStyle='normal';}
+      const l=document.getElementById('thread-line');if(l)l.style.display='block';
+      const a=document.getElementById('thread-arrow1');if(a)a.style.display='block';
+    },
+    'show-text-threads':()=>{},
+    'break-thread':()=>{const f=document.getElementById('frame2-content');if(f){f.textContent='(Thread broken)';f.style.color='#888';f.style.fontStyle='italic';}const l=document.getElementById('thread-line');if(l)l.style.display='none';},
+    'text-frame-options':()=>{},
+    'inset-top':()=>{const f=document.getElementById('sidebar-frame');if(f)f.style.padding='9px';},
+    'frame-columns':()=>{const d=document.getElementById('col-divider');if(d)d.style.display='block';},
+    'vertical-justify':()=>{const f=document.getElementById('sidebar-frame');if(f)f.style.justifyContent='center';f&&(f.style.display='flex')&&(f.style.alignItems='center');},
+    'tfo-ok':()=>{const f=document.getElementById('sidebar-frame');if(f){f.style.padding='9px';const d=document.getElementById('col-divider');if(d)d.style.display='block';}},
+    'window-para-styles':()=>{},
+    'new-para-style':()=>{},
+    'para-style-name':()=>{},
+    'new-para-style-h1':()=>{},
+    'apply-para-style':()=>{
+      const h=document.getElementById('heading-text');if(h){h.style.fontFamily='Georgia,serif';h.style.letterSpacing='.03em';}
+      const b=document.getElementById('body-text');if(b){b.style.lineHeight='1.7';b.style.color='#1A1A2E';}
+      document.querySelectorAll('.style-row').forEach(r=>r.classList.remove('applied'));
+      document.querySelector('.style-row')&&document.querySelectorAll('.style-row')[1]?.classList.add('applied');
+    },
+    'window-char-styles':()=>{},
+    'new-char-style':()=>{const r=document.getElementById('emphasis-style-row');if(r)r.style.display='flex';},
+    'apply-char-style':()=>{const e=document.getElementById('emphasis-text');if(e){e.style.fontWeight='700';e.style.color='#00C896';}},
+    'file-new-book':()=>{},
+    'insert-table':()=>{document.getElementById('table-placeholder')&&(document.getElementById('table-placeholder').style.display='none');document.getElementById('main-table')&&(document.getElementById('main-table').style.display='table');},
+    'select-header-row':()=>{const r=document.getElementById('header-row');if(r)r.style.background='rgba(0,200,150,.15)';},
+    'header-row-fill':()=>{const r=document.querySelector('#main-table th');r&&document.querySelectorAll('#main-table th').forEach(th=>{th.style.background='#1A1A2E';th.style.color='#FFF';});},
+    'alternating-fills':()=>{document.querySelectorAll('#main-table tbody tr:nth-child(even)').forEach(r=>{r.style.background='rgba(0,200,150,.08)';});},
+    'cell-options-strokes':()=>{document.querySelectorAll('#main-table td,#main-table th').forEach(c=>{c.style.borderColor='#444';});},
+    'edit-story-editor':()=>{const p=document.getElementById('story-editor-panel');if(p)p.style.display='block';},
+    'check-spelling':()=>{},
+    'find-change':()=>{const h=document.getElementById('fc-hdr');if(h)h.style.display='flex';const p=document.getElementById('fc-panel');if(p)p.style.display='block';},
+    'change-all':()=>{const el=document.querySelector('.id-page');if(el)el.innerHTML=el.innerHTML.replace(/colour/g,'color');},
+    'grep-tab':()=>{}
+  };
+  if(fx[t])fx[t]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask||currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">Domain 4 knowledge check · ${qs.length} questions</div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`<div onclick="selectMC(${qi},${oi},${q.correct})" id="mc-opt-${qi}-${oi}" style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;">${opt}</div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;line-height:1.5;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()">Submit answers</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{el.style.borderColor='var(--color-border-tertiary)';el.style.background='var(--surface)';el.style.color='var(--text-secondary)';});
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(0,200,150,.4)';sel.style.background='rgba(0,200,150,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}el.style.cursor='default';el.style.pointerEvents='none';});
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation+` <span style="font-family:var(--font-mono);font-size:.7rem;opacity:.7;">${q.acpObj}</span>`;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const id=currentTask.id.replace(/-/g,'');const sc=document.getElementById('sc-'+id);if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+id);if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#00C896'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#00C896;">Id-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button><a href="d5-visual-elements.html" class="btn btn-primary btn-sm" style="text-decoration:none;background:#00C896;border-color:#00C896;color:#000;">Domain 5 →</a></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('id-4-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

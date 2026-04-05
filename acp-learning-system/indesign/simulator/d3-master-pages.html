@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Id · Domain 3: Organising Documents | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--id:#00C896;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#001F14 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,200,150,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--id);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--id);color:#000;border-color:var(--id);}
+.adobe-sim{background:#303030;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3A3A3A;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#00C896;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 240px;min-height:360px;}
+.adobe-tools{background:#303030;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(0,200,150,.2);color:#00C896;}
+.tool-btn.highlight{border:1.5px solid #00C896;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#5A5A5A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.id-page{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.id-page .margin{position:absolute;border:0.5px solid rgba(0,100,200,.35);pointer-events:none;}
+.page-label{position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:7px;color:#AAA;font-family:var(--font-mono);}
+.master-indicator{position:absolute;top:2px;right:2px;font-size:7px;font-weight:700;color:#00C896;font-family:var(--font-mono);}
+.adobe-panels{background:#303030;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;overflow-y:auto;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;cursor:pointer;flex-shrink:0;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;min-width:55px;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#00C896;}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:#00C896;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#00C896;color:#00C896;}
+.pages-panel-page{display:inline-flex;flex-direction:column;align-items:center;cursor:pointer;padding:3px;}
+.pages-panel-page .pp-thumb{width:22px;height:28px;background:#FFF;border:0.5px solid #555;border-radius:1px;position:relative;font-size:6px;display:flex;align-items:center;justify-content:center;color:#888;transition:border-color .15s;}
+.pages-panel-page .pp-thumb:hover{border-color:#00C896;}
+.pages-panel-page .pp-thumb.selected{border-color:#00C896;background:rgba(0,200,150,.06);}
+.pages-panel-page .pp-thumb.has-master::after{content:'A';position:absolute;top:1px;right:2px;font-size:5px;color:#00C896;font-weight:700;}
+.pages-panel-page .pp-label{font-size:7px;color:#888;margin-top:2px;}
+.master-page-row{display:flex;align-items:center;gap:5px;padding:3px 5px;border-bottom:0.5px solid #1A1A1A;cursor:pointer;}
+.master-page-row:hover{background:#3A3A3A;}
+.master-prefix{font-size:9px;font-weight:700;color:#00C896;font-family:var(--font-mono);width:14px;}
+.master-name{font-size:10px;color:#CCC;}
+.layer-row{display:flex;align-items:center;gap:5px;padding:4px 6px;border-bottom:0.5px solid #1A1A1A;cursor:pointer;}
+.layer-row:hover{background:#3A3A3A;}
+.layer-row.selected{background:rgba(0,200,150,.08);}
+.layer-eye{font-size:9px;color:#777;width:12px;text-align:center;cursor:pointer;}
+.layer-eye.vis{color:#CCC;}
+.layer-lock{font-size:9px;color:#555;cursor:pointer;}
+.layer-color{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.layer-name{flex:1;font-size:10px;color:#CCC;}
+.obj-style-row{display:flex;align-items:center;gap:5px;padding:3px 6px;border-bottom:0.5px solid #1A1A1A;cursor:pointer;font-size:10px;color:#CCC;}
+.obj-style-row:hover{background:#3A3A3A;}
+.obj-style-row.selected{background:rgba(0,200,150,.1);}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link id active">InDesign</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-id">InDesign</span>
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id · Domain 3</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Organising Documents</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">4 objectives · 8 tasks · Guided &amp; Independent modes · ACP 2025 v20.x</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 3 tasks</div>
+
+  <div class="task-item active" onclick="loadTask('id-3-1a')" id="nav-id31a">
+    <div class="task-icon" id="icon-id31a">3.1</div>
+    <div class="task-info"><div class="task-obj">Id-3.1a</div><div class="task-name">Create &amp; apply a Master page</div></div>
+    <div class="task-score" id="sc-id31a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-3-1b')" id="nav-id31b">
+    <div class="task-icon" id="icon-id31b">3.1</div>
+    <div class="task-info"><div class="task-obj">Id-3.1b</div><div class="task-name">Override &amp; detach Master items</div></div>
+    <div class="task-score" id="sc-id31b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-3-2a')" id="nav-id32a">
+    <div class="task-icon" id="icon-id32a">3.2</div>
+    <div class="task-info"><div class="task-obj">Id-3.2a</div><div class="task-name">Page numbering &amp; section markers</div></div>
+    <div class="task-score" id="sc-id32a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-3-2b')" id="nav-id32b">
+    <div class="task-icon" id="icon-id32b">3.2</div>
+    <div class="task-info"><div class="task-obj">Id-3.2b</div><div class="task-name">Text variables — running headers</div></div>
+    <div class="task-score" id="sc-id32b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-3-3a')" id="nav-id33a">
+    <div class="task-icon" id="icon-id33a">3.3</div>
+    <div class="task-info"><div class="task-obj">Id-3.3</div><div class="task-name">Layers — manage, lock, hide, reorder</div></div>
+    <div class="task-score" id="sc-id33a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-3-4a')" id="nav-id34a">
+    <div class="task-icon" id="icon-id34a">3.4</div>
+    <div class="task-info"><div class="task-obj">Id-3.4a</div><div class="task-name">Object styles — create &amp; apply</div></div>
+    <div class="task-score" id="sc-id34a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-3-4b')" id="nav-id34b">
+    <div class="task-icon" id="icon-id34b">3.4</div>
+    <div class="task-info"><div class="task-obj">Id-3.4b</div><div class="task-name">Object styles — redefine &amp; clear</div></div>
+    <div class="task-score" id="sc-id34b">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d2-document-setup.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 2</div></div>
+  </a>
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">↑</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Id overview</div></div>
+  </a>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS={
+
+/* ── 3.1a Create & apply Master ──────────────────── */
+'id-3-1a':{
+  id:'id-3-1a',tool:'indesign',domain:3,
+  objective:'3.1a',objectiveText:'Create a Master page and apply it to document pages',
+  bloomsLevel:'Apply',estimatedMinutes:9,uiType:'master-pages',
+  scenario:'A 12-page magazine needs a running footer on every page. Create a Master page called "A-Running Footer" with a footer text frame, then apply it to all document pages.',
+  steps:[
+    {id:1,instruction:'Open the Pages panel. Window → Pages (or F12).',
+     expectedAction:'menu-click',expectedTarget:'window-pages',
+     hint1:'Go to Window → Pages.',hint2:'Window → Pages (F12) opens the panel showing Masters and document pages.',hint3:'Window → Pages opens the Pages panel — Masters are at the top, document pages below.',
+     correctFeedback:'Pages panel open. The top section shows Master pages (default: [None] and A-Master). The bottom section shows all document pages.',
+     incorrectFeedback:'Go to Window → Pages.',
+     acpContext:'ACP Id-3.1a: The Pages panel is the central navigation hub for multi-page documents. Masters appear as labelled spreads at the top. Click any page thumbnail to navigate to it.',gagneEvent:3},
+    {id:2,instruction:'Create a new Master page. In the Pages panel menu (≡), choose New Master. Name it "Running Footer", prefix "A".',
+     expectedAction:'click',expectedTarget:'new-master',
+     hint1:'Find the Pages panel menu (hamburger icon).',hint2:'Pages panel ≡ → New Master.',hint3:'Pages panel menu (≡) → New Master → Name: Running Footer → Prefix: A → OK.',
+     correctFeedback:'"A-Running Footer" master created. It appears in the Masters section of the Pages panel as a spread.',
+     incorrectFeedback:'Choose New Master from the Pages panel menu.',
+     acpContext:'ACP Id-3.1a: Master page names show as "Prefix-Name" (e.g. A-Running Footer). The prefix (single letter) appears as a label on document pages using that master.',gagneEvent:6},
+    {id:3,instruction:'Double-click the A-Running Footer master to enter it. The master spread opens for editing.',
+     expectedAction:'click',expectedTarget:'enter-master',
+     hint1:'Double-click the master spread thumbnail in the Pages panel.',hint2:'Double-click A-Running Footer in the Pages panel → the master opens for editing.',hint3:'Double-click the A-Running Footer spread thumbnail to edit it.',
+     correctFeedback:'Inside the master. Any items placed here appear on all pages that use this master.',
+     incorrectFeedback:'Double-click the A-Running Footer master thumbnail to edit it.',
+     acpContext:'ACP Id-3.1a: You are "inside" a master when the page name in the bottom bar shows the master name. Items added here are "master items" on document pages — protected from accidental editing.',gagneEvent:6},
+    {id:4,instruction:'Draw a text frame in the footer area. Press T (Type tool), then drag a frame across the bottom of the master page.',
+     expectedAction:'tool-select',expectedTarget:'type-tool-master',
+     hint1:'Press T for the Type tool.',hint2:'Press T → drag a text frame across the bottom of the master page.',hint3:'T → drag a wide text frame across the bottom 15mm of the master page.',
+     correctFeedback:'Text frame created on the master. This frame will appear on all pages using this master.',
+     incorrectFeedback:'Press T and drag a text frame across the bottom of the master page.',
+     acpContext:'ACP Id-3.1a: All items placed on a master are "master items" — they appear greyed/dimmed on document pages and cannot be selected or edited without first being overridden.',gagneEvent:6},
+    {id:5,instruction:'Apply the master to all document pages. In the Pages panel menu (≡), choose Apply Master to Pages. Set "To Pages: 1–12" and click OK.',
+     expectedAction:'click',expectedTarget:'apply-master-pages',
+     hint1:'Use the Pages panel menu.',hint2:'Pages panel ≡ → Apply Master to Pages → Master: A-Running Footer → To Pages: 1-12 → OK.',hint3:'Panel ≡ → Apply Master to Pages → select A-Running Footer → Pages: 1-12 → OK.',
+     correctFeedback:'Master applied to all 12 pages. Each page thumbnail now shows an "A" label indicating A-Running Footer is applied.',
+     incorrectFeedback:'Choose Apply Master to Pages from the Pages panel menu.',
+     acpContext:'ACP Id-3.1a: You can also apply a master by dragging the master thumbnail from the Masters section onto a document page thumbnail. Alt+drag applies to a spread.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.1b Override & detach ──────────────────────── */
+'id-3-1b':{
+  id:'id-3-1b',tool:'indesign',domain:3,
+  objective:'3.1b',objectiveText:'Override and detach Master page items',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'master-override',
+  scenario:'On page 3 of the magazine, the footer text needs to be different from the master. Override just the footer frame on this page, edit it, then on page 5 fully detach the master to allow independent editing.',
+  steps:[
+    {id:1,instruction:'Navigate to page 3. Double-click page 3 in the Pages panel.',
+     expectedAction:'click',expectedTarget:'goto-page3',
+     hint1:'Double-click the page 3 thumbnail in the Pages panel.',hint2:'In the document pages section, double-click the page 3 thumbnail.',hint3:'Pages panel → document pages section → double-click page 3.',
+     correctFeedback:'On page 3. The footer text frame from the master is visible but greyed out — it is a master item.',
+     incorrectFeedback:'Double-click page 3 in the Pages panel.',
+     acpContext:'ACP Id-3.1b: Master items appear greyed on document pages. You cannot select them by clicking — you need to override or detach them first.',gagneEvent:4},
+    {id:2,instruction:'Override the footer frame. Hold Ctrl+Shift (Cmd+Shift on Mac) and click the greyed master item to override it.',
+     expectedAction:'click',expectedTarget:'override-master-item',
+     hint1:'Hold Ctrl+Shift and click the greyed footer frame.',hint2:'Ctrl+Shift+click (Cmd+Shift+click) the master footer text frame.',hint3:'Hold Ctrl+Shift and click directly on the greyed footer frame → it becomes independently editable.',
+     correctFeedback:'Master item overridden on page 3. The frame is now independently editable while the master still exists. Other pages with this master are unaffected.',
+     incorrectFeedback:'Hold Ctrl+Shift (Cmd+Shift) and click the greyed master footer frame.',
+     acpContext:'ACP Id-3.1b: Override = the item becomes editable on this page ONLY, but remains linked to the master. If you edit the master, most changes still update — only the overridden properties are local.',gagneEvent:6},
+    {id:3,instruction:'Edit the overridden text. Double-click the now-active frame and type a page-specific footer text.',
+     expectedAction:'click',expectedTarget:'edit-override-text',
+     hint1:'Double-click the frame to enter text editing mode.',hint2:'Double-click the overridden frame to enter type mode → type custom footer text.',hint3:'Double-click the frame → type your custom footer text for page 3.',
+     correctFeedback:'Footer text edited on page 3. Only this page shows the custom text — all other pages still show the master footer.',
+     incorrectFeedback:'Double-click the frame and type your custom footer text.',
+     acpContext:'ACP Id-3.1b: This is the standard workflow for publications — master provides consistent elements, individual overrides allow page-specific variations.',gagneEvent:7},
+    {id:4,instruction:'Navigate to page 5. Detach all master items so the page is completely independent. Pages panel ≡ → Override All Master Page Items.',
+     expectedAction:'click',expectedTarget:'override-all-master',
+     hint1:'Navigate to page 5 first, then use the Pages panel menu.',hint2:'Go to page 5 → Pages panel ≡ → Override All Master Page Items.',hint3:'Double-click page 5 → Pages panel ≡ → Override All Master Page Items → all master items become locally editable.',
+     correctFeedback:'All master items overridden on page 5. The page is now fully independent — master changes will not affect it.',
+     incorrectFeedback:'Navigate to page 5, then choose Override All Master Page Items from the Pages panel menu.',
+     acpContext:'ACP Id-3.1b: Override All is useful for "break" pages that need a completely different layout. To remove the master entirely, apply [None] from the Pages panel menu → Apply Master.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.2a Page numbering ─────────────────────────── */
+'id-3-2a':{
+  id:'id-3-2a',tool:'indesign',domain:3,
+  objective:'3.2a',objectiveText:'Insert automatic page numbers and define sections',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'page-numbers',
+  scenario:'Add an automatic page number marker to the footer text frame on the A-Master page, then create a new section starting at page 5 with Roman numeral numbering.',
+  steps:[
+    {id:1,instruction:'Enter the A-Master page. Double-click A-Master in the Pages panel.',
+     expectedAction:'click',expectedTarget:'enter-master-pn',
+     hint1:'Double-click A-Master in the Pages panel.',hint2:'Pages panel → Masters section → double-click A-Master.',hint3:'Double-click the A-Master thumbnail in the Pages panel to enter it.',
+     correctFeedback:'Inside A-Master. Any automatic page number inserted here will show the correct number on each document page.',
+     incorrectFeedback:'Double-click A-Master in the Pages panel.',
+     acpContext:'ACP Id-3.2a: Automatic page numbers MUST be placed on a Master page to work correctly. If placed on a document page, they only show that one fixed page number.',gagneEvent:4},
+    {id:2,instruction:'Place the cursor inside the footer text frame. Then insert an automatic page number: Type → Insert Special Character → Markers → Current Page Number.',
+     expectedAction:'menu-click',expectedTarget:'insert-page-number',
+     hint1:'Click inside the footer text frame, then go to the Type menu.',hint2:'Type → Insert Special Character → Markers → Current Page Number.',hint3:'Click inside the footer frame → Type → Insert Special Character → Markers → Current Page Number.',
+     correctFeedback:'Page number marker inserted. On the master it shows "A" (the master prefix). On each document page it will show the correct page number.',
+     incorrectFeedback:'Go to Type → Insert Special Character → Markers → Current Page Number.',
+     acpContext:'ACP Id-3.2a: The page number marker shows the MASTER PREFIX on the master page itself (e.g. "A"). On document pages it resolves to the actual page number. This is correct — not a display error.',gagneEvent:6},
+    {id:3,instruction:'Return to the document pages. Double-click any document page thumbnail to exit the master.',
+     expectedAction:'click',expectedTarget:'exit-master-pn',
+     hint1:'Double-click a document page thumbnail.',hint2:'Double-click page 1 in the document pages section of the Pages panel.',hint3:'Double-click page 1 (or any document page) to exit the master and return to the document.',
+     correctFeedback:'Back in the document. The footer now shows the correct page number on each page.',
+     incorrectFeedback:'Double-click a document page thumbnail to exit the master.',
+     acpContext:'ACP Id-3.2a: Page numbers automatically update whenever pages are added, removed, or reordered — one of the core advantages of master-based page numbering.',gagneEvent:7},
+    {id:4,instruction:'Create a new section at page 5 with Roman numeral numbering. Right-click page 5 in the Pages panel → Numbering & Section Options.',
+     expectedAction:'click',expectedTarget:'section-options',
+     hint1:'Right-click page 5 in the Pages panel.',hint2:'Right-click the page 5 thumbnail → Numbering & Section Options.',hint3:'Right-click page 5 thumbnail → Numbering & Section Options → check Start Section → Style: i, ii, iii → Start At: i.',
+     correctFeedback:'Section dialog open. Enable "Start Section", set Style to lowercase Roman numerals, start at i.',
+     incorrectFeedback:'Right-click page 5 in the Pages panel and choose Numbering & Section Options.',
+     acpContext:'ACP Id-3.2a: Sections allow different number styles (1,2,3 / i,ii,iii / A,B,C) in different parts of a document. Common in books with a Roman-numbered preface and Arabic-numbered body.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.2b Text variables ─────────────────────────── */
+'id-3-2b':{
+  id:'id-3-2b',tool:'indesign',domain:3,
+  objective:'3.2b',objectiveText:'Insert and use text variables for running headers',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'text-variables',
+  scenario:'Add a running header to the master page that automatically shows the chapter title from the current page. Use the "Chapter Number" text variable and insert it into the header frame.',
+  steps:[
+    {id:1,instruction:'Open Text Variables. Type → Text Variables → Define.',
+     expectedAction:'menu-click',expectedTarget:'text-variables-define',
+     hint1:'Go to the Type menu.',hint2:'Type → Text Variables → Define.',hint3:'Type → Text Variables → Define opens the Text Variables management dialog.',
+     correctFeedback:'Text Variables dialog open. Built-in variables include Chapter Number, Creation Date, Modification Date, Output Date, and Running Header.',
+     incorrectFeedback:'Go to Type → Text Variables → Define.',
+     acpContext:'ACP Id-3.2b: Text Variables automatically update their content. "Running Header" is the most useful — it inserts the most recent occurrence of a specific paragraph style on each page (perfect for chapter titles in headers).',gagneEvent:4},
+    {id:2,instruction:'Select "Running Header (Paragraph Style)" and click Edit. Set the Style to your Chapter Title paragraph style.',
+     expectedAction:'click',expectedTarget:'edit-running-header',
+     hint1:'Select the Running Header variable in the list, then click Edit.',hint2:'Click Running Header → click Edit → set Style to the paragraph style for chapter titles.',hint3:'Select Running Header → Edit → Style: Chapter Title → OK → Done.',
+     correctFeedback:'Running Header configured to pull from the Chapter Title paragraph style. It will show the most recent Chapter Title on each page.',
+     incorrectFeedback:'Select Running Header and click Edit to configure its paragraph style source.',
+     acpContext:'ACP Id-3.2b: Running Header pulls the first (or last) occurrence of a specific paragraph style on the current page. As pages change, the variable updates automatically — no manual editing.',gagneEvent:6},
+    {id:3,instruction:'Insert the variable into the master header frame. Type → Text Variables → Insert Variable → Running Header.',
+     expectedAction:'menu-click',expectedTarget:'insert-variable',
+     hint1:'Place the cursor inside the header text frame.',hint2:'Click inside the header frame → Type → Text Variables → Insert Variable → Running Header.',hint3:'Insert cursor in header frame → Type → Text Variables → Insert Variable → Running Header.',
+     correctFeedback:'Running Header variable inserted. On document pages this will display the chapter title from the current page.',
+     incorrectFeedback:'Go to Type → Text Variables → Insert Variable → Running Header.',
+     acpContext:'ACP Id-3.2b: Variables appear as a single underlined text token. They cannot be partially edited. Delete and reinsert if the variable needs to change.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.3 Layers ──────────────────────────────────── */
+'id-3-3a':{
+  id:'id-3-3a',tool:'indesign',domain:3,
+  objective:'3.3',objectiveText:'Manage layers — create, lock, hide, and reorder',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'layers',
+  scenario:'Organise a complex magazine spread into layers: create "Images", "Text", and "Guides" layers. Lock the Guides layer, hide the Images layer for a text-only view, then reorder layers.',
+  steps:[
+    {id:1,instruction:'Open the Layers panel. Window → Layers (or F7).',
+     expectedAction:'menu-click',expectedTarget:'window-layers',
+     hint1:'Go to Window → Layers.',hint2:'Window → Layers (F7).',hint3:'Window → Layers opens the panel showing all document layers.',
+     correctFeedback:'Layers panel open. By default InDesign documents start with one layer called "Layer 1".',
+     incorrectFeedback:'Go to Window → Layers.',
+     acpContext:'ACP Id-3.3: Unlike Photoshop, InDesign layers are document-wide — they apply to every page. Objects on a higher layer appear in front of objects on lower layers across all pages.',gagneEvent:3},
+    {id:2,instruction:'Create three new layers. Double-click "Layer 1" to rename it "Images". Then click the + button to add "Text" and "Guides" layers.',
+     expectedAction:'click',expectedTarget:'new-layer-btn',
+     hint1:'Double-click Layer 1 to rename it. Then click + to add new layers.',hint2:'Double-click Layer 1 → rename: Images → OK. Then click + → name: Text. Click + again → name: Guides.',hint3:'Double-click Layer 1 → Images → OK → + → Text → OK → + → Guides → OK.',
+     correctFeedback:'Three layers created: Images, Text, Guides. Stack order (top to bottom) determines what draws in front.',
+     incorrectFeedback:'Double-click Layer 1 to rename it and use + to create new layers.',
+     acpContext:'ACP Id-3.3: Naming layers semantically (Images, Text, Guides) is a professional production requirement. It makes object management, selective output, and handoffs much cleaner.',gagneEvent:6},
+    {id:3,instruction:'Lock the Guides layer. Click the lock column (empty padlock space) to the left of the Guides layer name.',
+     expectedAction:'click',expectedTarget:'lock-layer',
+     hint1:'Look for the column to the left of the layer name.',hint2:'Click the space in the lock column (second column from left) next to the Guides layer.',hint3:'Click the padlock icon column next to Guides → a closed padlock appears.',
+     correctFeedback:'Guides layer locked. Objects on this layer cannot be selected or moved — protected from accidental changes.',
+     incorrectFeedback:'Click the lock column next to the Guides layer.',
+     acpContext:'ACP Id-3.3: Locking a layer prevents selecting any objects on it. The layer is still visible. Use this for guides, reference artwork, and print marks.',gagneEvent:6},
+    {id:4,instruction:'Hide the Images layer. Click the eye icon to the left of the Images layer name.',
+     expectedAction:'click',expectedTarget:'hide-layer',
+     hint1:'Click the eye icon column next to the Images layer.',hint2:'Click the eye icon next to Images → the layer becomes invisible.',hint3:'Click the visibility eye icon in the first column next to Images → it toggles off.',
+     correctFeedback:'Images layer hidden. All objects on this layer are invisible — useful for a text-only editing view.',
+     incorrectFeedback:'Click the eye icon next to the Images layer to hide it.',
+     acpContext:'ACP Id-3.3: Hidden layers do not print or export — useful during editing but must be re-enabled before final output. InDesign warns you if hidden layers exist when you export.',gagneEvent:6},
+    {id:5,instruction:'Reorder the layers. Drag the "Text" layer row above the "Images" layer so text always draws on top.',
+     expectedAction:'click',expectedTarget:'reorder-layer',
+     hint1:'Click and drag a layer row to reorder it.',hint2:'Click the Text layer row and drag it above Images.',hint3:'Drag Text row above Images row → release → Text is now the top layer.',
+     correctFeedback:'Text layer moved to the top. Text frames will always appear above image frames regardless of individual object stacking.',
+     incorrectFeedback:'Drag the Text layer above the Images layer in the Layers panel.',
+     acpContext:'ACP Id-3.3: Layer order in InDesign determines front-to-back priority — the top layer is always in front. This is more powerful than stacking individual objects because it applies across all pages.',gagneEvent:7}
+  ]
+},
+
+/* ── 3.4a Object styles ──────────────────────────── */
+'id-3-4a':{
+  id:'id-3-4a',tool:'indesign',domain:3,
+  objective:'3.4a',objectiveText:'Create and apply Object Styles',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'object-styles',
+  scenario:'Create an Object Style for photo caption frames: 1pt stroke, no fill, 4mm text inset. Apply it to all caption frames in the document with one click per frame.',
+  steps:[
+    {id:1,instruction:'Open Object Styles panel. Window → Styles → Object Styles (Ctrl+F7 / Cmd+F7).',
+     expectedAction:'menu-click',expectedTarget:'window-object-styles',
+     hint1:'Go to Window → Styles.',hint2:'Window → Styles → Object Styles (Ctrl+F7).',hint3:'Window → Styles → Object Styles.',
+     correctFeedback:'Object Styles panel open. Default styles include [None], [Basic Graphics Frame], and [Basic Text Frame].',
+     incorrectFeedback:'Go to Window → Styles → Object Styles.',
+     acpContext:'ACP Id-3.4a: Object Styles store complete frame appearance: fill, stroke, effects, text frame options (inset, columns), and paragraph style assignments. One click applies everything.',gagneEvent:3},
+    {id:2,instruction:'Format a caption frame manually first. Select a text frame. Set: Fill: None, Stroke: 1pt Black, Text Frame Options: Inset 4mm on all sides.',
+     expectedAction:'menu-click',expectedTarget:'text-frame-options',
+     hint1:'Select a frame, then set its fill, stroke, and text frame options.',hint2:'Object → Text Frame Options (Ctrl+B) → Inset Spacing: 4mm. Then set stroke to 1pt Black via the Stroke panel.',hint3:'Select frame → Object → Text Frame Options → Inset: 4mm → OK. Stroke panel: weight 1pt, Black.',
+     correctFeedback:'Caption frame formatted manually. Now save this formatting as a named Object Style.',
+     incorrectFeedback:'Go to Object → Text Frame Options to set the inset spacing.',
+     acpContext:'ACP Id-3.4a: The correct approach to creating styles: manually format one object exactly right, then save THAT formatting as the style — prevents style definition errors.',gagneEvent:6},
+    {id:3,instruction:'Save as Object Style. With the formatted frame selected, click the New Object Style button (+) at the bottom of the Object Styles panel.',
+     expectedAction:'click',expectedTarget:'new-object-style',
+     hint1:'Find the + button at the bottom of the Object Styles panel.',hint2:'With the formatted frame selected, click the + button in the Object Styles panel.',hint3:'Formatted frame selected → Object Styles panel → + button → New Object Style dialog opens.',
+     correctFeedback:'New Object Style dialog open. The current frame formatting is pre-loaded. Name it "Caption Frame".',
+     incorrectFeedback:'Click the + button in the Object Styles panel with the formatted frame selected.',
+     acpContext:'ACP Id-3.4a: The New Object Style dialog shows every attribute category. Check or uncheck categories to include or exclude them from the style. Only checked categories are applied when the style is used.',gagneEvent:7},
+    {id:4,instruction:'Name the style "Caption Frame" and click OK.',
+     expectedAction:'input',expectedTarget:'object-style-name',expectedValue:'caption frame',matchType:'contains',
+     hint1:'Find the name field at the top of the dialog.',hint2:'Type "Caption Frame" in the Style Name field → OK.',hint3:'Style Name: Caption Frame → click OK.',
+     correctFeedback:'"Caption Frame" style saved. It now appears in the Object Styles panel.',
+     incorrectFeedback:'Name the style "Caption Frame" and click OK.',
+     acpContext:'ACP Id-3.4a: Style names should be semantic and consistent. Good names: Caption Frame, Pull Quote, Image Frame, Sidebar Box. Avoid names like "Style 1" — they are impossible to manage at scale.',gagneEvent:7},
+    {id:5,instruction:'Apply the style to another frame. Select a second text frame, then click "Caption Frame" in the Object Styles panel.',
+     expectedAction:'click',expectedTarget:'apply-object-style',
+     hint1:'Select another frame, then click the style name.',hint2:'Click a second text frame → click Caption Frame in the Object Styles panel.',hint3:'Select the second frame → click Caption Frame in the Object Styles panel → all formatting applies instantly.',
+     correctFeedback:'Object Style applied. All properties (fill, stroke, inset) transferred in a single click.',
+     incorrectFeedback:'Select a second frame and click the Caption Frame style in the Object Styles panel.',
+     acpContext:'ACP Id-3.4a: Object Styles are the InDesign equivalent of CSS classes — define once, apply anywhere, change once to update everywhere.',gagneEvent:8}
+  ]
+},
+
+/* ── 3.4b Redefine & clear ───────────────────────── */
+'id-3-4b':{
+  id:'id-3-4b',tool:'indesign',domain:3,
+  objective:'3.4b',objectiveText:'Redefine and clear Object Styles',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'object-styles-redefine',
+  scenario:'The Caption Frame style needs updating: increase the stroke to 2pt and change the inset to 6mm. Redefine the style from an edited frame so all instances update automatically.',
+  steps:[
+    {id:1,instruction:'Select a frame using the Caption Frame style. Edit it locally: change stroke to 2pt and inset to 6mm.',
+     expectedAction:'menu-click',expectedTarget:'edit-frame-local',
+     hint1:'Select a frame, then change its stroke and inset.',hint2:'Select the frame → Object → Text Frame Options → Inset: 6mm. Stroke: 2pt.',hint3:'Select frame → Object → Text Frame Options → Inset: 6mm → OK. Stroke panel: 2pt.',
+     correctFeedback:'Frame edited locally. The Object Styles panel shows a "+" next to the style name indicating unsaved local overrides.',
+     incorrectFeedback:'Select a Caption Frame frame and change its stroke to 2pt and inset to 6mm.',
+     acpContext:'ACP Id-3.4b: A "+" in the panel next to the style name means local overrides exist on the selected object. These override the style but do not change the style definition itself — yet.',gagneEvent:4},
+    {id:2,instruction:'Redefine the style from the edited frame. Object Styles panel menu (≡) → Redefine Style.',
+     expectedAction:'click',expectedTarget:'redefine-style',
+     hint1:'Open the Object Styles panel menu.',hint2:'Object Styles panel ≡ → Redefine Style.',hint3:'With the edited frame selected → Object Styles panel ≡ → Redefine Style.',
+     correctFeedback:'Style redefined. The Caption Frame style now includes 2pt stroke and 6mm inset. ALL frames using this style update automatically.',
+     incorrectFeedback:'Choose Redefine Style from the Object Styles panel menu.',
+     acpContext:'ACP Id-3.4b: Redefine Style is the fastest way to update a style — make the change visually on one frame, then promote those changes to the style definition.',gagneEvent:7},
+    {id:3,instruction:'Clear an override on a single frame. Select a frame with a "+" indicator, then Alt+click (Option+click) the style name to clear local overrides.',
+     expectedAction:'click',expectedTarget:'clear-style-override',
+     hint1:'Select a frame with overrides, then use Alt+click on the style.',hint2:'Select the frame → Alt+click (Option+click) the Caption Frame style name in the panel.',hint3:'Select frame with + → Alt+click Caption Frame in the Object Styles panel → overrides are cleared.',
+     correctFeedback:'Overrides cleared. The frame reverts to the style definition.',
+     incorrectFeedback:'Alt+click (Option+click) the style name in the Object Styles panel to clear overrides.',
+     acpContext:'ACP Id-3.4b: Alt+click a style name = apply style AND clear all local overrides. Regular click = apply the style but keep local overrides (the + remains).',gagneEvent:8}
+  ]
+}
+};
+
+/* ═══ ENGINE ══════════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[];
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array(task.steps.length).fill(null);
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${t.objective}</span>
+      <span class="badge badge-id">InDesign</span>
+      <span class="badge badge-live">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array(currentTask?.steps?.length||0).fill(null);
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERS ══════════════════════════════════════════ */
+function renderUI(t){
+  const map={
+    'master-pages':masterPagesUI,'master-override':masterOverrideUI,
+    'page-numbers':pageNumbersUI,'text-variables':textVarsUI,
+    'layers':layersUI,'object-styles':objectStylesUI,
+    'object-styles-redefine':objectStylesRedefineUI
+  };
+  document.getElementById('adobe-sim').innerHTML=map[t.uiType]?map[t.uiType]():'';
+}
+
+function idShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Id</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function defaultTools(){
+  return`<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+    <div class="tool-btn highlight" id="tb-type" onclick="doTool('type-tool-master')" style="font-weight:700;font-size:12px;">T</div>
+    <div class="tool-btn">▭</div>`;
+}
+
+function pagesPanel(hasMaster){
+  const masterLabel=hasMaster?'A-Running Footer':'A-Master';
+  return`<div class="panel-hdr">Pages <span style="font-size:8px;cursor:pointer;color:#666;">(F12)</span></div>
+     <div style="padding:4px 6px;border-bottom:0.5px solid #1A1A1A;">
+       <div style="font-size:9px;color:#888;margin-bottom:3px;letter-spacing:.05em;">MASTERS</div>
+       <div class="master-page-row" onclick="doAction('enter-master')">
+         <span class="master-prefix">A</span>
+         <span class="master-name" id="master-name-lbl">${masterLabel}</span>
+       </div>
+     </div>
+     <div style="padding:4px 6px;">
+       <div style="font-size:9px;color:#888;margin-bottom:3px;letter-spacing:.05em;">PAGES</div>
+       <div style="display:flex;flex-wrap:wrap;gap:2px;" id="doc-pages">
+         ${[1,2,3,4,5,6].map(n=>`
+           <div class="pages-panel-page" onclick="doAction('goto-page${n}')">
+             <div class="pp-thumb ${hasMaster?'has-master':''} ${n===1?'selected':''}">${n}</div>
+             <div class="pp-label">${n}</div>
+           </div>`).join('')}
+       </div>
+     </div>
+     <div style="display:flex;gap:3px;padding:5px 6px;border-top:0.5px solid #1A1A1A;">
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('new-master')">+ Master</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('apply-master-pages')">Apply</div>
+     </div>`;
+}
+
+function masterPagesUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-pages')">Window</span>
+     <span class="menu-item">Layout</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="flex-direction:column;gap:6px;padding:.5rem;">
+      <div id="master-editing-bar" style="display:none;background:#1A0A2E;color:#9B8EF0;font-size:9px;padding:3px 8px;border-radius:3px;width:100%;text-align:center;">Editing: A-Running Footer (Master)</div>
+      <div style="display:flex;gap:6px;">
+        <div style="position:relative;">
+          <div class="id-page" style="width:85px;height:110px;" id="master-left">
+            <div class="margin" style="inset:8px;"></div>
+            <div id="master-footer-frame" style="display:none;position:absolute;bottom:4px;left:6px;right:6px;height:10px;border:0.5px solid #31A8FF;background:rgba(49,168,255,.06);font-size:6px;color:#888;display:none;align-items:center;justify-content:center;">Page # footer</div>
+            <div class="page-label">Master L</div>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <div class="id-page" style="width:85px;height:110px;" id="master-right">
+            <div class="margin" style="inset:8px;"></div>
+            <div class="page-label">Master R</div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+    pagesPanel(false)
+  );
+}
+
+function masterOverrideUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-pages')">Window</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="padding:.5rem;gap:6px;flex-wrap:wrap;align-content:center;justify-content:center;">
+      <div style="position:relative;">
+        <div class="id-page" style="width:85px;height:110px;" id="page3-view">
+          <div class="margin" style="inset:8px;"></div>
+          <div class="master-indicator">A</div>
+          <div id="footer-master" style="position:absolute;bottom:4px;left:4px;right:4px;height:10px;background:rgba(100,100,100,.15);border:0.5px dashed #888;font-size:6px;color:#888;display:flex;align-items:center;justify-content:center;">Master footer (locked)</div>
+          <div id="footer-override" style="display:none;position:absolute;bottom:4px;left:4px;right:4px;height:10px;background:rgba(0,200,150,.08);border:0.5px solid #00C896;font-size:6px;color:#00C896;display:none;align-items:center;justify-content:center;">Custom footer (overridden)</div>
+          <div class="page-label">Page 3</div>
+        </div>
+      </div>
+      <div style="position:relative;">
+        <div class="id-page" style="width:85px;height:110px;" id="page5-view">
+          <div class="margin" style="inset:8px;"></div>
+          <div class="master-indicator" id="page5-master-label">A</div>
+          <div id="footer-page5" style="position:absolute;bottom:4px;left:4px;right:4px;height:10px;background:rgba(100,100,100,.15);border:0.5px dashed #888;font-size:6px;color:#888;display:flex;align-items:center;justify-content:center;">Master footer</div>
+          <div class="page-label">Page 5</div>
+        </div>
+      </div>
+    </div>`,
+    `${pagesPanel(true)}
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doAction('override-master-item')">Ctrl+Shift+click: Override</div>
+       <div class="adj-btn" onclick="doAction('edit-override-text')">Double-click: Edit text</div>
+       <div class="adj-btn" onclick="doAction('override-all-master')">Panel ≡ → Override All</div>
+     </div>`
+  );
+}
+
+function pageNumbersUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('insert-page-number')">Type</span>
+     <span class="menu-item">Layout</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="padding:.5rem;gap:4px;flex-wrap:wrap;align-content:center;justify-content:center;">
+      ${[1,2,3,4,5,6].map(n=>`
+        <div style="position:relative;">
+          <div class="id-page" style="width:52px;height:68px;">
+            <div class="margin" style="inset:5px;"></div>
+            <div class="master-indicator">${n>=5?'B':'A'}</div>
+            <div id="pn-footer-${n}" style="position:absolute;bottom:2px;left:3px;right:3px;height:8px;font-size:${n>=5?'5px':'6px'};color:#888;text-align:center;font-family:var(--font-mono);">
+              ${n>=5?'i':n}
+            </div>
+          </div>
+          <div class="page-label">${n}</div>
+        </div>`).join('')}
+    </div>`,
+    `${pagesPanel(true)}
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doAction('enter-master-pn')">Enter A-Master</div>
+       <div class="adj-btn" onclick="doMenu('insert-page-number')">Type → Insert → Current Page Number</div>
+       <div class="adj-btn" onclick="doAction('exit-master-pn')">Exit master</div>
+       <div class="adj-btn" onclick="doAction('section-options')">Right-click page → Section Options</div>
+     </div>`
+  );
+}
+
+function textVarsUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('text-variables-define')">Type</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="padding:.5rem;flex-direction:column;gap:6px;">
+      <div id="master-header-view" style="width:180px;background:#2A2A2A;border:0.5px solid #444;border-radius:4px;padding:5px 8px;">
+        <div style="font-size:8px;color:#888;margin-bottom:3px;">A-Master header text frame</div>
+        <div id="var-inserted" style="font-size:10px;color:#CCC;font-style:italic;">
+          <span id="var-display" style="text-decoration:underline;color:#888;">[click to insert variable]</span>
+        </div>
+      </div>
+      <div class="id-page" style="width:180px;height:80px;position:relative;">
+        <div class="margin" style="inset:8px;"></div>
+        <div style="position:absolute;top:4px;left:5px;right:5px;font-size:8px;color:#888;text-align:right;" id="page-header-shows">Chapter Title shows here</div>
+        <div style="position:absolute;bottom:10px;left:10px;font-size:6px;color:#888;">Document page 1</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Text Variables</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('text-variables-define')">Type → Text Variables → Define</div>
+       <div class="adj-btn" onclick="doAction('edit-running-header')">Select Running Header → Edit</div>
+       <div class="adj-btn" onclick="doMenu('insert-variable')">Type → Text Variables → Insert Variable</div>
+     </div>`
+  );
+}
+
+function layersUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-layers')">Window</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:145px;position:relative;">
+        <div id="images-layer-obj" style="position:absolute;top:10px;left:10px;width:80px;height:60px;background:linear-gradient(135deg,#B8C8D8,#8AA0B0);transition:opacity .3s;"></div>
+        <div id="text-layer-obj" style="position:absolute;top:15px;left:15px;right:15px;font-size:9px;color:#1A1A2E;font-weight:500;z-index:2;">Magazine headline text</div>
+        <div id="guides-layer-obj" style="position:absolute;inset:0;pointer-events:none;z-index:3;">
+          <div style="position:absolute;left:40%;top:0;bottom:0;width:1px;background:rgba(0,100,200,.3);"></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Layers <span style="font-size:8px;cursor:pointer;color:#666;">(F7)</span></div>
+     <div id="layers-panel-body">
+       <div class="layer-row selected" id="lr-guides">
+         <span class="layer-eye vis" id="eye-guides">👁</span>
+         <div class="layer-color" style="background:#31A8FF;"></div>
+         <span class="layer-name">Guides</span>
+         <span class="layer-lock" id="lock-guides">🔓</span>
+       </div>
+       <div class="layer-row" id="lr-text">
+         <span class="layer-eye vis" id="eye-text">👁</span>
+         <div class="layer-color" style="background:#FF9A00;"></div>
+         <span class="layer-name">Text</span>
+         <span class="layer-lock">🔓</span>
+       </div>
+       <div class="layer-row" id="lr-images">
+         <span class="layer-eye vis" id="eye-images">👁</span>
+         <div class="layer-color" style="background:#9B8EF0;"></div>
+         <span class="layer-name">Images</span>
+         <span class="layer-lock">🔓</span>
+       </div>
+     </div>
+     <div style="display:flex;gap:3px;padding:5px 6px;border-top:0.5px solid #1A1A1A;">
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doMenu('window-layers')">F7</div>
+       <div class="adj-btn highlight" style="margin:0;flex:1;" onclick="doAction('new-layer-btn')">+</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('lock-layer')">🔒</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('hide-layer')">👁</div>
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('reorder-layer')">↕</div>
+     </div>`
+  );
+}
+
+function objectStylesUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-object-styles')">Window</span>
+     <span class="menu-item" onclick="doMenu('text-frame-options')">Object</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;flex-wrap:wrap;align-content:center;justify-content:center;">
+      <div id="caption-frame-1" style="width:85px;height:55px;border:0.5px solid #888;padding:4px;font-size:7px;color:#888;position:relative;cursor:pointer;" onclick="doAction('apply-object-style')">
+        Caption text here<br>with padding
+        <div id="styled-1" style="display:none;position:absolute;inset:0;border:1px solid #1A1A2E;"></div>
+      </div>
+      <div id="caption-frame-2" style="width:85px;height:55px;border:0.5px dashed #555;padding:4px;font-size:7px;color:#888;position:relative;cursor:pointer;" onclick="doAction('apply-object-style')">
+        Another caption<br>no style yet
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Object Styles <span style="font-size:8px;color:#666;">(Ctrl+F7)</span></div>
+     <div id="obj-styles-list">
+       <div class="obj-style-row">[None]</div>
+       <div class="obj-style-row">[Basic Graphics Frame]</div>
+       <div class="obj-style-row">[Basic Text Frame]</div>
+       <div class="obj-style-row" id="caption-style-row" style="display:none;" onclick="doAction('apply-object-style')">Caption Frame</div>
+     </div>
+     <div style="display:flex;gap:3px;padding:5px 6px;border-top:0.5px solid #1A1A1A;">
+       <div class="adj-btn" style="margin:0;flex:1;" onclick="doMenu('window-object-styles')">Open</div>
+       <div class="adj-btn highlight" style="margin:0;flex:1;" onclick="doAction('new-object-style')">+ New</div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn" onclick="doMenu('text-frame-options')">Object → Text Frame Options (Ctrl+B)</div>
+       <div class="prop-row" style="margin-top:4px;"><span class="prop-label">Style name</span>
+         <input class="prop-input highlight" id="inp-style-name" style="width:90px;" oninput="doInput('object-style-name',this.value.toLowerCase())"></div>
+     </div>`
+  );
+}
+
+function objectStylesRedefineUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('edit-frame-local')">Object</span>
+     <span class="menu-item">Window</span>`,
+    defaultTools(),
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;flex-wrap:wrap;align-content:center;justify-content:center;">
+      <div id="redef-frame-1" style="width:85px;height:55px;border:1px solid #1A1A2E;padding:4px;font-size:7px;color:#888;cursor:pointer;transition:all .4s;" onclick="doMenu('edit-frame-local')">
+        Caption text<br>(1pt stroke, 4mm inset)
+      </div>
+      <div id="redef-frame-2" style="width:85px;height:55px;border:1px solid #1A1A2E;padding:4px;font-size:7px;color:#888;cursor:pointer;transition:all .4s;" onclick="doAction('apply-object-style')">
+        Another caption
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Object Styles</div>
+     <div id="obj-styles-list2">
+       <div class="obj-style-row">[None]</div>
+       <div class="obj-style-row selected" id="caption-style-row2">Caption Frame <span id="override-plus" style="display:none;color:#FF9A00;">+</span></div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('edit-frame-local')">Object → Text Frame Options (update inset)</div>
+       <div class="adj-btn" onclick="doAction('redefine-style')">Panel ≡ → Redefine Style</div>
+       <div class="adj-btn" onclick="doAction('clear-style-override')">Alt+click style → clear overrides</div>
+     </div>`
+  );
+}
+
+/* ═══ ACTIONS & EFFECTS ══════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+
+function applyEffect(target){
+  const fx={
+    'window-pages':()=>{},
+    'new-master':()=>{const el=document.getElementById('master-name-lbl');if(el)el.textContent='A-Running Footer';},
+    'enter-master':()=>{const bar=document.getElementById('master-editing-bar');if(bar)bar.style.display='block';},
+    'type-tool-master':()=>{document.getElementById('tb-type')?.classList.add('active');const fr=document.getElementById('master-footer-frame');if(fr)fr.style.display='flex';},
+    'apply-master-pages':()=>{document.querySelectorAll('.pp-thumb').forEach(el=>el.classList.add('has-master'));},
+    'goto-page3':()=>{document.querySelectorAll('.pp-thumb').forEach(el=>el.classList.remove('selected'));},
+    'override-master-item':()=>{
+      const f=document.getElementById('footer-master');if(f)f.style.display='none';
+      const o=document.getElementById('footer-override');if(o)o.style.display='flex';
+    },
+    'edit-override-text':()=>{},
+    'override-all-master':()=>{const l=document.getElementById('page5-master-label');if(l)l.style.color='#888';},
+    'enter-master-pn':()=>{},
+    'insert-page-number':()=>{},
+    'exit-master-pn':()=>{document.querySelectorAll('[id^="pn-footer-"]').forEach((el,i)=>{el.style.color='#1A1A2E';el.style.fontFamily='var(--font-mono)';});},
+    'section-options':()=>{[4,5].forEach(n=>{const el=document.getElementById('pn-footer-'+n);if(el&&n===5)el.textContent='i';});},
+    'text-variables-define':()=>{},
+    'edit-running-header':()=>{},
+    'insert-variable':()=>{const el=document.getElementById('var-display');if(el){el.textContent='Running Header';el.style.color='#00C896';}const ph=document.getElementById('page-header-shows');if(ph)ph.style.color='#1A1A2E';},
+    'window-layers':()=>{},
+    'new-layer-btn':()=>{},
+    'lock-layer':()=>{const l=document.getElementById('lock-guides');if(l)l.textContent='🔒';},
+    'hide-layer':()=>{const e=document.getElementById('eye-images');if(e)e.textContent='○';const o=document.getElementById('images-layer-obj');if(o)o.style.opacity='0';},
+    'reorder-layer':()=>{},
+    'window-object-styles':()=>{},
+    'text-frame-options':()=>{},
+    'new-object-style':()=>{const row=document.getElementById('caption-style-row');if(row)row.style.display='flex';},
+    'object-style-name':()=>{},
+    'apply-object-style':()=>{
+      const f2=document.getElementById('caption-frame-2');if(f2){f2.style.border='1px solid #1A1A2E';f2.style.padding='6px';}
+      const s2=document.getElementById('styled-1');if(s2)s2.style.display='block';
+    },
+    'edit-frame-local':()=>{
+      const f1=document.getElementById('redef-frame-1');if(f1){f1.style.border='2px solid #1A1A2E';f1.style.padding='6px';}
+      const plus=document.getElementById('override-plus');if(plus)plus.style.display='inline';
+    },
+    'redefine-style':()=>{
+      const plus=document.getElementById('override-plus');if(plus)plus.style.display='none';
+      const f2=document.getElementById('redef-frame-2');if(f2){f2.style.border='2px solid #1A1A2E';f2.style.padding='6px';}
+    },
+    'clear-style-override':()=>{const plus=document.getElementById('override-plus');if(plus)plus.style.display='none';}
+  };
+  if(fx[target])fx[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask)return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const id=currentTask.id.replace(/-/g,'');const sc=document.getElementById('sc-'+id);if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+id);if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#00C896'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('id-3-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

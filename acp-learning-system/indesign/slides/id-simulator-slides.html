@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InDesign ACP 2025 — Simulator Slide Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --id:#00C896;--bg:#0A1A14;--bg1:#06120D;--bg2:#001A10;
+  --surf:#112018;--surf2:#182C22;--border:rgba(255,255,255,.08);
+  --text:#E8FFF5;--text2:#90C8AA;--text3:#4A8060;
+  --correct:#00D68F;--wrong:#FF4D6D;--partial:#FFB800;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;}
+.deck{display:grid;grid-template-rows:auto 1fr auto;height:100vh;max-width:1100px;margin:0 auto;}
+.topbar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.tb-logo{font-weight:700;font-size:.9rem;color:var(--id);font-family:var(--mono);}
+.tb-title{font-size:.85rem;color:var(--text2);flex:1;}
+.progress-track{height:3px;background:var(--surf2);flex:1;border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--id);border-radius:2px;transition:width .4s ease;}
+.tb-counter{font-size:.8rem;color:var(--text3);font-family:var(--mono);}
+.slide-viewport{overflow:hidden;position:relative;}
+.slide{position:absolute;inset:0;padding:2rem 2.5rem;display:flex;flex-direction:column;opacity:0;transform:translateX(40px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
+.slide.out{opacity:0;transform:translateX(-40px);}
+.bottombar{background:var(--bg1);border-top:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;}
+.nav-btn{padding:.45rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--text2);transition:all .15s;font-family:var(--font);}
+.nav-btn:hover{background:var(--surf);color:var(--text);}
+.nav-btn.primary{background:var(--id);color:#000;border-color:var(--id);}
+.nav-btn.primary:hover{opacity:.88;}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--surf2);transition:all .2s;cursor:pointer;}
+.dot.active{background:var(--id);}
+.dot.done{background:var(--correct);}
+.dot-row{display:flex;gap:5px;align-items:center;}
+.kb-hint{font-size:.72rem;color:var(--text3);margin-left:auto;}
+/* Slide types */
+.slide-cover{background:linear-gradient(135deg,var(--bg) 0%,#001A10 100%);}
+.cover-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;}
+.cover-title{font-size:2.3rem;font-weight:700;line-height:1.15;margin-bottom:.75rem;background:linear-gradient(135deg,#FFF 30%,var(--id));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cover-sub{font-size:.95rem;color:var(--text2);max-width:500px;margin-bottom:1.5rem;line-height:1.65;}
+.cbadge{font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:20px;border:0.5px solid;margin-right:.4rem;display:inline-block;margin-bottom:.4rem;}
+.slide-domain{background:linear-gradient(135deg,var(--bg) 0%,#001810 100%);}
+.domain-num{font-family:var(--mono);font-size:.78rem;color:var(--id);font-weight:500;margin-bottom:.3rem;}
+.domain-h{font-size:1.75rem;font-weight:700;margin-bottom:.5rem;}
+.domain-desc{font-size:.9rem;color:var(--text2);max-width:560px;line-height:1.65;margin-bottom:1.1rem;}
+.obj-chip{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .75rem;background:var(--surf);border:0.5px solid var(--border);border-radius:8px;font-size:.82rem;margin-bottom:.35rem;}
+.obj-code{font-family:var(--mono);font-size:.7rem;color:var(--id);min-width:44px;padding-top:1px;flex-shrink:0;}
+.obj-text{color:var(--text2);}
+.acp-tag{font-family:var(--mono);font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(0,200,150,.1);color:var(--id);border:0.5px solid rgba(0,200,150,.3);}
+.bloom-tag{font-size:.7rem;padding:3px 9px;border-radius:20px;background:rgba(0,214,143,.1);color:var(--correct);border:0.5px solid rgba(0,214,143,.25);}
+.ai-tag{font-size:.68rem;padding:2px 8px;border-radius:10px;background:rgba(155,142,240,.15);color:#9B8EF0;border:0.5px solid rgba(155,142,240,.25);}
+.task-header-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem;flex-wrap:wrap;}
+.task-title{font-size:1.2rem;font-weight:600;margin-bottom:.5rem;}
+.task-scenario{font-size:.87rem;color:var(--text2);line-height:1.65;padding:.7rem 1rem;background:var(--surf);border-radius:8px;border-left:3px solid var(--id);margin-bottom:.875rem;}
+.steps-list{display:flex;flex-direction:column;gap:.4rem;overflow-y:auto;max-height:calc(100vh - 310px);}
+.step-item{display:flex;gap:.75rem;align-items:flex-start;padding:.55rem .875rem;background:var(--surf);border:0.5px solid var(--border);border-radius:8px;}
+.step-item.current{border-color:rgba(0,200,150,.4);background:rgba(0,200,150,.06);}
+.step-num{width:22px;height:22px;border-radius:50%;background:rgba(0,200,150,.15);color:var(--id);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:1px;}
+.step-instr{font-size:.85rem;color:var(--text);line-height:1.5;}
+.step-hint{font-size:.77rem;color:var(--text3);margin-top:.2rem;font-style:italic;}
+.step-acp{font-size:.7rem;color:var(--text3);margin-top:.2rem;font-family:var(--mono);}
+.mc-q-counter{font-family:var(--mono);font-size:.72rem;color:var(--text3);margin-bottom:.3rem;}
+.mc-question{font-size:1rem;font-weight:500;line-height:1.5;margin-bottom:.875rem;}
+.mc-option{padding:.45rem .75rem;border-radius:7px;border:0.5px solid var(--border);background:var(--surf);font-size:.83rem;color:var(--text2);cursor:pointer;margin-bottom:.35rem;transition:all .15s;}
+.mc-option:hover{border-color:rgba(0,200,150,.35);}
+.mc-option.correct{border-color:rgba(0,214,143,.5);background:rgba(0,214,143,.08);color:#7FFFD4;}
+.mc-option.wrong{border-color:rgba(255,77,109,.5);background:rgba(255,77,109,.08);}
+.fb{padding:.6rem .875rem;border-radius:8px;font-size:.82rem;line-height:1.55;margin-top:.5rem;display:none;}
+.fb-ok{background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.25);color:#7FFFD4;}
+.fb-ng{background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.25);color:#FFB3C1;}
+.slide-summary{background:linear-gradient(135deg,var(--bg) 0%,#00280A 100%);}
+.sum-icon{font-size:2.5rem;margin-bottom:.75rem;}
+.sum-title{font-size:1.8rem;font-weight:700;margin-bottom:.4rem;color:var(--correct);}
+.sum-sub{font-size:.9rem;color:var(--text2);max-width:520px;margin-bottom:1.25rem;line-height:1.6;}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.25rem;}
+.sum-card{background:var(--surf);border:0.5px solid var(--border);border-radius:10px;padding:.875rem;text-align:center;}
+.sum-n{font-size:1.6rem;font-weight:700;color:var(--id);}
+.sum-l{font-size:.75rem;color:var(--text3);margin-top:.2rem;}
+.ns-item{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text2);margin-bottom:.35rem;}
+.ns-arrow{color:var(--id);}
+.concept-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-top:.75rem;}
+.concept-card{background:var(--surf);border:0.5px solid var(--border);border-radius:8px;padding:.875rem;}
+.concept-title{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.3rem;}
+.concept-desc{font-size:.8rem;color:var(--text2);line-height:1.55;}
+.concept-code{font-family:var(--mono);font-size:.68rem;color:var(--id);display:block;margin-top:.25rem;}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="topbar">
+    <span class="tb-logo">Id</span>
+    <span class="tb-title" id="tb-title">Adobe InDesign — ACP 2025</span>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:4%;"></div></div>
+    <span class="tb-counter" id="tb-ctr">1 / 24</span>
+  </div>
+
+  <div class="slide-viewport" id="vp">
+
+    <!-- SLIDE 0 — Cover -->
+    <div class="slide slide-cover active" data-slide="0">
+      <div class="cover-eyebrow">ACP 2025 · Adobe Certified Professional</div>
+      <div class="cover-title">Print &amp; Digital Media<br>Publication Using InDesign</div>
+      <div class="cover-sub">Complete ACP 2025 exam preparation — all 6 domains, all 22 objectives. Interactive task simulators with Guided and Independent practice modes.</div>
+      <div>
+        <span class="cbadge" style="color:var(--id);border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">InDesign v20.x</span>
+        <span class="cbadge" style="color:var(--correct);border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.06);">6 domains · 22 objectives</span>
+        <span class="cbadge" style="color:#9B8EF0;border-color:rgba(155,142,240,.3);background:rgba(155,142,240,.08);">✦ AI 2025</span>
+        <span class="cbadge" style="color:var(--text2);border-color:var(--border);">50 min exam</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 1 — Domain 1 intro -->
+    <div class="slide slide-domain" data-slide="1">
+      <div class="domain-num">Domain 1 of 6</div>
+      <div class="domain-h">Working in the Design Industry</div>
+      <div class="domain-desc">Print production concepts, copyright, document terms, and design principles. Domain 1 is MC only — covered by the shared Design Theory module.</div>
+      <div class="obj-chip"><span class="obj-code">Id-1.1</span><span class="obj-text">Purpose, audience, accessibility in publication design</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-1.2</span><span class="obj-text">Copyright, licensing, AI-generated content in InDesign files</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-1.3</span><span class="obj-text">Bleed, trim, slug, live area, CMYK, spot colour, rich black</span></div>
+    </div>
+
+    <!-- SLIDE 2 — Print concepts reference -->
+    <div class="slide slide-task" data-slide="2">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-1.3</span>
+        <span class="bloom-tag">Remember</span>
+      </div>
+      <div class="task-title">Print document terms — exam essentials</div>
+      <div class="concept-grid">
+        <div class="concept-card"><div class="concept-title">Bleed</div><div class="concept-desc">Artwork extending beyond the trim edge — typically 3mm. Prevents white borders after cutting.</div><span class="concept-code">Id-1.3a</span></div>
+        <div class="concept-card"><div class="concept-title">Slug</div><div class="concept-desc">Area outside the bleed. Holds printer marks, job info, colour bars. Does not print on final output.</div><span class="concept-code">Id-1.3b</span></div>
+        <div class="concept-card"><div class="concept-title">Live area / safe zone</div><div class="concept-desc">Area inside the margins where critical content should sit. Avoid placing text near the trim edge.</div><span class="concept-code">Id-1.3c</span></div>
+        <div class="concept-card"><div class="concept-title">Rich black</div><div class="concept-desc">A mix of all four CMYK inks (e.g. C40 M30 Y30 K100) for deeper blacks on large areas. Not for small text.</div><span class="concept-code">Id-1.3d</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 — Domain 2 intro -->
+    <div class="slide slide-domain" data-slide="3" style="background:linear-gradient(135deg,var(--bg) 0%,#001C12 100%);">
+      <div class="domain-num">Domain 2 of 6</div>
+      <div class="domain-h">Document Setup &amp; Interface</div>
+      <div class="domain-desc">New document configuration with bleed, slug, margins, and columns. Workspace management, Smart Guides, and placing and managing linked assets.</div>
+      <div class="obj-chip"><span class="obj-code">Id-2.1</span><span class="obj-text">New document — bleed, slug, margins, columns, facing pages</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-2.2</span><span class="obj-text">Workspace, Smart Guides (Ctrl+U), Document Grid, Preflight live status</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-2.3</span><span class="obj-text">Place assets (Ctrl+D), Links panel — chain icon, yellow ⚠, red ? status</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-2.4</span><span class="obj-text">Swatches — CMYK process, tints, gradients, Pantone spot colour</span></div>
+    </div>
+
+    <!-- SLIDE 4 — Task: New document -->
+    <div class="slide slide-task" data-slide="4">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-2.1</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <div class="task-title">Task: New document — A4 facing pages with bleed &amp; slug</div>
+      <div class="task-scenario">Create a print magazine document: A4 facing pages, 3mm bleed all sides, 6mm top slug, 12mm margins, 2 columns, 5mm gutter.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">File → New → Document (Ctrl+N). Enable Preview checkbox immediately.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Intent: Print. Width: 210mm, Height: 297mm (A4). Pages: 4. Check Facing Pages.</div><div class="step-hint">Facing pages = left/right spread structure for bound publications.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Margins: all 12mm (chain icon to link). Columns: 2, Gutter: 5mm.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Bleed: 3mm all sides (chain icon). Slug Top: 6mm.</div><div class="step-acp">Id-2.1: Bleed = extends beyond trim. Slug = holds printer marks only.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div><div class="step-instr">Click Create. Red guides = bleed. Purple = margins. Blue/green = slug.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 — Task: Links panel -->
+    <div class="slide slide-task" data-slide="5">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-2.3</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <div class="task-title">Task: Place assets &amp; manage Links panel</div>
+      <div class="task-scenario">Place a photograph, verify link status, relink a missing file, and use Edit Original to modify a placed asset.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">File → Place (Ctrl+D). Select image → Open. Click or drag on page to place.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Window → Links. Verify: 🔗 chain = current, ⚠ yellow = modified, ? red = missing.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Click a missing link (?) → Relink button → navigate to file → Open.</div><div class="step-hint">Relink All in panel menu if many files are missing.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Select link → Edit Original (pencil icon) → file opens in source app → save there → link updates.</div><div class="step-acp">Id-2.3: Never re-place to update — always Edit Original to keep the link intact.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 — MC D1-2 -->
+    <div class="slide slide-mc" data-slide="6">
+      <div class="mc-q-counter">Knowledge check · Domains 1–2 · Question 1 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-2.3</div>
+      <div class="mc-question">The Links panel shows a yellow triangle next to a placed image. This means:</div>
+      <div class="mc-options" id="mc6-opts">
+        <div class="mc-option" onclick="answerMC(6,0,1)">The file is missing — it cannot be found</div>
+        <div class="mc-option" onclick="answerMC(6,1,1)">The source file was modified after placing — update the link to refresh</div>
+        <div class="mc-option" onclick="answerMC(6,2,1)">The file is embedded — it has no external link</div>
+        <div class="mc-option" onclick="answerMC(6,3,1)">The file has a colour profile mismatch</div>
+      </div>
+      <div id="fb6" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 7 — MC D1-2 Q2 -->
+    <div class="slide slide-mc" data-slide="7">
+      <div class="mc-q-counter">Knowledge check · Domains 1–2 · Question 2 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-1.3</div>
+      <div class="mc-question">Artwork that extends 3mm beyond the trim edge of a page is called:</div>
+      <div class="mc-options" id="mc7-opts">
+        <div class="mc-option" onclick="answerMC(7,0,0)">Bleed</div>
+        <div class="mc-option" onclick="answerMC(7,1,0)">Slug</div>
+        <div class="mc-option" onclick="answerMC(7,2,0)">Live area</div>
+        <div class="mc-option" onclick="answerMC(7,3,0)">Registration</div>
+      </div>
+      <div id="fb7" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 8 — Domain 3 intro -->
+    <div class="slide slide-domain" data-slide="8">
+      <div class="domain-num">Domain 3 of 6</div>
+      <div class="domain-h">Organising Documents</div>
+      <div class="domain-desc">Master pages for consistent repeating elements, automatic page numbering, text variables, document layers, and object styles for formatting consistency at scale.</div>
+      <div class="obj-chip"><span class="obj-code">Id-3.1</span><span class="obj-text">Master pages — create, apply, override (Ctrl+Shift+click), detach, apply [None]</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-3.2</span><span class="obj-text">Auto page numbers (Type → Insert Special Character → Markers), section options, text variables</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-3.3</span><span class="obj-text">Layers — create, lock (padlock), hide (eye), reorder (drag)</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-3.4</span><span class="obj-text">Object styles — create from formatted object, apply, redefine, clear overrides (Alt+click style)</span></div>
+    </div>
+
+    <!-- SLIDE 9 — Task: Master pages -->
+    <div class="slide slide-task" data-slide="9">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-3.1</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <div class="task-title">Task: Create &amp; apply Master pages</div>
+      <div class="task-scenario">Create "A-Running Footer" master with a footer text frame and page number. Apply to all 12 pages. Override the footer on page 3.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Window → Pages (F12). Panel menu ≡ → New Master. Name: Running Footer, Prefix: A.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Double-click A-Running Footer to enter it. Draw a footer text frame (T + drag).</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Inside frame: Type → Insert Special Character → Markers → Current Page Number.</div><div class="step-hint">Shows "A" on master. Resolves to correct numbers on document pages.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Panel ≡ → Apply Master to Pages → A-Running Footer → Pages: 1-12 → OK.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div><div class="step-instr">On page 3: Ctrl+Shift+click (Cmd+Shift) the greyed footer → overrides it locally.</div><div class="step-acp">Id-3.1: Override = locally editable. Other pages still use master version.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10 — Domain 4 intro -->
+    <div class="slide slide-domain" data-slide="10">
+      <div class="domain-num">Domain 4 of 6</div>
+      <div class="domain-h">Text &amp; Tables</div>
+      <div class="domain-desc">Text frame threading for long-form articles, Paragraph and Character Styles for typographic consistency, tables for structured data, and Story Editor for efficient editing.</div>
+      <div class="obj-chip"><span class="obj-code">Id-4.1</span><span class="obj-text">Thread text frames — out-port red +, thread cursor, Show Text Threads (Alt+Ctrl+Y)</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-4.2</span><span class="obj-text">Paragraph Styles (F11), Character Styles (Shift+F11) — create, apply, Next Style, redefine</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-4.3</span><span class="obj-text">Tables — Insert Table inside text frame, Table Options, Cell Options, alternating fills</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-4.4</span><span class="obj-text">Story Editor (Ctrl+Y), spell check, Find/Change (Ctrl+F), GREP pattern search</span></div>
+    </div>
+
+    <!-- SLIDE 11 — Task: Threading & Styles -->
+    <div class="slide slide-task" data-slide="11">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-4.1 / 4.2</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <div class="task-title">Task: Thread text &amp; apply Paragraph Styles</div>
+      <div class="task-scenario">Resolve overset text by threading to a new frame, then apply Body Text and Heading 1 Paragraph Styles to format a feature article.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Click the red + out-port (bottom-right of overflowing frame) → thread cursor loads.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Navigate to page 2 → click or drag to create linked frame. Text flows in.</div><div class="step-hint">View → Extras → Show Text Threads to see connection arrows.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Window → Styles → Paragraph Styles (F11). Format body paragraph, then click + to save as "Body Text".</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Create "Heading 1" with Next Style: Body Text. Press Enter after a heading → Body Text applies automatically.</div><div class="step-acp">Id-4.2: Next Style automates typographic flow. Format one, create, then apply to document.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12 — MC D3-4 -->
+    <div class="slide slide-mc" data-slide="12">
+      <div class="mc-q-counter">Knowledge check · Domains 3–4 · Question 1 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-3.1</div>
+      <div class="mc-question">How do you make a master page item editable on a specific document page without affecting other pages?</div>
+      <div class="mc-options" id="mc12-opts">
+        <div class="mc-option" onclick="answerMC(12,0,2)">Double-click the item on the document page</div>
+        <div class="mc-option" onclick="answerMC(12,1,2)">Delete the master from the document page</div>
+        <div class="mc-option" onclick="answerMC(12,2,2)">Ctrl+Shift+click (Cmd+Shift+click) the master item to override it locally</div>
+        <div class="mc-option" onclick="answerMC(12,3,2)">Apply [None] master to the page</div>
+      </div>
+      <div id="fb12" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 13 — MC D3-4 Q2 -->
+    <div class="slide slide-mc" data-slide="13">
+      <div class="mc-q-counter">Knowledge check · Domains 3–4 · Question 2 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-4.1</div>
+      <div class="mc-question">A red plus (+) in the lower-right corner of an InDesign text frame means:</div>
+      <div class="mc-options" id="mc13-opts">
+        <div class="mc-option" onclick="answerMC(13,0,2)">The frame is selected</div>
+        <div class="mc-option" onclick="answerMC(13,1,2)">The frame uses a Paragraph Style</div>
+        <div class="mc-option" onclick="answerMC(13,2,2)">Text is overflowing — more text exists than the frame can show</div>
+        <div class="mc-option" onclick="answerMC(13,3,2)">The frame is locked on its layer</div>
+      </div>
+      <div id="fb13" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 14 — Domain 5 intro -->
+    <div class="slide slide-domain" data-slide="14">
+      <div class="domain-num">Domain 5 of 6</div>
+      <div class="domain-h">Visual Elements &amp; AI Features</div>
+      <div class="domain-desc">Image frame fitting, the two-level frame/content selection model, transparency and effects, drawn shapes with corner options, and the 2025 Firefly AI objectives.</div>
+      <div class="obj-chip"><span class="obj-code">Id-5.1</span><span class="obj-text">Image frames (F key), fitting options — Fill Frame Proportionally, Auto Fit, content grabber</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-5.2</span><span class="obj-text">Effects panel (Ctrl+Shift+F10) — fx button, Drop Shadow, blending modes, per-attribute opacity</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-5.3</span><span class="obj-text">Rectangle (M) vs Frame (F), Corner Options, Pathfinder → Convert Shape</span></div>
+      <div class="obj-chip" style="border-color:rgba(155,142,240,.3);"><span class="obj-code" style="color:#9B8EF0;">Id-5.5 ✦</span><span class="obj-text">Object → Generate Image (Text-to-Image), Generative Expand — Adobe Firefly 2025</span></div>
+    </div>
+
+    <!-- SLIDE 15 — Task: Image frames & AI -->
+    <div class="slide slide-task" data-slide="15">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-5.1 / 5.5</span>
+        <span class="bloom-tag">Apply</span>
+        <span class="ai-tag">✦ AI 2025</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <div class="task-title">Task: Image fitting &amp; Generative Expand</div>
+      <div class="task-scenario">Place and fit a photograph, reposition the content within the frame, then use Generative Expand to extend a portrait image to landscape format.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Press F (Rectangle Frame). Drag to draw frame. Select frame → File → Place (Ctrl+D) → choose photo.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Right-click → Fitting → Fill Frame Proportionally. Check Auto Fit in Control bar.</div><div class="step-hint">Fill Frame: fills fully, may crop. Fit Content: no crop, may leave gaps.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Double-click image → content selected (orange handles). Drag to reposition within frame. Single-click outside to return to frame selection.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Resize frame wider than the photo. Generative Expand button appears in taskbar → click → choose variation → Accept.</div><div class="step-acp">Id-5.5: Firefly fills the empty frame area with AI content that blends with the original photo.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 16 — MC D5 -->
+    <div class="slide slide-mc" data-slide="16">
+      <div class="mc-q-counter">Knowledge check · Domain 5 · Question 1 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-5.1</div>
+      <div class="mc-question">You double-click a placed image in InDesign. What do you select?</div>
+      <div class="mc-options" id="mc16-opts">
+        <div class="mc-option" onclick="answerMC(16,0,1)">The entire page</div>
+        <div class="mc-option" onclick="answerMC(16,1,1)">The image content inside the frame (orange handles)</div>
+        <div class="mc-option" onclick="answerMC(16,2,1)">The image frame (blue handles)</div>
+        <div class="mc-option" onclick="answerMC(16,3,1)">The layer the image is on</div>
+      </div>
+      <div id="fb16" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 17 — MC D5 Q2 -->
+    <div class="slide slide-mc" data-slide="17">
+      <div class="mc-q-counter">Knowledge check · Domain 5 · Question 2 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-5.5</div>
+      <div class="mc-question">Generative Expand in InDesign is used to:</div>
+      <div class="mc-options" id="mc17-opts">
+        <div class="mc-option" onclick="answerMC(17,0,2)">Generate text content for empty text frames</div>
+        <div class="mc-option" onclick="answerMC(17,1,2)">Apply a gradient to the edges of placed images</div>
+        <div class="mc-option" onclick="answerMC(17,2,2)">Fill the empty areas of a frame when you make it larger than the original image, using AI to generate seamlessly matching content</div>
+        <div class="mc-option" onclick="answerMC(17,3,2)">Export the document at a larger scale</div>
+      </div>
+      <div id="fb17" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 18 — Domain 6 intro -->
+    <div class="slide slide-domain" data-slide="18" style="background:linear-gradient(135deg,var(--bg) 0%,#001408 100%);">
+      <div class="domain-num">Domain 6 of 6 — Final domain</div>
+      <div class="domain-h" style="color:var(--correct);">Publishing</div>
+      <div class="domain-desc">Preflight for error detection and custom profiles, Package to collect all assets for delivery, PDF export for print and screen, and the Print dialog for separations and proofing.</div>
+      <div class="obj-chip"><span class="obj-code">Id-6.1</span><span class="obj-text">Preflight — live errors, custom profiles (Define Profiles), share as .idpp</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-6.2</span><span class="obj-text">Package (Alt+Shift+Ctrl+P) — collects .indd, fonts, links, Instructions.txt</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-6.3</span><span class="obj-text">Export PDF (Print): PDF/X-1a, crop marks, bleed; PDF Interactive; EPUB Reflowable / Fixed Layout</span></div>
+      <div class="obj-chip"><span class="obj-code">Id-6.4</span><span class="obj-text">Print dialog — Marks &amp; Bleed tab, Output tab → Separations, ink list, Summary tab</span></div>
+    </div>
+
+    <!-- SLIDE 19 — Task: Preflight & Package -->
+    <div class="slide slide-task" data-slide="19">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-6.1 / 6.2</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <div class="task-title">Task: Preflight errors &amp; Package for print</div>
+      <div class="task-scenario">Resolve Preflight errors in a magazine document, create a custom 300 ppi profile, then package for printer delivery.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Window → Output → Preflight. Red dot = errors. Click each error to navigate to it.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Fix missing link: Links panel → Relink. Fix overset: thread to a new frame.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Create custom profile: Preflight panel ≡ → Define Profiles → + → name: Print Ready → Links → min. resolution: 300 ppi → OK.</div><div class="step-hint">Activate the profile in the panel dropdown.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">File → Package (Alt+Shift+Ctrl+P). Review Summary → Report → check Copy Fonts &amp; Copy Links → add Instructions → Create Packaged Folder.</div><div class="step-acp">Id-6.2: Package folder contains: .indd, Document Fonts/, Links/, Instructions.txt.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 20 — Task: Export PDF -->
+    <div class="slide slide-task" data-slide="20">
+      <div class="task-header-row">
+        <span class="acp-tag">Id-6.3</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <div class="task-title">Task: Export press-quality PDF/X-1a</div>
+      <div class="task-scenario">Export a print-ready PDF with crop marks, 3mm bleed, all spreads, press-quality images. Then export a separate Interactive PDF for digital delivery.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">File → Export (Ctrl+E) → Adobe PDF (Print). Preset: [PDF/X-1a:2001].</div><div class="step-hint">PDF/X-1a: CMYK only, no live transparency, most printer-compatible.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Marks and Bleeds tab → Crop Marks ✓ → Bleed Marks ✓ → Use Document Bleed Settings ✓.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">General tab → Pages: All → Spreads ✓ → Export.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">For digital: File → Export → Adobe PDF (Interactive) → Hyperlinks ✓ → Bookmarks ✓ → OK.</div><div class="step-acp">Id-6.3: PDF Print = CMYK, crop marks, press. PDF Interactive = hyperlinks, video, no print marks.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 21 — MC D6 Q1 -->
+    <div class="slide slide-mc" data-slide="21">
+      <div class="mc-q-counter">Knowledge check · Domain 6 · Question 1 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-6.2</div>
+      <div class="mc-question">When you Package an InDesign document, what three items are collected into the package folder?</div>
+      <div class="mc-options" id="mc21-opts">
+        <div class="mc-option" onclick="answerMC(21,0,1)">Only the .indd file</div>
+        <div class="mc-option" onclick="answerMC(21,1,1)">The .indd file, all linked images/graphics (Links folder), and all document fonts (Document Fonts folder)</div>
+        <div class="mc-option" onclick="answerMC(21,2,1)">The .indd file and a PDF export only</div>
+        <div class="mc-option" onclick="answerMC(21,3,1)">Fonts and links only — the .indd file stays in the original location</div>
+      </div>
+      <div id="fb21" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 22 — MC D6 Q2 -->
+    <div class="slide slide-mc" data-slide="22">
+      <div class="mc-q-counter">Knowledge check · Domain 6 · Question 2 of 2</div>
+      <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Id-6.3</div>
+      <div class="mc-question">Which PDF export preset should you use for commercial print production?</div>
+      <div class="mc-options" id="mc22-opts">
+        <div class="mc-option" onclick="answerMC(22,0,1)">Adobe PDF (Interactive) — it includes all document features</div>
+        <div class="mc-option" onclick="answerMC(22,1,1)">Adobe PDF (Print) with the [PDF/X-1a:2001] preset</div>
+        <div class="mc-option" onclick="answerMC(22,2,1)">JPEG at 300 ppi per page</div>
+        <div class="mc-option" onclick="answerMC(22,3,1)">EPUB (Fixed Layout)</div>
+      </div>
+      <div id="fb22" class="fb"></div>
+    </div>
+
+    <!-- SLIDE 23 — ACP exam reminders -->
+    <div class="slide slide-task" data-slide="23">
+      <div class="task-header-row">
+        <span class="acp-tag">Id · All domains</span>
+        <span class="bloom-tag" style="background:rgba(255,184,0,.1);color:var(--partial);border-color:rgba(255,184,0,.25);">Evaluate</span>
+      </div>
+      <div class="task-title">ACP exam day — InDesign key reminders</div>
+      <div class="steps-list" style="max-height:none;">
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div><div class="step-instr">50 minutes, 2 sections. MC first (Domain 1 concepts), then Live-in-the-App tasks in real InDesign.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div><div class="step-instr">Page numbers on master = correct. Placed on document page = only shows that one number.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div><div class="step-instr">Ctrl+Shift+click to override a master item. Drag master thumbnail to apply. Panel ≡ → Apply Master to Pages for bulk apply.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div><div class="step-instr">Tables live inside text frames. Table → Insert Table (not Insert menu). Cell Options (Ctrl+Alt+B) for individual cells; Table Options (Ctrl+Alt+Shift+B) for whole table.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div><div class="step-instr">PDF Print = press (CMYK, crop marks). PDF Interactive = screen (hyperlinks, no crop marks). Never swap these.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div><div class="step-instr">2025 AI objectives: Text-to-Image (Object → Generate Image) and Generative Expand (resize frame → taskbar button) — both use Adobe Firefly.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 24 — Summary -->
+    <div class="slide slide-summary" data-slide="24">
+      <div class="sum-icon">✓</div>
+      <div class="sum-title">All 6 Domains Complete</div>
+      <div class="sum-sub">You have completed the full InDesign ACP 2025 course. Practise the interactive simulators, then attempt the certification exam.</div>
+      <div class="sum-grid">
+        <div class="sum-card"><div class="sum-n">22</div><div class="sum-l">Objectives covered</div></div>
+        <div class="sum-card"><div class="sum-n">12</div><div class="sum-l">MC questions</div></div>
+        <div class="sum-card"><div class="sum-n" id="score-display">—</div><div class="sum-l">Your MC score</div></div>
+      </div>
+      <div class="ns-item"><span class="ns-arrow">→</span>Practise all domain simulators: D2 through D6</div>
+      <div class="ns-item"><span class="ns-arrow">→</span>Download task briefs and answer keys</div>
+      <div class="ns-item"><span class="ns-arrow">→</span>Complete the Kirkpatrick L1 reaction survey</div>
+      <div class="ns-item"><span class="ns-arrow">→</span>Return to the ACP 2025 home to compare Photoshop and Illustrator results</div>
+    </div>
+
+  </div><!-- /viewport -->
+
+  <div class="bottombar">
+    <button class="nav-btn" id="btn-prev" onclick="go(cur-1)" disabled>← Prev</button>
+    <div class="dot-row" id="dots"></div>
+    <button class="nav-btn primary" id="btn-next" onclick="go(cur+1)">Next →</button>
+    <span class="kb-hint">← → keys</span>
+  </div>
+</div>
+
+<script>
+const TOTAL=25,MC_ANS={
+  6:{c:1,e:'A yellow triangle means the source file was modified since placing. Click Update Link to refresh. Red ? means the file is missing entirely.'},
+  7:{c:0,e:'Bleed is artwork that extends beyond the trim edge — typically 3mm. Slug is outside the bleed and holds printer marks. Live area is the safe zone inside the margins.'},
+  12:{c:2,e:'Ctrl+Shift+click (Cmd+Shift+click) overrides the master item locally on that page only. Other pages using the same master are unaffected.'},
+  13:{c:2,e:'The red + in the out-port means text is overflowing — more text than fits. Click it to load the thread cursor and flow the text into another frame.'},
+  16:{c:1,e:'Double-clicking selects the content (orange handles). Single-clicking selects the frame (blue handles). The content grabber circle in the centre is the fastest way to select content.'},
+  17:{c:2,e:'Generative Expand fills the empty space when you make a frame larger than the original image. Adobe Firefly generates seamlessly matching content — essential for changing aspect ratios.'},
+  21:{c:1,e:'Package collects: the .indd file, a Document Fonts subfolder, a Links subfolder, and an Instructions.txt file. The .indd copy has updated link paths pointing to the local Links folder.'},
+  22:{c:1,e:'Adobe PDF (Print) with [PDF/X-1a:2001] is for commercial print: CMYK only, transparency flattened, embedded fonts, crop marks. PDF Interactive is for screen delivery with hyperlinks.'}
+};
+let cur=0,mcS={},mcRight=0,mcTotal=0;
+
+const titleMap={
+  0:'ACP 2025 InDesign',1:'Domain 1: Design Industry',2:'Print concepts reference',
+  3:'Domain 2: Document Setup',4:'Task: New document',5:'Task: Place assets',
+  6:'MC: Domain 1–2',7:'MC: Domain 1–2',8:'Domain 3: Organising',
+  9:'Task: Master pages',10:'Domain 4: Text & Tables',11:'Task: Threading & Styles',
+  12:'MC: Domain 3–4',13:'MC: Domain 3–4',14:'Domain 5: Visual Elements',
+  15:'Task: Image fitting & AI',16:'MC: Domain 5',17:'MC: Domain 5',
+  18:'Domain 6: Publishing',19:'Task: Preflight & Package',20:'Task: Export PDF',
+  21:'MC: Domain 6',22:'MC: Domain 6',23:'Exam reminders',24:'Course complete'
+};
+
+function go(n){
+  if(n<0||n>=TOTAL)return;
+  const slides=document.querySelectorAll('.slide');
+  slides[cur].classList.remove('active');slides[cur].classList.add('out');
+  setTimeout(()=>{slides[cur].classList.remove('out');cur=n;slides[n].classList.add('active');updateUI();},350);
+}
+
+function updateUI(){
+  document.getElementById('tb-title').textContent=titleMap[cur]||'Adobe InDesign — ACP 2025';
+  document.getElementById('tb-ctr').textContent=(cur+1)+' / '+TOTAL;
+  document.getElementById('prog-fill').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').textContent=cur>=TOTAL-1?'Finish ✓':'Next →';
+  if(cur===TOTAL-1)updateScore();
+  buildDots();
+}
+
+function buildDots(){
+  const show=Math.min(TOTAL,16);const row=document.getElementById('dots');
+  row.innerHTML=Array.from({length:show},(_,i)=>{
+    const si=Math.round(i*(TOTAL-1)/(show-1));
+    const cls=si===cur?'dot active':si<cur?'dot done':'dot';
+    return`<div class="${cls}" onclick="go(${si})"></div>`;
+  }).join('');
+}
+
+function answerMC(slide,chosen,correct){
+  if(mcS[slide])return;
+  mcS[slide]=true;mcTotal++;
+  if(chosen===correct)mcRight++;
+  const opts=document.querySelectorAll(`#mc${slide}-opts .mc-option`);
+  opts.forEach((el,i)=>{el.style.cursor='default';el.style.pointerEvents='none';if(i===correct)el.classList.add('correct');if(i===chosen&&chosen!==correct)el.classList.add('wrong');});
+  const fb=document.getElementById('fb'+slide);
+  const info=MC_ANS[slide];
+  if(fb&&info){
+    fb.style.display='block';
+    fb.className='fb '+(chosen===correct?'fb-ok':'fb-ng');
+    fb.innerHTML='<strong>'+(chosen===correct?'✓ Correct':'✗ Incorrect')+'</strong> — '+info.e;
+  }
+}
+
+function updateScore(){
+  const el=document.getElementById('score-display');
+  if(el)el.textContent=mcTotal>0?Math.round(mcRight/mcTotal*100)+'%':'N/A';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);
+});
+
+const SCORM={
+  init(){try{window.API?.LMSInitialize('');}catch(e){}try{window.API_1484_11?.Initialize('');}catch(e){}},
+  complete(){try{if(window.API){window.API.LMSSetValue('cmi.core.lesson_status','completed');window.API.LMSCommit('');}}catch(e){}try{if(window.API_1484_11){window.API_1484_11.SetValue('cmi.completion_status','completed');window.API_1484_11.Commit('');}}catch(e){}}
+};
+
+window.addEventListener('DOMContentLoaded',()=>{SCORM.init();buildDots();updateUI();});
+const obs=new MutationObserver(()=>{if(cur>=TOTAL-1)SCORM.complete();});
+</script>
+</body>
+</html>

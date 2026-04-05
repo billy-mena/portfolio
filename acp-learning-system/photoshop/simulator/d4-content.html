@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ps · Domain 4: Adding Content | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#1A0F3D 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.domain-hero h1{font-size:1.6rem;margin-bottom:.3rem;}
+.domain-meta{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;}
+.sim-layout{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(49,168,255,.35);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;flex-shrink:0;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--accent);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
+
+/* Adobe chrome */
+.adobe-sim{background:#2B2B2B;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3C3C3C;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#31A8FF;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 230px;min-height:360px;}
+.adobe-tools{background:#2B2B2B;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:14px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(49,168,255,.2);color:#31A8FF;}
+.tool-btn.highlight{border:1.5px solid #31A8FF;animation:pulse-ring 1.2s infinite;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#505050;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.canvas-doc{background:#FFF;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.adobe-panels{background:#2B2B2B;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;cursor:pointer;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#31A8FF;box-shadow:0 0 0 2px rgba(49,168,255,.2);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#31A8FF;color:#31A8FF;}
+.layer-row{display:flex;align-items:center;gap:5px;padding:4px 5px;border-radius:3px;cursor:pointer;margin-bottom:1px;border:1px solid transparent;}
+.layer-row:hover{background:#3A3A3A;}
+.layer-row.selected{background:rgba(49,168,255,.18);border-color:rgba(49,168,255,.3);}
+.layer-thumb{width:26px;height:20px;border-radius:2px;border:1px solid #555;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.layer-name{flex:1;color:#CCC;font-size:10px;}
+.layer-badge{font-size:8px;padding:1px 4px;border-radius:2px;flex-shrink:0;}
+.lb-type{background:#444;color:#AAA;}
+
+/* AI prompt panel */
+.ai-panel{background:#1A0F3D;border:0.5px solid rgba(100,60,255,.3);border-radius:var(--radius-md);padding:.875rem;margin-bottom:.75rem;}
+.ai-label{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#9B8EF0;margin-bottom:.4rem;}
+.ai-prompt-input{width:100%;background:#0F0A2A;border:0.5px solid rgba(100,60,255,.3);border-radius:var(--radius-sm);color:#E0D8FF;font-size:.83rem;padding:.5rem .75rem;font-family:var(--font-ui);resize:none;line-height:1.5;}
+.ai-prompt-input:focus{outline:none;border-color:rgba(100,60,255,.6);}
+.ai-generate-btn{margin-top:.5rem;width:100%;padding:.45rem;background:linear-gradient(135deg,#534AB7,#7B68EE);color:#FFF;border:none;border-radius:var(--radius-sm);font-size:.82rem;font-weight:500;cursor:pointer;transition:var(--transition);}
+.ai-generate-btn:hover{opacity:.88;}
+
+/* Canvas pen path */
+.pen-point{width:8px;height:8px;border-radius:50%;background:#FFF;border:1.5px solid #31A8FF;position:absolute;cursor:crosshair;transition:background .15s;}
+.pen-point:hover,.pen-point.selected{background:#31A8FF;}
+.canvas-path{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+
+/* Text formatting panel */
+.char-setting{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.char-label{font-size:10px;color:#999;min-width:55px;}
+.char-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:2px 5px;border-radius:3px;width:55px;text-align:right;font-family:var(--font-mono);}
+.char-input.highlight{border-color:#31A8FF;}
+
+/* Step/feedback/score — same as D3 */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;color:var(--color-text-primary);line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ps active">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div class="domain-meta">
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="acp-tag">Ps · Domain 4</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1>Adding Content to a Document</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-top:.3rem;">3 objectives · 6 tasks + AI tools · Guided &amp; Independent modes · ACP 2025</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 4 tasks</div>
+  <div class="task-item active" onclick="loadTask('ps-4-1a')" id="nav-ps41a">
+    <div class="task-icon" id="icon-ps41a">4.1</div>
+    <div class="task-info"><div class="task-obj">Ps-4.1a/b</div><div class="task-name">Raster drawing tools</div></div>
+    <div class="task-score" id="sc-ps41a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-4-1b')" id="nav-ps41b">
+    <div class="task-icon" id="icon-ps41b">4.1</div>
+    <div class="task-info"><div class="task-obj">Ps-4.1b</div><div class="task-name">Deletion &amp; revision tools</div></div>
+    <div class="task-score" id="sc-ps41b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-4-1c')" id="nav-ps41c">
+    <div class="task-icon" id="icon-ps41c" style="color:#9B8EF0;">AI</div>
+    <div class="task-info"><div class="task-obj">Ps-4.1c</div><div class="task-name">Generative Fill &amp; Sky Replacement</div></div>
+    <div class="task-score" id="sc-ps41c">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-4-2a')" id="nav-ps42a">
+    <div class="task-icon" id="icon-ps42a">4.2</div>
+    <div class="task-info"><div class="task-obj">Ps-4.2a</div><div class="task-name">Vector drawing tools</div></div>
+    <div class="task-score" id="sc-ps42a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-4-3a')" id="nav-ps43a">
+    <div class="task-icon" id="icon-ps43a">4.3</div>
+    <div class="task-info"><div class="task-obj">Ps-4.3a/b</div><div class="task-name">Type tools &amp; settings</div></div>
+    <div class="task-score" id="sc-ps43a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-4-3b')" id="nav-ps43b">
+    <div class="task-icon" id="icon-ps43b">4.3</div>
+    <div class="task-info"><div class="task-obj">Ps-4.3c</div><div class="task-name">Convert text to graphics</div></div>
+    <div class="task-score" id="sc-ps43b">—</div>
+  </div>
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d3-layers-masks.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 3</div></div>
+  </a>
+  <a href="d5-modifying.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Domain 5 →</div></div>
+  </a>
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card" style="border-radius:var(--border-radius-lg);">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS = {
+
+'ps-4-1a': {
+  id:'ps-4-1a', tool:'photoshop', domain:4,
+  objective:'4.1a', objectiveText:'Use raster creation tools — Brush, Smudge, Sharpen, Blur',
+  bloomsLevel:'Apply', estimatedMinutes:8,
+  scenario:'Paint a soft sky gradient on a new layer using the Brush tool, then apply Blur to smooth the edges and Smudge to blend colour transitions. All work must be on a separate layer to keep the background intact.',
+  uiType:'raster-tools',
+  steps:[
+    {id:1, instruction:'Create a new layer. Click the New Layer icon (+) at the bottom of the Layers panel.',
+     expectedAction:'click', expectedTarget:'new-layer-btn',
+     hint1:'Look at the bottom of the Layers panel for a row of small icons.',
+     hint2:'The + icon at the bottom of the Layers panel creates a new empty pixel layer.',
+     hint3:'Click the + (New Layer) icon at the bottom of the Layers panel.',
+     correctFeedback:'New layer created above the background. All painting will happen here.',
+     incorrectFeedback:'Click the + (New Layer) icon at the bottom of the Layers panel.',
+     acpContext:'ACP Ps-4.1a: Always paint on a dedicated layer. This keeps the background unchanged and lets you delete or hide the painted layer.',
+     gagneEvent:5},
+    {id:2, instruction:'Select the Brush tool (B). In the Options Bar, set Hardness to 0% for a soft edge.',
+     expectedAction:'tool-select', expectedTarget:'brush-tool',
+     hint1:'Press B for the Brush tool.',
+     hint2:'Press B. In the Options Bar, right-click on the canvas or click the brush preset picker to find the Hardness slider.',
+     hint3:'Press B → click the brush size/hardness control in Options Bar → set Hardness to 0%.',
+     correctFeedback:'Soft brush selected. 0% hardness creates smooth, feathered edges.',
+     incorrectFeedback:'Press B for the Brush tool and set Hardness to 0% in the Options Bar.',
+     acpContext:'ACP Ps-4.1a: Hardness 0% = feathered edge (airbrushy). Hardness 100% = crisp hard edge. Most painting uses 0–30% for natural blending.',
+     gagneEvent:6},
+    {id:3, instruction:'Set Opacity to 50% in the Options Bar for a semi-transparent stroke.',
+     expectedAction:'input', expectedTarget:'brush-opacity', expectedValue:'50', matchType:'exact',
+     hint1:'The Opacity % is in the Options Bar when the Brush tool is active.',
+     hint2:'Find the Opacity control in the Options Bar (shows a percentage). Click it and type 50.',
+     hint3:'In the Options Bar, click the Opacity field and type 50, then press Enter.',
+     correctFeedback:'Opacity at 50%. Multiple strokes will build up colour gradually.',
+     incorrectFeedback:'Set Brush Opacity to 50% in the Options Bar.',
+     acpContext:'ACP Ps-4.1a: Low opacity builds colour gradually. Flow controls how quickly paint builds — different from Opacity.',
+     gagneEvent:6},
+    {id:4, instruction:'Paint several strokes on the canvas to create a sky gradient effect.',
+     expectedAction:'click', expectedTarget:'canvas-paint',
+     hint1:'Click and drag on the canvas area to paint.',
+     hint2:'Click and drag across the canvas. Paint multiple strokes — they build up in opacity.',
+     hint3:'Click and drag on the canvas. Paint 3–4 overlapping strokes to create a gradient-like sky.',
+     correctFeedback:'Brush strokes applied to the new layer.',
+     incorrectFeedback:'Click and drag on the canvas to paint brush strokes.',
+     acpContext:'ACP Ps-4.1a: Painting on a separate layer means you can use Edit → Transform to scale, rotate, or warp the painted area.',
+     gagneEvent:6},
+    {id:5, instruction:'Select the Blur tool from the toolbar (under the Smudge tool group — click and hold to see the sub-menu).',
+     expectedAction:'tool-select', expectedTarget:'blur-tool',
+     hint1:'The Blur tool is grouped with Sharpen and Smudge. Click and hold the group.',
+     hint2:'Click and hold the Sharpen/Blur/Smudge tool group in the toolbar. A flyout appears. Select Blur.',
+     hint3:'Click-hold the tool group that shows the water-drop icon (Blur). Select the Blur tool from the flyout.',
+     correctFeedback:'Blur tool selected. Drag over the stroke edges to soften them.',
+     incorrectFeedback:'Click and hold the Smudge/Sharpen/Blur tool group in the toolbar to find the Blur tool.',
+     acpContext:'ACP Ps-4.1a: The Blur tool softens locally — different from Filter → Blur, which applies to the whole layer at once.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-4-1b': {
+  id:'ps-4-1b', tool:'photoshop', domain:4,
+  objective:'4.1b', objectiveText:'Use deletion and revision tools — Eraser, Background Eraser, History Brush',
+  bloomsLevel:'Apply', estimatedMinutes:7,
+  scenario:'Clean up a rough product cutout using the Background Eraser to remove the white background, then use the History Brush to restore a small area that was accidentally erased.',
+  uiType:'eraser-tools',
+  steps:[
+    {id:1, instruction:'Select the Background Eraser tool. Click and hold the Eraser tool in the toolbar to see the sub-menu.',
+     expectedAction:'tool-select', expectedTarget:'bg-eraser',
+     hint1:'The Eraser tool group contains the Eraser, Background Eraser, and Magic Eraser.',
+     hint2:'Click and hold the Eraser tool in the toolbar — a flyout shows Background Eraser. Select it.',
+     hint3:'Click-hold the Eraser tool icon in the toolbar → select Background Eraser from the flyout menu.',
+     correctFeedback:'Background Eraser selected. It samples the colour under the cursor and erases matching colours.',
+     incorrectFeedback:'Click and hold the Eraser tool in the toolbar to access the Background Eraser.',
+     acpContext:'ACP Ps-4.1b: The Background Eraser samples the colour at its centre (the crosshair) and erases matching colours beneath the brush. Ideal for removing white backgrounds.',
+     gagneEvent:5},
+    {id:2, instruction:'In the Options Bar, set Sampling to "Once" and Limits to "Discontiguous".',
+     expectedAction:'select', expectedTarget:'bg-eraser-sampling', expectedValue:'once', matchType:'exact',
+     hint1:'The Options Bar shows Sampling and Limits dropdowns when Background Eraser is active.',
+     hint2:'Click the Sampling dropdown in Options Bar → select Once. Then set Limits to Discontiguous.',
+     hint3:'Options Bar: Sampling dropdown → Once. Limits dropdown → Discontiguous.',
+     correctFeedback:'Sampling: Once means it samples the colour when you first click and keeps erasing only that colour. Discontiguous erases matching pixels anywhere under the brush.',
+     incorrectFeedback:'Set Sampling to "Once" in the Options Bar.',
+     acpContext:'ACP Ps-4.1b: Sampling Once prevents the Background Eraser from picking up new colours as you drag — critical for product photography background removal.',
+     gagneEvent:6},
+    {id:3, instruction:'Click on the white background of the product image and drag to erase it.',
+     expectedAction:'click', expectedTarget:'bg-erase-action',
+     hint1:'Click on the white area and drag slowly across the background.',
+     hint2:'Position the crosshair of the Background Eraser on the white background. Click and drag.',
+     hint3:'Click and drag on the white background area — it becomes transparent (chequerboard pattern).',
+     correctFeedback:'Background erased. The product is now on a transparent background.',
+     incorrectFeedback:'Click on the white background and drag the Background Eraser across it.',
+     acpContext:'ACP Ps-4.1b: Background Eraser needs a pixel layer (not a Background layer). Convert the Background to a layer first if needed (double-click it).',
+     gagneEvent:6},
+    {id:4, instruction:'Use the History Brush (Y) to restore an accidentally erased part of the product.',
+     expectedAction:'tool-select', expectedTarget:'history-brush',
+     hint1:'The History Brush restores to a previous state from the History panel.',
+     hint2:'Press Y or find the History Brush in the toolbar (grouped with Art History Brush).',
+     hint3:'Press Y → the History Brush paints from a snapshot. Paint over the accidentally erased area.',
+     correctFeedback:'History Brush selected. Paint over the erased area to restore original pixels.',
+     incorrectFeedback:'Press Y for the History Brush tool.',
+     acpContext:'ACP Ps-4.1b: The History Brush paints from the state shown in the History panel (set the source state by clicking the column to its left).',
+     gagneEvent:7},
+    {id:5, instruction:'Paint with the History Brush over the area that needs to be restored.',
+     expectedAction:'click', expectedTarget:'history-brush-paint',
+     hint1:'Paint on the area where pixels were accidentally removed.',
+     hint2:'Click and drag the History Brush over the area that should be restored.',
+     hint3:'Click and drag on the accidentally erased area — the original pixels reappear.',
+     correctFeedback:'Area restored using the History Brush. This is a powerful non-destructive recovery technique.',
+     incorrectFeedback:'Paint over the erased area with the History Brush to restore it.',
+     acpContext:'ACP Ps-4.1b: The History Brush only works within the current session. Once the document is closed and reopened, history is cleared.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-4-1c': {
+  id:'ps-4-1c', tool:'photoshop', domain:4,
+  objective:'4.1c', objectiveText:'Use AI tools — Generative Fill and Sky Replacement',
+  bloomsLevel:'Apply', estimatedMinutes:8,
+  scenario:'A landscape photo has an overcast sky and an unwanted object in the foreground. Use Sky Replacement to add a dramatic sunset sky, then use Generative Fill to remove the object with AI-powered context-aware fill.',
+  uiType:'ai-tools',
+  steps:[
+    {id:1, instruction:'Apply Sky Replacement. Go to Edit → Sky Replacement.',
+     expectedAction:'menu-click', expectedTarget:'edit-sky-replacement',
+     hint1:'Go to the Edit menu.',
+     hint2:'Edit → Sky Replacement opens the Sky Replacement dialog.',
+     hint3:'Click Edit in the menu bar → Sky Replacement (near the bottom of the Edit menu).',
+     correctFeedback:'Sky Replacement dialog opened. Photoshop automatically detects and masks the sky.',
+     incorrectFeedback:'Click Edit → Sky Replacement.',
+     acpContext:'ACP Ps-4.1c: Sky Replacement uses AI to automatically detect the sky boundary and create a mask. It generates a new layer group with the sky layer and adjustments.',
+     gagneEvent:4},
+    {id:2, instruction:'Choose a sky preset. In the Sky dropdown, select the "Sunsets" category and choose a dramatic sky.',
+     expectedAction:'select', expectedTarget:'sky-preset', expectedValue:'sunset', matchType:'contains',
+     hint1:'The Sky Replacement dialog has a sky preview. Click it to see categories.',
+     hint2:'Click the sky thumbnail dropdown in the dialog. Navigate to Sunsets category.',
+     hint3:'Click the sky dropdown → expand "Sunsets" folder → click a sunset sky thumbnail.',
+     correctFeedback:'Sunset sky selected. The preview updates with the new sky composited into the image.',
+     incorrectFeedback:'Select a sunset sky preset from the sky dropdown in the Sky Replacement dialog.',
+     acpContext:'ACP Ps-4.1c: Sky Replacement creates a non-destructive layer group. The sky, mask, and colour adjustment layers remain editable after clicking OK.',
+     gagneEvent:6},
+    {id:3, instruction:'Click OK to apply the Sky Replacement.',
+     expectedAction:'click', expectedTarget:'sky-replacement-ok',
+     hint1:'Click the OK or Apply button in the Sky Replacement dialog.',
+     hint2:'After choosing your sky, click OK to commit the replacement.',
+     hint3:'Click OK in the Sky Replacement dialog.',
+     correctFeedback:'Sky replaced. A new layer group "Sky Replacement Group" appears in the Layers panel.',
+     incorrectFeedback:'Click OK to apply the sky replacement.',
+     acpContext:'ACP Ps-4.1c: The resulting layer group preserves the original photo and sky on separate layers — fully non-destructive.',
+     gagneEvent:7},
+    {id:4, instruction:'Now use Generative Fill to remove the unwanted object. Make a selection around the object using any selection tool, then go to Edit → Generative Fill.',
+     expectedAction:'menu-click', expectedTarget:'edit-generative-fill',
+     hint1:'First make a selection around the unwanted object, then go to Edit.',
+     hint2:'Use the Lasso or Rectangular Marquee to select the unwanted object, then Edit → Generative Fill.',
+     hint3:'Select the object with any selection tool → Edit → Generative Fill → leave the prompt empty to remove it.',
+     correctFeedback:'Generative Fill dialog opened. Leaving the prompt empty tells Photoshop to remove the object and fill with context-aware content.',
+     incorrectFeedback:'Make a selection around the unwanted object, then Edit → Generative Fill.',
+     acpContext:'ACP Ps-4.1c: Empty prompt = remove and fill. Typed prompt = replace with generated content (e.g. "wooden fence" or "beach sand").',
+     gagneEvent:6},
+    {id:5, instruction:'Leave the text prompt empty (to remove the object) and click Generate.',
+     expectedAction:'click', expectedTarget:'generate-btn',
+     hint1:'In the Generative Fill bar, leave the prompt empty.',
+     hint2:'The Generative Fill contextual taskbar appears above the canvas. Leave the text field empty and click Generate.',
+     hint3:'In the contextual taskbar, leave the prompt field blank → click Generate.',
+     correctFeedback:'Generative Fill applied. Photoshop generates 3 variations. A Generative Layer is added to the Layers panel.',
+     incorrectFeedback:'Leave the prompt empty and click Generate in the contextual taskbar.',
+     acpContext:'ACP Ps-4.1c: Generative Fill creates a non-destructive Generative Layer. Use arrows to cycle through the 3 generated variations and pick the best.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-4-2a': {
+  id:'ps-4-2a', tool:'photoshop', domain:4,
+  objective:'4.2a', objectiveText:'Use vector drawing tools — Pen, shapes, and anchor points',
+  bloomsLevel:'Apply', estimatedMinutes:9,
+  scenario:'Create a custom speech bubble shape for a social media post. Use the Pen tool to draw the bubble body and tail, then add anchor points to refine the curve. Finish with a Custom Shape for a star decoration.',
+  uiType:'vector-tools',
+  steps:[
+    {id:1, instruction:'Select the Pen tool (P). In the Options Bar, set the mode to "Shape" and choose a fill colour.',
+     expectedAction:'tool-select', expectedTarget:'pen-tool',
+     hint1:'Press P for the Pen tool.',
+     hint2:'Press P. In Options Bar, set mode to Shape (not Path). Click the Fill colour to set it.',
+     hint3:'Press P → Options Bar → mode dropdown: select "Shape" → set Fill to your chosen colour.',
+     correctFeedback:'Pen tool in Shape mode. Paths will automatically fill with colour as you draw.',
+     incorrectFeedback:'Press P for the Pen tool, then set Options Bar mode to Shape.',
+     acpContext:'ACP Ps-4.2a: Shape mode creates vector shapes on vector layers. Path mode creates paths with no fill — useful for selections or guides.',
+     gagneEvent:4},
+    {id:2, instruction:'Click on the canvas to place the first anchor point of the speech bubble.',
+     expectedAction:'click', expectedTarget:'canvas-first-anchor',
+     hint1:'Click on the canvas to place the first anchor point.',
+     hint2:'Click once on the canvas — a small square anchor point appears.',
+     hint3:'Click on the canvas (do not drag) to place a corner anchor point.',
+     correctFeedback:'First anchor point placed. Continue clicking to add more points.',
+     incorrectFeedback:'Click on the canvas to place the first anchor point.',
+     acpContext:'ACP Ps-4.2a: Click without dragging = corner point (sharp). Click and drag = smooth point (curved). Both types can be converted later.',
+     gagneEvent:6},
+    {id:3, instruction:'Click and drag to create a curved anchor point for the bubble\'s rounded top.',
+     expectedAction:'click', expectedTarget:'canvas-curve-anchor',
+     hint1:'Click and drag (don\'t just click) to create a smooth curved point.',
+     hint2:'Move to where you want the curve. Click and drag — direction handles appear, controlling the curve.',
+     hint3:'Click and drag upward — you\'ll see two handles extending from the anchor point. These control curve direction and magnitude.',
+     correctFeedback:'Smooth curved anchor point created. The drag direction sets the curve tangent.',
+     incorrectFeedback:'Click and drag on the canvas to create a smooth curved anchor point.',
+     acpContext:'ACP Ps-4.2a: Drag distance controls curve steepness. Convert Point tool (Alt/Option key while Pen is active) breaks the handles for asymmetric curves.',
+     gagneEvent:6},
+    {id:4, instruction:'Add an anchor point on an existing path segment. Select the Pen tool, hover over the path — a + appears. Click to add a point.',
+     expectedAction:'click', expectedTarget:'add-anchor-point',
+     hint1:'Hover the Pen tool over an existing path segment (the line between two anchor points).',
+     hint2:'When the cursor shows a + icon next to the Pen, click on the path segment to add a new anchor point.',
+     hint3:'Move the Pen tool over the path edge — the cursor changes to Pen+. Click to insert a new anchor point.',
+     correctFeedback:'Anchor point added. Use the Direct Selection tool (A) to drag it and reshape the curve.',
+     incorrectFeedback:'Hover the Pen tool over the path segment until a + appears, then click.',
+     acpContext:'ACP Ps-4.2a: Add Anchor Point adds a point; Delete Anchor Point removes one. Neither changes the path shape — it just adds/removes control.',
+     gagneEvent:7},
+    {id:5, instruction:'Select the Custom Shape tool (under the Rectangle tool group — press U, then hold Shift+U to cycle). In Options Bar, open the Shape picker and choose the 5-point star.',
+     expectedAction:'tool-select', expectedTarget:'custom-shape-tool',
+     hint1:'Press U to activate the shape tool group, or find it in the toolbar.',
+     hint2:'Press U repeatedly (or Shift+U) to cycle through Rectangle, Ellipse, Polygon, Custom Shape.',
+     hint3:'Press U → then Shift+U to cycle to the Custom Shape tool → Options Bar → Shape picker → select a star.',
+     correctFeedback:'Custom Shape tool active. Custom shapes include arrows, banners, speech bubbles, and symbols — all resolution-independent.',
+     incorrectFeedback:'Cycle through the Shape tools (Shift+U) to reach the Custom Shape tool.',
+     acpContext:'ACP Ps-4.2a: Custom shapes are vector paths stored as presets. They scale to any size without quality loss.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-4-3a': {
+  id:'ps-4-3a', tool:'photoshop', domain:4,
+  objective:'4.3a/b', objectiveText:'Use type tools and adjust character & paragraph settings',
+  bloomsLevel:'Apply', estimatedMinutes:9,
+  scenario:'Design a magazine headline with a two-level typographic hierarchy: a large display headline with specific kerning and tracking, and a smaller subtitle with different alignment. Format using the Character and Paragraph panels.',
+  uiType:'type-tools',
+  steps:[
+    {id:1, instruction:'Select the Type tool (T) and click on the canvas to create a point type layer.',
+     expectedAction:'tool-select', expectedTarget:'type-tool',
+     hint1:'Press T for the Type tool.',
+     hint2:'Press T → click once on the canvas (do not drag) for point type.',
+     hint3:'Press T → single click on the canvas → a blinking cursor appears → type your headline.',
+     correctFeedback:'Point type layer created. Type text and press Ctrl+Enter (Cmd+Return) to commit.',
+     incorrectFeedback:'Press T for the Type tool, then click once on the canvas.',
+     acpContext:'ACP Ps-4.3a: Point type (click) grows with content. Paragraph type (click-drag) is constrained to a box and wraps automatically.',
+     gagneEvent:4},
+    {id:2, instruction:'Type "SUMMER 2025" then commit: Ctrl+Enter (Cmd+Return on Mac).',
+     expectedAction:'input', expectedTarget:'type-commit', expectedValue:'summer 2025', matchType:'contains',
+     hint1:'Type the headline text.',
+     hint2:'Type "SUMMER 2025" then press Ctrl+Enter (Windows) or Cmd+Return (Mac) to confirm.',
+     hint3:'Type: SUMMER 2025 → press Ctrl+Enter to commit the type layer.',
+     correctFeedback:'Text committed. A type layer with "T" icon appears in the Layers panel.',
+     incorrectFeedback:'Type "SUMMER 2025" then press Ctrl+Enter to commit.',
+     acpContext:'ACP Ps-4.3a: Always commit text before switching tools. Esc cancels the type; Ctrl+Enter / Cmd+Return commits it.',
+     gagneEvent:6},
+    {id:3, instruction:'Open the Character panel: Window → Character. Set the font size to 72 pt.',
+     expectedAction:'input', expectedTarget:'font-size', expectedValue:'72', matchType:'exact',
+     hint1:'Go to Window → Character to open the Character panel.',
+     hint2:'Window → Character → find the font size field (shows current size) → type 72.',
+     hint3:'Window → Character → click the font size field → type 72 → press Tab or Enter.',
+     correctFeedback:'Font size set to 72 pt.',
+     incorrectFeedback:'Open Window → Character and set the font size to 72 pt.',
+     acpContext:'ACP Ps-4.3b: Character panel controls individual character formatting. Paragraph panel controls alignment and spacing for the whole paragraph.',
+     gagneEvent:6},
+    {id:4, instruction:'Set Tracking to 200 to spread the letters. Find the tracking field in the Character panel (the AV↔ icon).',
+     expectedAction:'input', expectedTarget:'tracking-value', expectedValue:'200', matchType:'exact',
+     hint1:'Tracking affects spacing between all selected characters.',
+     hint2:'In the Character panel, find the tracking field — it shows AV with a double-headed arrow.',
+     hint3:'In the Character panel, find the Tracking field (icon: AV↔) and type 200.',
+     correctFeedback:'Tracking set to 200. Letters are now widely spaced — typical for luxury and editorial headlines.',
+     incorrectFeedback:'Set Tracking to 200 in the Character panel (the AV↔ field).',
+     acpContext:'ACP Ps-4.3b: Tracking = global spacing between all characters. Kerning = spacing between a specific pair. Tracking 200 = 200/1000 em spacing.',
+     gagneEvent:6},
+    {id:5, instruction:'Open the Paragraph panel (Window → Paragraph) and set paragraph alignment to Centered.',
+     expectedAction:'click', expectedTarget:'align-center',
+     hint1:'Open Window → Paragraph.',
+     hint2:'Window → Paragraph → click the centre alignment button (the middle icon in the alignment row).',
+     hint3:'Window → Paragraph → click the centre alignment icon (three centred lines) at the top of the panel.',
+     correctFeedback:'Paragraph alignment set to Centered.',
+     incorrectFeedback:'Open Window → Paragraph and click the Center alignment button.',
+     acpContext:'ACP Ps-4.3b: Alignment options: Left, Center, Right, Justify Last Left, Justify All. Point type typically uses Center for headlines.',
+     gagneEvent:7},
+    {id:6, instruction:'Add a subtitle using Area Type: drag with the Type tool to create a text box. Type "The Season\'s Definitive Guide". Set font size to 16 pt and Left alignment.',
+     expectedAction:'tool-select', expectedTarget:'area-type-drag',
+     hint1:'With the Type tool active, click and drag instead of just clicking.',
+     hint2:'Press T → click and drag to create a rectangle text box (paragraph/area type).',
+     hint3:'Press T → click and drag a text box below the headline → type the subtitle → set to 16 pt, Left aligned.',
+     correctFeedback:'Area type created. The text wraps within the box boundaries.',
+     incorrectFeedback:'Click and drag with the Type tool to create a paragraph text box.',
+     acpContext:'ACP Ps-4.3a: Area type wraps within its frame. Overflow text (more text than fits) shows a small + icon on the frame edge.',
+     gagneEvent:7}
+  ]
+},
+
+'ps-4-3b': {
+  id:'ps-4-3b', tool:'photoshop', domain:4,
+  objective:'4.3c', objectiveText:'Convert text to graphics — rasterize and convert to Smart Object',
+  bloomsLevel:'Apply', estimatedMinutes:6,
+  scenario:'A logo headline needs a colour gradient and a filter applied to it. Convert the text layer to a Smart Object to apply effects non-destructively. Then rasterize a decorative text element to apply pixel-based edits.',
+  uiType:'text-conversion',
+  steps:[
+    {id:1, instruction:'Select the text layer "LOGO" in the Layers panel.',
+     expectedAction:'click', expectedTarget:'logo-text-layer',
+     hint1:'Click on the text layer in the Layers panel.',
+     hint2:'Find the "LOGO" layer in the Layers panel and click its row.',
+     hint3:'Click the "LOGO" layer row in the Layers panel.',
+     correctFeedback:'"LOGO" layer selected.',
+     incorrectFeedback:'Click the "LOGO" text layer in the Layers panel.',
+     acpContext:'ACP Ps-4.3c: Text layers have special T icons and remain editable until converted. Converting allows pixel and vector effects but removes editability.',
+     gagneEvent:3},
+    {id:2, instruction:'Convert the text layer to a Smart Object. Right-click the layer → Convert to Smart Object.',
+     expectedAction:'click', expectedTarget:'text-to-smart-object',
+     hint1:'Right-click the layer row in the Layers panel.',
+     hint2:'Right-click the "LOGO" layer row → select Convert to Smart Object.',
+     hint3:'Right-click "LOGO" layer → Convert to Smart Object. The T icon changes to SO icon.',
+     correctFeedback:'Text converted to Smart Object. The original text is preserved inside the Smart Object.',
+     incorrectFeedback:'Right-click the LOGO text layer and choose Convert to Smart Object.',
+     acpContext:'ACP Ps-4.3c: Converting text to Smart Object is preferred over rasterizing — double-click the SO to edit the original text later.',
+     gagneEvent:5},
+    {id:3, instruction:'Apply a Gradient Overlay layer style to the Smart Object. Click the fx icon at the bottom of the Layers panel → Gradient Overlay.',
+     expectedAction:'click', expectedTarget:'gradient-overlay',
+     hint1:'The fx icon is at the bottom of the Layers panel.',
+     hint2:'Click the fx icon → Gradient Overlay from the menu.',
+     hint3:'Click fx → Gradient Overlay → adjust the gradient colours in the dialog → OK.',
+     correctFeedback:'Gradient Overlay applied. The text now has a colour gradient effect.',
+     incorrectFeedback:'Click the fx icon at the bottom of the Layers panel and choose Gradient Overlay.',
+     acpContext:'ACP Ps-4.3c: Layer styles (like Gradient Overlay) work on Smart Objects. They remain editable by double-clicking the fx badge.',
+     gagneEvent:6},
+    {id:4, instruction:'Now select the decorative text layer "BANNER". Rasterize it: Layer → Rasterize → Type.',
+     expectedAction:'menu-click', expectedTarget:'rasterize-type',
+     hint1:'Select the BANNER layer, then go to the Layer menu.',
+     hint2:'Layer → Rasterize → Type converts the vector text to pixels.',
+     hint3:'Select BANNER layer → Layer → Rasterize → Type.',
+     correctFeedback:'Text rasterized to pixels. The T icon changes to a pixel layer icon. Text is no longer editable.',
+     incorrectFeedback:'Select the BANNER layer, then go to Layer → Rasterize → Type.',
+     acpContext:'ACP Ps-4.3c: Rasterized text cannot be re-edited as text. Use only when pixel-level edits are required and text changes are finalised.',
+     gagneEvent:7},
+    {id:5, instruction:'Apply the Paint Bucket tool to fill the rasterized text with a solid colour.',
+     expectedAction:'tool-select', expectedTarget:'paint-bucket',
+     hint1:'The Paint Bucket tool fills areas with the foreground colour.',
+     hint2:'Press G or find the Paint Bucket in the toolbar. Click on the rasterized text to fill it.',
+     hint3:'Press G (Paint Bucket) → set foreground colour → click on the rasterized text area on the canvas.',
+     correctFeedback:'Paint Bucket fill applied. Rasterized text now accepts pixel-based fills — impossible on a live text layer.',
+     incorrectFeedback:'Press G for the Paint Bucket tool and click on the rasterized text.',
+     acpContext:'ACP Ps-4.3c: Rasterized text can receive Brush strokes, fills, filters, and distortions. Live text cannot.',
+     gagneEvent:7}
+  ]
+}
+};
+
+/* ═══ STATE ═══════════════════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[];
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array(task.steps.length).fill(null);
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{
+    if(el.getAttribute('onclick')&&el.getAttribute('onclick').includes("'"+id+"'"))el.classList.add('active');
+  });
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(task){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag">Ps-${task.objective}</span>
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="badge badge-live">${task.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${task.estimatedMinutes} min</span>
+    </div>
+    <h2>${task.objectiveText}</h2>
+    <div class="task-scenario">${task.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERING ═══════════════════════════════════════════════ */
+function renderUI(task){
+  const c=document.getElementById('adobe-sim');
+  const map={
+    'raster-tools':rasterUI,'eraser-tools':eraserUI,'ai-tools':aiToolsUI,
+    'vector-tools':vectorUI,'type-tools':typeUI,'text-conversion':textConvUI
+  };
+  c.innerHTML=map[task.uiType]?map[task.uiType]():'';
+}
+
+function rasterUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span><span class="menu-item">Edit</span><span class="menu-item">Filter</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active" title="Move">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn highlight" id="tb-brush" onclick="doAction('brush-tool')" title="Brush (B)">✏</div>
+        <div class="tool-btn" id="tb-smudge" onclick="doAction('smudge-tool')" title="Smudge">〜</div>
+        <div class="tool-btn" id="tb-blur" onclick="doAction('blur-tool')" title="Blur">💧</div>
+        <div class="tool-sep"></div>
+        <div style="position:relative;width:32px;height:32px;margin:2px auto;">
+          <div style="width:20px;height:20px;position:absolute;top:0;left:0;background:#6699CC;border:1.5px solid #888;border-radius:2px;z-index:1;"></div>
+          <div style="width:20px;height:20px;position:absolute;bottom:0;right:0;background:#FFF;border:1px solid #555;border-radius:2px;"></div>
+        </div>
+      </div>
+      <div class="adobe-canvas" style="flex-direction:column;gap:0;">
+        <div style="background:#2B2B2B;padding:4px 10px;width:100%;display:flex;gap:10px;align-items:center;border-bottom:1px solid #1A1A1A;">
+          <span style="font-size:10px;color:#999;">Opacity:</span>
+          <input class="prop-input highlight" id="inp-brush-opacity" style="width:40px;" value="100" oninput="doInput('brush-opacity',this.value)">
+          <span style="font-size:10px;color:#999;">%</span>
+          <span style="font-size:10px;color:#999;margin-left:10px;">Flow: 100%</span>
+          <span style="font-size:10px;color:#999;margin-left:10px;">Hardness: 0%</span>
+        </div>
+        <div class="canvas-doc" id="raster-canvas" style="width:220px;height:140px;background:linear-gradient(180deg,#E8F4FC 0%,#B8D8F0 60%,#D4C4A8 100%);cursor:crosshair;position:relative;"
+          onclick="doAction('canvas-paint')">
+          <div id="paint-strokes" style="position:absolute;inset:0;"></div>
+          <div style="position:absolute;bottom:5px;right:8px;font-size:9px;color:rgba(0,0,0,.4);">Click to paint</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div class="layer-row" id="new-layer-slot" style="border:1px dashed #555;justify-content:center;" onclick="doAction('new-layer-btn')">
+            <span style="font-size:10px;color:#888;">+ Click to add layer</span>
+          </div>
+          <div class="layer-row" style="opacity:.5;">
+            <span style="font-size:10px;color:#888;">👁</span>
+            <div class="layer-thumb" style="background:linear-gradient(#E8F4FC,#D4C4A8);"></div>
+            <span class="layer-name">Background</span>
+          </div>
+          <div class="layers-footer" style="display:flex;gap:4px;padding:5px 8px;border-top:1px solid #1A1A1A;justify-content:flex-end;">
+            <div class="adj-btn" style="font-size:9px;padding:3px 6px;" onclick="doAction('new-layer-btn')">+ New Layer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function eraserUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span><span class="menu-item">Edit</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn" id="tb-bg-eraser" onclick="doAction('bg-eraser')" title="Background Eraser">◌✕</div>
+        <div class="tool-btn" id="tb-history-brush" onclick="doAction('history-brush')" title="History Brush (Y)">⟳✏</div>
+      </div>
+      <div class="adobe-canvas" style="flex-direction:column;gap:0;">
+        <div style="background:#2B2B2B;padding:4px 10px;width:100%;display:flex;gap:8px;align-items:center;border-bottom:1px solid #1A1A1A;">
+          <span style="font-size:10px;color:#999;">Sampling:</span>
+          <select class="prop-input" id="sel-sampling" style="width:65px;font-size:10px;" onchange="doSelect('bg-eraser-sampling',this.value.toLowerCase())">
+            <option>Continuous</option><option value="once">Once</option><option>Background Swatch</option>
+          </select>
+          <span style="font-size:10px;color:#999;margin-left:6px;">Limits:</span>
+          <select class="prop-input" style="width:85px;font-size:10px;">
+            <option>Contiguous</option><option>Discontiguous</option><option>Find Edges</option>
+          </select>
+        </div>
+        <div class="canvas-doc" id="eraser-canvas" style="width:220px;height:140px;background:repeating-conic-gradient(#CCC 0% 25%,#EEE 0% 50%) 0 0/10px 10px;position:relative;cursor:crosshair;"
+          onclick="doAction('bg-erase-action')">
+          <div style="position:absolute;inset:0;background:#FFF;" id="white-bg"></div>
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 140' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='white' width='220' height='140'/%3E%3Cellipse cx='110' cy='70' rx='60' ry='55' fill='%23D4956A'/%3E%3Ccircle cx='110' cy='55' r='22' fill='%23C07B50'/%3E%3C/svg%3E" style="width:100%;height:100%;position:absolute;top:0;left:0;" id="eraser-img">
+          <div style="position:absolute;bottom:4px;right:6px;font-size:9px;color:rgba(0,0,0,.3);">Click to erase background</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">History</div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:#AAA;padding:3px 0;">● Open document</div>
+          <div id="history-entries" style="font-size:10px;color:#888;"></div>
+          <div style="margin-top:6px;font-size:9px;color:#666;">← Set source for History Brush</div>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div class="layer-row selected">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#D4956A;"></div>
+            <span class="layer-name">Product (pixel)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function aiToolsUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="doMenu('edit-sky-replacement')">Edit</span>
+      <span class="menu-item">Select</span>
+    </div>
+    <div class="adobe-body" style="grid-template-columns:44px 1fr 220px;">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn" title="Lasso">⌒</div>
+        <div class="tool-btn" title="Rect Marquee">⬜</div>
+      </div>
+      <div class="adobe-canvas" style="flex-direction:column;gap:0;position:relative;">
+        <div class="canvas-doc" id="ai-canvas" style="width:240px;height:160px;position:relative;overflow:hidden;">
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 240 160' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23B0C4D8' width='240' height='80'/%3E%3Crect fill='%234A7A4A' y='80' width='240' height='80'/%3E%3Cellipse cx='60' cy='160' rx='50' ry='30' fill='%233A6A3A'/%3E%3Crect x='100' y='60' width='40' height='30' fill='%23888' rx='2'/%3E%3C/svg%3E"
+            style="width:100%;height:100%;object-fit:cover;" id="ai-base-img">
+          <div id="sky-overlay" style="position:absolute;top:0;left:0;right:0;height:50%;display:none;background:linear-gradient(180deg,#FF6B35 0%,#FFB347 50%,#FFD700 100%);opacity:.9;transition:opacity .5s;"></div>
+          <div id="selection-box" style="position:absolute;display:none;border:2px dashed #31A8FF;background:rgba(49,168,255,.1);" onclick="doMenu('edit-generative-fill')"></div>
+          <div id="gen-fill-overlay" style="position:absolute;display:none;border-radius:2px;"></div>
+          <div id="contextual-taskbar" style="position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);background:#2B2B2B;border:0.5px solid #555;border-radius:4px 4px 0 0;padding:4px 10px;display:none;gap:6px;align-items:center;">
+            <input placeholder="Describe what to add (or leave empty to remove)…" style="background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 8px;border-radius:3px;width:180px;">
+            <button onclick="doAction('generate-btn')" style="padding:3px 10px;background:#7B68EE;color:#FFF;border:none;border-radius:3px;font-size:10px;cursor:pointer;">Generate</button>
+          </div>
+        </div>
+        <div style="background:#2B2B2B;padding:5px 10px;width:100%;display:flex;gap:6px;align-items:center;border-top:1px solid #1A1A1A;">
+          <button onclick="doMenu('edit-sky-replacement')" style="padding:3px 8px;background:#3A3A3A;border:0.5px solid #555;color:#CCC;font-size:10px;border-radius:3px;cursor:pointer;">Sky Replacement…</button>
+          <button onclick="selectObjAndGenFill()" style="padding:3px 8px;background:#3A3A3A;border:0.5px solid #555;color:#CCC;font-size:10px;border-radius:3px;cursor:pointer;">Select object → Generative Fill</button>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Sky Replacement</div>
+        <div class="panel-body" id="sky-panel" style="display:none;">
+          <div style="font-size:10px;color:#AAA;margin-bottom:6px;">Sky presets</div>
+          <select class="prop-select" id="sky-preset-sel" style="margin-bottom:6px;" onchange="doSelect('sky-preset',this.value.toLowerCase())">
+            <option value="">— Choose sky —</option>
+            <option value="blue sky">Blue Skies</option>
+            <option value="sunset">Spectacular Sunsets</option>
+            <option value="stormy">Stormy</option>
+          </select>
+          <button onclick="doAction('sky-replacement-ok')" style="width:100%;padding:4px;background:#31A8FF;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body" id="ai-layers">
+          <div class="layer-row selected">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#4A7A4A;"></div>
+            <span class="layer-name">Background photo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function vectorUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span><span class="menu-item">Edit</span><span class="menu-item">Layer</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn highlight" id="tb-pen" onclick="doAction('pen-tool')" title="Pen (P)">🖊</div>
+        <div class="tool-btn" id="tb-curvature" title="Curvature">〜</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" id="tb-rect" onclick="doAction('custom-shape-tool')" title="Shape (U)">▭</div>
+        <div class="tool-btn" id="tb-ellipse" title="Ellipse (U)">○</div>
+      </div>
+      <div class="adobe-canvas" style="flex-direction:column;gap:0;">
+        <div style="background:#2B2B2B;padding:4px 10px;width:100%;display:flex;gap:8px;align-items:center;border-bottom:1px solid #1A1A1A;">
+          <span style="font-size:10px;color:#999;">Mode:</span>
+          <div style="display:flex;gap:3px;">
+            <div class="adj-btn highlight" id="mode-shape" onclick="doAction('pen-tool')" style="font-size:9px;padding:2px 6px;">Shape</div>
+            <div class="adj-btn" id="mode-path" style="font-size:9px;padding:2px 6px;">Path</div>
+            <div class="adj-btn" id="mode-pixels" style="font-size:9px;padding:2px 6px;">Pixels</div>
+          </div>
+          <span style="font-size:10px;color:#999;margin-left:6px;">Fill:</span>
+          <div style="width:16px;height:16px;background:#FF9A00;border-radius:2px;border:1px solid #666;cursor:pointer;"></div>
+        </div>
+        <div class="canvas-doc" id="vector-canvas" style="width:220px;height:145px;background:#F0EDE8;cursor:crosshair;position:relative;"
+          onclick="penCanvasClick(event)">
+          <svg id="pen-svg" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;">
+            <path id="pen-path" d="" fill="rgba(255,154,0,0.2)" stroke="#FF9A00" stroke-width="1.5" fill-rule="evenodd"/>
+          </svg>
+          <div id="pen-points-container"></div>
+          <div id="shape-preview" style="position:absolute;bottom:10px;right:10px;display:none;">
+            <svg width="30" height="30" viewBox="0 0 30 30"><polygon points="15,3 19,10 27,11 21,17 23,25 15,21 7,25 9,17 3,11 11,10" fill="#FF9A00" stroke="#B86A00" stroke-width="1"/></svg>
+          </div>
+          <div style="position:absolute;bottom:4px;right:6px;font-size:9px;color:rgba(0,0,0,.35);" id="pen-hint">Click to place anchor points</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Shape picker</div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;" onclick="doAction('custom-shape-tool')">
+            <div style="background:#3A3A3A;border-radius:3px;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16"><polygon points="8,1 10,6 16,6 11,10 13,15 8,12 3,15 5,10 0,6 6,6" fill="#FF9A00"/></svg></div>
+            <div style="background:#3A3A3A;border-radius:3px;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16"><polygon points="8,1 15,8 8,15 1,8" fill="#FF9A00"/></svg></div>
+            <div style="background:#3A3A3A;border-radius:3px;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16"><path d="M2,14 Q8,2 14,14 Z" fill="#FF9A00"/></svg></div>
+          </div>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body" id="vector-layers">
+          <div class="layer-row">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#F0EDE8;"></div>
+            <span class="layer-name">Background</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function typeUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="doMenu('window-character')">Window</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn highlight" id="tb-type" onclick="doAction('type-tool')" title="Type (T)" style="font-weight:700;font-size:13px;">T</div>
+        <div class="tool-btn" style="font-weight:700;font-size:11px;">T</div>
+      </div>
+      <div class="adobe-canvas" style="flex-direction:column;gap:0;">
+        <div style="background:#2B2B2B;padding:4px 10px;width:100%;display:flex;gap:6px;align-items:center;border-bottom:1px solid #1A1A1A;flex-wrap:wrap;">
+          <select class="prop-input" style="width:80px;font-size:10px;"><option>Georgia</option><option>DM Sans</option><option>Helvetica</option></select>
+          <select class="prop-input" style="width:55px;font-size:10px;"><option>Regular</option><option>Bold</option><option>Italic</option></select>
+          <input class="prop-input highlight" id="inp-font-size" style="width:36px;" value="36" oninput="doInput('font-size',this.value)">
+          <span style="font-size:10px;color:#999;">pt</span>
+          <span style="font-size:9px;color:#555;margin-left:4px;">|</span>
+          <div onclick="doAction('align-center')" style="cursor:pointer;padding:2px 5px;background:#3A3A3A;border-radius:2px;font-size:10px;" title="Center align">≡</div>
+        </div>
+        <div class="canvas-doc" id="type-canvas" style="width:220px;height:140px;background:#1A1A2E;cursor:text;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px;"
+          onclick="doAction('area-type-drag')">
+          <div id="headline-preview" style="font-size:18px;font-weight:700;color:#FFF;letter-spacing:.15em;font-family:Georgia,serif;text-align:center;opacity:.3;">SUMMER 2025</div>
+          <div id="subtitle-preview" style="font-size:11px;color:rgba(255,255,255,.5);text-align:center;opacity:.3;line-height:1.4;">The Season's Definitive Guide</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.25);">Click to add type</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Character</div>
+        <div class="panel-body">
+          <div class="char-setting"><span class="char-label">Font size</span><input class="char-input highlight" id="char-size" value="36" oninput="doInput('font-size',this.value)"></div>
+          <div class="char-setting"><span class="char-label">Kerning</span><input class="char-input" value="0"></div>
+          <div class="char-setting"><span class="char-label">Tracking</span><input class="char-input highlight" id="char-tracking" value="0" oninput="doInput('tracking-value',this.value)"></div>
+          <div class="char-setting"><span class="char-label">Leading</span><input class="char-input" value="Auto"></div>
+          <div class="char-setting"><span class="char-label">Baseline</span><input class="char-input" value="0 pt"></div>
+        </div>
+        <div class="panel-hdr">Paragraph</div>
+        <div class="panel-body">
+          <div style="display:flex;gap:4px;margin-bottom:6px;">
+            <div onclick="doAction('align-left')" style="cursor:pointer;padding:3px 6px;background:#3A3A3A;border-radius:3px;font-size:10px;" title="Left">◀≡</div>
+            <div onclick="doAction('align-center')" style="cursor:pointer;padding:3px 6px;background:#31A8FF22;border:1px solid #31A8FF44;border-radius:3px;font-size:10px;" title="Center" id="align-center-btn">≡</div>
+            <div onclick="doAction('align-right')" style="cursor:pointer;padding:3px 6px;background:#3A3A3A;border-radius:3px;font-size:10px;" title="Right">≡▶</div>
+          </div>
+          <div class="char-setting"><span class="char-label">Space before</span><input class="char-input" value="0 pt"></div>
+          <div class="char-setting"><span class="char-label">Space after</span><input class="char-input" value="0 pt"></div>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body" id="type-layers">
+          <div class="layer-row" id="type-layer-row" style="display:none;">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#1A1A2E;display:flex;align-items:center;justify-content:center;"><span style="font-size:8px;font-weight:700;color:#FFF;">T</span></div>
+            <span class="layer-name">SUMMER 2025</span>
+          </div>
+          <div class="layer-row">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#1A1A2E;"></div>
+            <span class="layer-name">Background</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function textConvUI(){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="doMenu('rasterize-type')">Layer</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn" style="font-weight:700;font-size:13px;">T</div>
+        <div class="tool-btn" id="tb-paint-bucket" onclick="doAction('paint-bucket')" title="Paint Bucket (G)">◉</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:220px;height:140px;background:#0A0A1A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px;">
+          <div id="logo-text-vis" style="font-size:26px;font-weight:700;color:#FFF;font-family:var(--font-display);letter-spacing:.1em;transition:all .3s;cursor:pointer;" onclick="doAction('logo-text-layer')">LOGO</div>
+          <div id="banner-text-vis" style="font-size:12px;font-weight:400;color:#AAA;font-family:Georgia,serif;letter-spacing:.08em;cursor:pointer;" onclick="doAction('banner-layer')">BANNER TEXT</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div class="layer-row" id="logo-layer-row" onclick="doAction('logo-text-layer')">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#0A0A1A;display:flex;align-items:center;justify-content:center;"><span id="logo-thumb-icon" style="font-size:8px;font-weight:700;color:#FFF;">T</span></div>
+            <span class="layer-name">LOGO</span>
+            <span id="logo-so-badge" style="display:none;font-size:8px;padding:1px 3px;background:rgba(255,154,0,.2);color:#FFBB66;border-radius:2px;">SO</span>
+          </div>
+          <div class="layer-row" id="banner-layer-row" onclick="doAction('banner-layer')">
+            <span style="font-size:10px;color:#AAA;">👁</span>
+            <div class="layer-thumb" style="background:#0A0A1A;"><span id="banner-thumb-icon" style="font-size:8px;color:#AAA;">T</span></div>
+            <span class="layer-name">BANNER TEXT</span>
+          </div>
+          <div style="margin-top:6px;border-top:0.5px solid #444;padding-top:6px;">
+            <div class="adj-btn" onclick="doAction('text-to-smart-object')" style="font-size:9px;margin-bottom:3px;">Right-click → Convert to Smart Object</div>
+            <div class="adj-btn" onclick="doAction('gradient-overlay')" style="font-size:9px;margin-bottom:3px;">fx → Gradient Overlay</div>
+            <div class="adj-btn" onclick="doMenu('rasterize-type')" style="font-size:9px;">Layer → Rasterize → Type</div>
+          </div>
+        </div>
+        <div class="panel-hdr">Layer Style</div>
+        <div class="panel-body" id="fx-panel">
+          <div style="font-size:10px;color:#888;">No effect applied</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══ HANDLERS ══════════════════════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+let penClickCount=0;
+function penCanvasClick(e){
+  penClickCount++;
+  const svg=document.getElementById('pen-svg');
+  const path=document.getElementById('pen-path');
+  const container=document.getElementById('pen-points-container');
+  const rect=document.getElementById('vector-canvas').getBoundingClientRect();
+  const x=e.clientX-rect.left, y=e.clientY-rect.top;
+  const dot=document.createElement('div');
+  dot.className='pen-point';dot.style.left=(x-4)+'px';dot.style.top=(y-4)+'px';
+  container.appendChild(dot);
+  if(penClickCount===1){path.setAttribute('d',`M${x},${y}`);processAction('click','canvas-first-anchor','canvas-first-anchor');}
+  else if(penClickCount===2){path.setAttribute('d',path.getAttribute('d')+` L${x},${y}`);processAction('click','canvas-curve-anchor','canvas-curve-anchor');}
+  else if(penClickCount===3){path.setAttribute('d',path.getAttribute('d')+` L${x},${y} Z`);processAction('click','add-anchor-point','add-anchor-point');document.getElementById('pen-hint').textContent='Path complete';}
+}
+
+function selectObjAndGenFill(){
+  const selBox=document.getElementById('selection-box');
+  selBox.style.cssText='position:absolute;display:flex;top:85px;left:90px;width:60px;height:45px;border:2px dashed #31A8FF;background:rgba(49,168,255,.1);cursor:pointer;';
+  const bar=document.getElementById('contextual-taskbar');
+  bar.style.display='flex';
+  processAction('menu-click','edit-generative-fill','edit-generative-fill');
+}
+
+function applyEffect(target,value){
+  const effects={
+    'new-layer-btn':()=>{const el=document.getElementById('new-layer-slot');if(el){el.style.background='rgba(0,214,143,.08)';el.innerHTML='<span style="font-size:10px;color:var(--correct);">✓ Layer 1 created</span>';}},
+    'brush-tool':()=>{document.getElementById('tb-brush')?.classList.add('active');},
+    'canvas-paint':()=>{const el=document.getElementById('paint-strokes');if(el)el.innerHTML+='<div style="position:absolute;top:'+(20+Math.random()*60)+'px;left:'+(10+Math.random()*140)+'px;width:'+(60+Math.random()*80)+'px;height:20px;background:rgba(100,160,220,0.45);border-radius:10px;filter:blur(4px);"></div>';},
+    'blur-tool':()=>{document.getElementById('tb-blur')?.classList.add('active');const c=document.getElementById('raster-canvas');if(c)c.style.filter='blur(0.5px)';},
+    'bg-eraser':()=>{document.getElementById('tb-bg-eraser')?.classList.add('active');},
+    'bg-erase-action':()=>{const wb=document.getElementById('white-bg');if(wb)wb.style.opacity='0';const hist=document.getElementById('history-entries');if(hist)hist.innerHTML+='<div style="font-size:10px;color:#888;padding:1px 0;">  Background Eraser</div>';},
+    'history-brush':()=>{document.getElementById('tb-history-brush')?.classList.add('active');},
+    'history-brush-paint':()=>{const ei=document.getElementById('eraser-img');if(ei)ei.style.filter='none';},
+    'edit-sky-replacement':()=>{const p=document.getElementById('sky-panel');if(p)p.style.display='block';},
+    'sky-replacement-ok':()=>{
+      const ov=document.getElementById('sky-overlay');if(ov)ov.style.display='block';
+      const lp=document.getElementById('ai-layers');
+      if(lp)lp.insertAdjacentHTML('afterbegin','<div class="layer-row"><span style="font-size:10px;color:#AAA;">👁</span><div class="layer-thumb" style="background:linear-gradient(#FF6B35,#FFD700);"></div><span class="layer-name">Sky Replacement Group</span></div>');
+    },
+    'edit-generative-fill':()=>{selectObjAndGenFill();},
+    'generate-btn':()=>{
+      const sel=document.getElementById('selection-box');if(sel)sel.style.border='2px solid rgba(0,214,143,.6)';
+      const lp=document.getElementById('ai-layers');
+      if(lp)lp.insertAdjacentHTML('afterbegin','<div class="layer-row"><span style="font-size:10px;color:#AAA;">👁</span><div class="layer-thumb" style="background:linear-gradient(#4A7A4A,#3A5A3A);"></div><span class="layer-name">Generative Layer ✦</span></div>');
+    },
+    'pen-tool':()=>{document.getElementById('tb-pen')?.classList.add('active');penClickCount=0;},
+    'custom-shape-tool':()=>{const sp=document.getElementById('shape-preview');if(sp)sp.style.display='block';document.getElementById('pen-hint').textContent='Custom shape placed';},
+    'type-tool':()=>{document.getElementById('tb-type')?.classList.add('active');document.getElementById('headline-preview')&&(document.getElementById('headline-preview').style.opacity='0.8');},
+    'type-commit':()=>{const el=document.getElementById('headline-preview');if(el)el.style.opacity='1';document.getElementById('type-layer-row')?.style.setProperty('display','flex');},
+    'align-center':()=>{document.getElementById('align-center-btn')&&(document.getElementById('align-center-btn').style.background='rgba(49,168,255,.25)');},
+    'area-type-drag':()=>{const el=document.getElementById('subtitle-preview');if(el)el.style.opacity='0.9';},
+    'logo-text-layer':()=>{document.getElementById('logo-layer-row')?.classList.add('selected');},
+    'text-to-smart-object':()=>{document.getElementById('logo-so-badge')&&(document.getElementById('logo-so-badge').style.display='inline');document.getElementById('logo-thumb-icon')&&(document.getElementById('logo-thumb-icon').textContent='SO');},
+    'gradient-overlay':()=>{const el=document.getElementById('logo-text-vis');if(el)el.style.background='linear-gradient(135deg,#FF6B35,#FFD700)';el.style.webkitBackgroundClip='text';el.style.webkitTextFillColor='transparent';document.getElementById('fx-panel').innerHTML='<div style="font-size:10px;color:#7AB8F5;">✦ Gradient Overlay</div>';},
+    'rasterize-type':()=>{const ti=document.getElementById('banner-thumb-icon');if(ti)ti.textContent='px';const el=document.getElementById('banner-text-vis');if(el)el.style.outline='1px dashed #888';},
+    'paint-bucket':()=>{document.getElementById('tb-paint-bucket')?.classList.add('active');const el=document.getElementById('banner-text-vis');if(el)el.style.color='#FF9A00';}
+  };
+  if(effects[target])effects[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask)return;
+  const step=currentTask.steps[currentStep];
+  if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact';
+    const sv=String(value).toLowerCase().trim();
+    const ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';
+    showFB('correct',step.correctFeedback,step.acpContext);
+    updateDots();
+    applyEffect(target,value);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  } else if(aM&&tM){
+    showFB('incorrect',step.incorrectFeedback,step.acpContext);
+  }
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  const step=task.steps[idx],total=task.steps.length;
+  if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const cls=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${cls}"></div>`;}).join('');
+  const gagne=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${gagne}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit answers</button>`;
+  document.getElementById('feedback-area').innerHTML='';
+  document.getElementById('hint-area').innerHTML='';
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else{completeTask();}}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const sc=document.getElementById('sc-'+currentTask.id.replace(/-/g,''));if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+currentTask.id.replace(/-/g,''));if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#31A8FF'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag">Ps-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(status,msg,ctx){const icons={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${status} animate-fade"><strong>${icons[status]} ${status.charAt(0).toUpperCase()+status.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const dotsEl=document.querySelector('.step-dots');if(!dotsEl)return;dotsEl.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const cls=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${cls}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('ps-4-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

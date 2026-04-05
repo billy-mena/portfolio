@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photoshop — Kirkpatrick L1–L3 Evaluation Toolkit | ACP 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ps:#31A8FF;--bg:#1A1A2E;--bg1:#16213E;--surf:#252540;--surf2:#2E2E50;
+  --border:rgba(255,255,255,.08);--border-strong:rgba(255,255,255,.16);
+  --text:#F0F0FF;--text2:#A8A8C8;--text3:#6868A0;
+  --l1:#FF9A00;--l2:#31A8FF;--l3:#00D68F;--l4:#9B8EF0;
+  --r:10px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;}
+.nav{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-weight:700;font-size:.9rem;color:var(--ps);font-family:var(--mono);}
+.nav-link{font-size:.83rem;color:var(--text2);text-decoration:none;padding:.3rem .7rem;border-radius:6px;}
+.nav-link:hover{background:var(--surf);color:var(--text);}
+.tab-bar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+.tab-btn{padding:.4rem 1rem;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);color:var(--text2);background:transparent;transition:all .15s;font-family:var(--font);}
+.tab-btn.l1.active{background:var(--l1);color:#000;border-color:var(--l1);}
+.tab-btn.l2.active{background:var(--l2);color:#000;border-color:var(--l2);}
+.tab-btn.l3.active{background:var(--l3);color:#000;border-color:var(--l3);}
+.tab-btn.overview.active{background:var(--surf2);color:var(--text);}
+.page{max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
+.panel{display:none;}.panel.active{display:block;}
+.section-label{font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin:.875rem 0 .5rem;}
+.section-label:first-child{margin-top:0;}
+.card{background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.level-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;}
+.level-badge{font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em;}
+.l1-badge{background:rgba(255,154,0,.15);color:var(--l1);border:0.5px solid rgba(255,154,0,.3);}
+.l2-badge{background:rgba(49,168,255,.15);color:var(--l2);border:0.5px solid rgba(49,168,255,.3);}
+.l3-badge{background:rgba(0,214,143,.15);color:var(--l3);border:0.5px solid rgba(0,214,143,.3);}
+.level-title{font-size:1.1rem;font-weight:600;color:var(--text);}
+.level-desc{font-size:.875rem;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+
+/* Survey / Likert */
+.survey-item{padding:.875rem 0;border-bottom:0.5px solid var(--border);}
+.survey-item:last-child{border-bottom:none;}
+.survey-q{font-size:.875rem;color:var(--text);margin-bottom:.5rem;line-height:1.5;}
+.survey-q span{font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-right:.4rem;}
+.likert-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+.likert-label{font-size:.72rem;color:var(--text3);white-space:nowrap;}
+.likert-options{display:flex;gap:.4rem;}
+.likert-opt{width:34px;height:34px;border-radius:50%;border:0.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text3);}
+.likert-opt:hover{border-color:var(--border-strong);color:var(--text);}
+.likert-opt.selected{background:var(--l1);color:#000;border-color:var(--l1);}
+.open-q{margin-top:.5rem;}
+.open-q label{font-size:.78rem;color:var(--text3);display:block;margin-bottom:.3rem;}
+.open-q textarea{width:100%;background:var(--bg);border:0.5px solid var(--border);color:var(--text);border-radius:8px;padding:.6rem .875rem;font-family:var(--font);font-size:.83rem;resize:vertical;min-height:70px;transition:border .15s;}
+.open-q textarea:focus{outline:none;border-color:rgba(255,154,0,.4);}
+
+/* Knowledge check */
+.kc-item{padding:.875rem 0;border-bottom:0.5px solid var(--border);}
+.kc-item:last-child{border-bottom:none;}
+.kc-q{font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.5rem;line-height:1.5;}
+.kc-q span{font-family:var(--mono);font-size:.7rem;color:var(--ps);margin-right:.4rem;}
+.kc-options{display:flex;flex-direction:column;gap:.3rem;}
+.kc-opt{padding:.4rem .75rem;border-radius:7px;border:0.5px solid var(--border);background:var(--bg);font-size:.82rem;color:var(--text2);cursor:pointer;transition:all .15s;}
+.kc-opt:hover{border-color:rgba(49,168,255,.3);}
+.kc-opt.selected{border-color:rgba(49,168,255,.4);background:rgba(49,168,255,.07);}
+.kc-opt.correct{border-color:rgba(0,214,143,.4);background:rgba(0,214,143,.07);color:#7FFFD4;}
+.kc-opt.wrong{border-color:rgba(255,77,109,.4);background:rgba(255,77,109,.07);}
+.kc-fb{font-size:.78rem;color:var(--text3);margin-top:.35rem;padding:.4rem .7rem;background:var(--bg1);border-radius:6px;display:none;line-height:1.5;}
+.pre-post-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.pp-col{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:.875rem;}
+.pp-label{font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:0.5px solid var(--border);}
+.pre-label{color:var(--partial);}
+.post-label{color:var(--l3);}
+
+/* Observation checklist */
+.obs-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:0.5px solid var(--border);}
+.obs-item:last-child{border-bottom:none;}
+.obs-check{width:20px;height:20px;border-radius:4px;border:0.5px solid var(--border-strong);background:var(--bg);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .15s;margin-top:1px;}
+.obs-check.checked{background:var(--l3);border-color:var(--l3);color:#000;}
+.obs-content{flex:1;}
+.obs-behavior{font-size:.875rem;color:var(--text);line-height:1.4;}
+.obs-context{font-size:.75rem;color:var(--text3);margin-top:.2rem;}
+.obs-code{font-family:var(--mono);font-size:.68rem;color:var(--ps);}
+
+/* Interview guide */
+.interview-item{padding:.875rem 0;border-bottom:0.5px solid var(--border);}
+.interview-item:last-child{border-bottom:none;}
+.iv-q{font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.4rem;}
+.iv-q span{font-family:var(--mono);font-size:.7rem;color:var(--l3);margin-right:.35rem;}
+.iv-notes{width:100%;background:var(--bg);border:0.5px solid var(--border);color:var(--text);border-radius:7px;padding:.5rem .75rem;font-family:var(--font);font-size:.82rem;resize:vertical;min-height:55px;}
+.iv-notes:focus{outline:none;border-color:rgba(0,214,143,.35);}
+.iv-probe{font-size:.75rem;color:var(--text3);margin-bottom:.4rem;font-style:italic;}
+
+/* Overview */
+.level-card{display:flex;gap:.875rem;padding:1rem;background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:.75rem;cursor:pointer;transition:all .15s;}
+.level-card:hover{border-color:var(--border-strong);}
+.lc-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;}
+.lc-body{flex:1;}
+.lc-name{font-size:.95rem;font-weight:600;margin-bottom:.2rem;}
+.lc-desc{font-size:.83rem;color:var(--text2);line-height:1.5;}
+.lc-items{font-size:.78rem;color:var(--text3);margin-top:.3rem;}
+
+/* Score display */
+.score-bar{background:var(--bg1);border-radius:var(--r);padding:1rem 1.25rem;margin-top:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.score-n{font-size:1.4rem;font-weight:700;}
+.score-l{font-size:.75rem;color:var(--text3);}
+.btn{padding:.45rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:var(--surf);color:var(--text2);transition:all .15s;font-family:var(--font);}
+.btn:hover{background:var(--surf2);color:var(--text);}
+.btn.primary{background:var(--l2);color:#000;border-color:var(--l2);}
+.print-btn{margin-left:auto;padding:.4rem 1rem;border-radius:20px;font-size:.8rem;background:transparent;border:0.5px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font);}
+@media print{.nav,.tab-bar,.print-btn,.btn{display:none;}.panel{display:block!important;}body{background:white;color:black;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">Ps</span>
+  <a href="../index.html" class="nav-link">← Photoshop</a>
+  <a href="../index.html" class="nav-link">Home</a>
+  <button class="print-btn" onclick="window.print()">🖨 Print all</button>
+</nav>
+
+<div class="tab-bar">
+  <button class="tab-btn overview active" onclick="showTab('overview','overview')">Overview</button>
+  <button class="tab-btn l1" onclick="showTab('l1','l1')">L1 — Reaction</button>
+  <button class="tab-btn l2" onclick="showTab('l2','l2')">L2 — Learning</button>
+  <button class="tab-btn l3" onclick="showTab('l3','l3')">L3 — Behavior</button>
+</div>
+
+<div class="page">
+
+<!-- ══ OVERVIEW ════════════════════════════════════════ -->
+<div class="panel active" id="panel-overview">
+  <p style="font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:.3rem;">Kirkpatrick Model — ACP Photoshop 2025</p>
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;">A four-level evaluation framework measuring the impact of this training. This toolkit covers Levels 1–3, which are measurable within the course context. Level 4 (Results) requires longitudinal tracking beyond course completion.</p>
+
+  <div class="level-card" onclick="showTab('l1','l1')">
+    <div class="lc-num" style="background:rgba(255,154,0,.15);color:var(--l1);">L1</div>
+    <div class="lc-body">
+      <div class="lc-name" style="color:var(--l1);">Reaction — Did learners find it valuable?</div>
+      <div class="lc-desc">Measures learner satisfaction, perceived relevance, and engagement. Administered immediately after course completion.</div>
+      <div class="lc-items">5 Likert items (1–5 scale) · 2 open-ended questions · ~3 minutes to complete</div>
+    </div>
+  </div>
+
+  <div class="level-card" onclick="showTab('l2','l2')">
+    <div class="lc-num" style="background:rgba(49,168,255,.15);color:var(--l2);">L2</div>
+    <div class="lc-body">
+      <div class="lc-name" style="color:var(--l2);">Learning — Did learners gain knowledge and skills?</div>
+      <div class="lc-desc">Measures knowledge acquisition through matched pre/post assessments. Compares scores before and after instruction to quantify learning gain.</div>
+      <div class="lc-items">5 pre-course items + 5 matched post-course items · Aligned to ACP exam objectives · ~8 minutes</div>
+    </div>
+  </div>
+
+  <div class="level-card" onclick="showTab('l3','l3')">
+    <div class="lc-num" style="background:rgba(0,214,143,.15);color:var(--l3);">L3</div>
+    <div class="lc-body">
+      <div class="lc-name" style="color:var(--l3);">Behavior — Are learners applying skills on the job?</div>
+      <div class="lc-desc">Measures observable behavior transfer to the workplace or practice context. Uses direct observation and supervisor/instructor interviews conducted 2–4 weeks after course completion.</div>
+      <div class="lc-items">10-item behavioral observation checklist · 5-question supervisor/instructor interview guide</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:.875rem;">
+    <div style="font-size:.83rem;font-weight:600;color:var(--text);margin-bottom:.5rem;">Evaluation schedule</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
+      <div style="text-align:center;padding:.75rem;background:var(--bg);border-radius:8px;">
+        <div style="font-size:.72rem;color:var(--l1);font-weight:600;margin-bottom:.25rem;">L1 + L2 Post</div>
+        <div style="font-size:.83rem;color:var(--text2);">Immediately after last session</div>
+      </div>
+      <div style="text-align:center;padding:.75rem;background:var(--bg);border-radius:8px;">
+        <div style="font-size:.72rem;color:var(--l2);font-weight:600;margin-bottom:.25rem;">L2 Pre</div>
+        <div style="font-size:.83rem;color:var(--text2);">Before course begins</div>
+      </div>
+      <div style="text-align:center;padding:.75rem;background:var(--bg);border-radius:8px;">
+        <div style="font-size:.72rem;color:var(--l3);font-weight:600;margin-bottom:.25rem;">L3 Observation</div>
+        <div style="font-size:.83rem;color:var(--text2);">2–4 weeks post-completion</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LEVEL 1 — REACTION ══════════════════════════════ -->
+<div class="panel" id="panel-l1">
+  <div class="level-header">
+    <span class="level-badge l1-badge">Level 1 — Reaction</span>
+    <span class="level-title">Learner Satisfaction Survey</span>
+  </div>
+  <div class="level-desc">Administer this survey immediately after the learner completes the Photoshop ACP course (or a major section). Results should inform course revision priorities.</div>
+
+  <div class="card">
+    <p style="font-size:.78rem;color:var(--text3);margin-bottom:1rem;font-style:italic;">Rate each statement from 1 (Strongly disagree) to 5 (Strongly agree). All responses are anonymous.</p>
+
+    <div id="l1-survey"></div>
+
+    <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);">
+      <div class="open-q">
+        <label>What was the most valuable part of this course?</label>
+        <textarea placeholder="Write your response here..."></textarea>
+      </div>
+      <div class="open-q" style="margin-top:.75rem;">
+        <label>What would you change or improve about this learning experience?</label>
+        <textarea placeholder="Write your response here..."></textarea>
+      </div>
+    </div>
+
+    <div class="score-bar" id="l1-score-bar" style="display:none;">
+      <div><div class="score-n" id="l1-score" style="color:var(--l1);">—</div><div class="score-l">Average satisfaction (out of 5)</div></div>
+      <button class="btn primary" onclick="submitL1()">Save responses</button>
+    </div>
+    <button class="btn primary" style="margin-top:1rem;" onclick="submitL1()">Submit survey</button>
+  </div>
+</div>
+
+<!-- ══ LEVEL 2 — LEARNING ══════════════════════════════ -->
+<div class="panel" id="panel-l2">
+  <div class="level-header">
+    <span class="level-badge l2-badge">Level 2 — Learning</span>
+    <span class="level-title">Pre / Post Knowledge Assessment</span>
+  </div>
+  <div class="level-desc">Administer the Pre-assessment BEFORE instruction begins and the Post-assessment AFTER course completion. Compare scores to measure learning gain. Both use matched question pairs on the same concepts.</div>
+
+  <div class="pre-post-grid">
+    <div class="pp-col">
+      <div class="pp-label pre-label">Pre-assessment — Before instruction</div>
+      <div id="l2-pre"></div>
+      <button class="btn" style="margin-top:.875rem;width:100%;" onclick="scoreL2('pre')">Score pre-assessment</button>
+      <div id="l2-pre-result" style="margin-top:.5rem;font-size:.83rem;color:var(--partial);display:none;"></div>
+    </div>
+    <div class="pp-col">
+      <div class="pp-label post-label">Post-assessment — After instruction</div>
+      <div id="l2-post"></div>
+      <button class="btn primary" style="margin-top:.875rem;width:100%;" onclick="scoreL2('post')">Score post-assessment</button>
+      <div id="l2-post-result" style="margin-top:.5rem;font-size:.83rem;color:var(--l3);display:none;"></div>
+    </div>
+  </div>
+
+  <div id="l2-gain" class="card" style="margin-top:1rem;display:none;">
+    <div style="font-size:.83rem;font-weight:600;color:var(--text);margin-bottom:.5rem;">Learning gain analysis</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;text-align:center;">
+      <div><div class="score-n" id="pre-score-display" style="color:var(--partial);">—</div><div class="score-l">Pre-assessment</div></div>
+      <div><div class="score-n" id="post-score-display" style="color:var(--l3);">—</div><div class="score-l">Post-assessment</div></div>
+      <div><div class="score-n" id="gain-display" style="color:var(--ps);">—</div><div class="score-l">Learning gain</div></div>
+    </div>
+    <div id="gain-interpretation" style="margin-top:.875rem;font-size:.83rem;color:var(--text2);padding:.6rem .875rem;background:var(--bg);border-radius:8px;"></div>
+  </div>
+</div>
+
+<!-- ══ LEVEL 3 — BEHAVIOR ══════════════════════════════ -->
+<div class="panel" id="panel-l3">
+  <div class="level-header">
+    <span class="level-badge l3-badge">Level 3 — Behavior</span>
+    <span class="level-title">Behavioral Observation &amp; Transfer</span>
+  </div>
+  <div class="level-desc">Conduct this evaluation 2–4 weeks after course completion. Use the checklist during direct observation of the learner's work, and the interview guide during a follow-up conversation with their supervisor or instructor.</div>
+
+  <p class="section-label">Behavioral observation checklist</p>
+  <div class="card">
+    <p style="font-size:.78rem;color:var(--text3);margin-bottom:1rem;font-style:italic;">Observer: tick each behavior observed during at least one work session. Note the context in which it was observed.</p>
+    <div id="obs-checklist"></div>
+    <div class="score-bar" style="margin-top:1rem;">
+      <div><div class="score-n" id="obs-score" style="color:var(--l3);">0/10</div><div class="score-l">Behaviors observed</div></div>
+      <div style="flex:1;max-width:200px;"><div style="height:6px;background:var(--surf2);border-radius:3px;overflow:hidden;"><div id="obs-bar" style="height:100%;background:var(--l3);border-radius:3px;width:0%;transition:width .4s;"></div></div></div>
+    </div>
+  </div>
+
+  <p class="section-label">Supervisor / instructor interview guide</p>
+  <div class="card">
+    <p style="font-size:.78rem;color:var(--text3);margin-bottom:1rem;font-style:italic;">Conduct this structured interview with the learner's supervisor, mentor, or instructor approximately 3–4 weeks after course completion. Allow 15–20 minutes. Record responses below.</p>
+    <div id="interview-guide"></div>
+    <div style="margin-top:1rem;padding:.75rem 1rem;background:var(--bg);border-radius:8px;font-size:.78rem;color:var(--text3);line-height:1.6;">
+      <strong style="color:var(--text2);">Evaluator notes:</strong> Look for evidence of skill transfer beyond what was directly taught — adaptation to new contexts, independent problem-solving, and peer teaching are strong indicators of Level 3 success.
+    </div>
+  </div>
+</div>
+
+</div><!-- end page -->
+
+<script>
+/* ═══ DATA ═══════════════════════════════════════════════════ */
+
+const L1_ITEMS = [
+  { q:'The learning objectives for this course were clear and well communicated from the start.', code:'L1-1' },
+  { q:'The interactive simulator tasks were a realistic and useful way to practise Photoshop skills.', code:'L1-2' },
+  { q:'The task scenarios connected clearly to real-world professional design situations.', code:'L1-3' },
+  { q:'The guided and independent practice modes helped me progress at my own pace.', code:'L1-4' },
+  { q:'I feel more prepared to attempt the ACP Photoshop certification exam after this course.', code:'L1-5' },
+];
+
+const L2_PRE = [
+  { q:'Before this course, which document setting is required for professional print output?', options:['72 ppi','150 ppi','300 ppi','600 ppi'], correct:2, code:'Ps-2.1a' },
+  { q:'What does it mean for a Photoshop editing method to be "non-destructive"?', options:['It is faster to apply','Original pixel data is preserved and edits remain changeable','It uses less storage space','It only works on Smart Objects'], correct:1, code:'Ps-1.3c' },
+  { q:'In Photoshop, what does a pixel mask use to control layer visibility?', options:['A vector path','Painted black and white pixels','A selection saved as a channel','A layer blending mode'], correct:1, code:'Ps-3.2b' },
+  { q:'Which panel allows you to add non-destructive tonal corrections (e.g. Levels, Curves) as separate editable layers?', options:['Properties panel','History panel','Adjustments panel','Channels panel'], correct:2, code:'Ps-3.3a' },
+  { q:'What type of Photoshop text layer is created by clicking and dragging (rather than a single click)?', options:['Point type','Area (paragraph) type','Warped type','Vertical type'], correct:1, code:'Ps-4.3a' },
+];
+
+const L2_POST = [
+  { q:'After this course, which resolution setting produces professional print-quality output?', options:['72 ppi','150 ppi','300 ppi','600 ppi'], correct:2, code:'Ps-2.1a' },
+  { q:'A designer uses adjustment layers and Smart Objects instead of direct pixel edits. This workflow is described as:', options:['Faster','Non-destructive — originals are preserved and edits remain changeable','Lower quality','Destructive'], correct:1, code:'Ps-1.3c' },
+  { q:'To restrict a pixel mask edit so it only hides the background (not the subject), you would paint the mask with:', options:['White','50% grey','Black','Red'], correct:2, code:'Ps-3.2b' },
+  { q:'To limit a Levels adjustment layer so it affects only the layer directly below it, you would:', options:['Merge it with the layer below','Alt+click the border between the adjustment layer and the layer below','Lock the adjustment layer','Use Image → Adjustments instead'], correct:1, code:'Ps-3.3a' },
+  { q:'In Photoshop, which method creates area (paragraph) type that wraps automatically within a defined boundary?', options:['Pressing T and single-clicking on the canvas','Pressing T and clicking-dragging a text box on the canvas','Using the Vertical Type tool','Converting text to a Smart Object first'], correct:1, code:'Ps-4.3a' },
+];
+
+const OBS_BEHAVIORS = [
+  { b:'Sets document resolution to 300 ppi and correct colour mode without prompting when creating a new print document.', ctx:'Observed during: document setup', code:'Ps-2.1a' },
+  { b:'Uses File → Place Linked (not Place Embedded) when inserting client assets that may be updated.', ctx:'Observed during: asset import', code:'Ps-2.3a' },
+  { b:'Names all layers descriptively and organises them into logical groups without being asked.', ctx:'Observed during: any multi-layer project', code:'Ps-3.1a' },
+  { b:'Converts layers to Smart Objects before applying filters, preserving non-destructive editing capability.', ctx:'Observed during: filter application', code:'Ps-3.1c' },
+  { b:'Uses a pixel mask (not the Eraser) to remove backgrounds, keeping original pixels intact.', ctx:'Observed during: background removal', code:'Ps-3.2b' },
+  { b:'Targets the mask thumbnail (not the layer thumbnail) before painting to edit the mask.', ctx:'Observed during: mask editing', code:'Ps-3.2a' },
+  { b:'Applies corrections as adjustment layers rather than using Image → Adjustments directly.', ctx:'Observed during: colour correction', code:'Ps-3.3a' },
+  { b:'Uses Generative Fill with an empty prompt to remove unwanted objects non-destructively.', ctx:'Observed during: image retouching', code:'Ps-4.1c' },
+  { b:'Distinguishes between point type (single click) and area type (click-drag) and chooses appropriately.', ctx:'Observed during: layout work', code:'Ps-4.3a' },
+  { b:'Sets Tracking in the Character panel for headline text (not Kerning) to control letter spacing uniformly.', ctx:'Observed during: typography', code:'Ps-4.3b' },
+];
+
+const INTERVIEW_QS = [
+  { q:'In the weeks since completing the Photoshop ACP course, have you noticed the learner applying non-destructive editing methods (e.g. adjustment layers, masks, Smart Objects) in their work?', probe:'Ask for a specific recent example.' },
+  { q:'Has the learner shown greater independence in setting up documents correctly for print or digital output?', probe:'Probe: resolution, colour mode, document presets.' },
+  { q:'Are there any Photoshop tasks or concepts from the course that the learner still struggles to apply independently?', probe:'Identify specific objectives that may need reinforcement.' },
+  { q:'Have you observed the learner using any of the 2025 AI features (Generative Fill, Sky Replacement) in their work?', probe:'Note whether they understand the non-destructive Generative Layer structure.' },
+  { q:'Overall, how would you rate the improvement in the learner\'s Photoshop proficiency since completing this course?', probe:'Scale: Significant improvement / Some improvement / No observable change / Performance declined.' },
+];
+
+/* ═══ BUILD FUNCTIONS ════════════════════════════════════════ */
+
+function buildL1() {
+  const el = document.getElementById('l1-survey');
+  el.innerHTML = L1_ITEMS.map((item, i) => `
+    <div class="survey-item">
+      <div class="survey-q"><span>${item.code}</span>${item.q}</div>
+      <div class="likert-row">
+        <span class="likert-label">Strongly disagree</span>
+        <div class="likert-options">
+          ${[1,2,3,4,5].map(n => `<div class="likert-opt" onclick="selectLikert(this,${i})">${n}</div>`).join('')}
+        </div>
+        <span class="likert-label">Strongly agree</span>
+      </div>
+    </div>`).join('');
+}
+
+function selectLikert(el, qi) {
+  const row = el.closest('.likert-options');
+  row.querySelectorAll('.likert-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  updateL1Score();
+}
+
+function updateL1Score() {
+  const scores = [];
+  document.querySelectorAll('.likert-options').forEach(row => {
+    const sel = row.querySelector('.likert-opt.selected');
+    if (sel) scores.push(parseInt(sel.textContent));
+  });
+  if (scores.length === L1_ITEMS.length) {
+    const avg = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1);
+    document.getElementById('l1-score').textContent = avg + '/5';
+    document.getElementById('l1-score-bar').style.display = 'flex';
+  }
+}
+
+function submitL1() {
+  alert('L1 responses recorded. In an LMS context, these would submit to the grade book via SCORM API or xAPI.');
+}
+
+function buildL2() {
+  const buildQ = (qs, prefix, container) => {
+    document.getElementById(container).innerHTML = qs.map((item, i) => `
+      <div class="kc-item">
+        <div class="kc-q"><span>${item.code}</span>${item.q}</div>
+        <div class="kc-options">
+          ${item.options.map((opt, oi) => `<div class="kc-opt" onclick="selectL2('${prefix}',${i},${oi},${item.correct},'${item.code}')" id="${prefix}-${i}-${oi}">${String.fromCharCode(65+oi)}. ${opt}</div>`).join('')}
+        </div>
+        <div class="kc-fb" id="${prefix}-fb-${i}"></div>
+      </div>`).join('');
+  };
+  buildQ(L2_PRE, 'pre', 'l2-pre');
+  buildQ(L2_POST, 'post', 'l2-post');
+}
+
+const l2selections = { pre:{}, post:{} };
+function selectL2(phase, qi, oi, correct, code) {
+  l2selections[phase][qi] = { chosen: oi, correct: oi === correct };
+  const qs = phase === 'pre' ? L2_PRE : L2_POST;
+  qs[qi].options.forEach((_,idx) => {
+    const el = document.getElementById(`${phase}-${qi}-${idx}`);
+    el.classList.remove('selected','correct','wrong');
+    el.style.pointerEvents = 'none';
+    if (idx === correct) el.classList.add('correct');
+    if (idx === oi && oi !== correct) el.classList.add('wrong');
+  });
+}
+
+function scoreL2(phase) {
+  const qs = phase === 'pre' ? L2_PRE : L2_POST;
+  const sels = l2selections[phase];
+  let correct = 0;
+  qs.forEach((_,i) => { if (sels[i]?.correct) correct++; });
+  const pct = Math.round(correct / qs.length * 100);
+  const el = document.getElementById(`l2-${phase}-result`);
+  el.style.display = 'block';
+  el.textContent = `Score: ${correct}/${qs.length} (${pct}%)`;
+  localStorage.setItem(`kirk_l2_${phase}_ps`, JSON.stringify({ score: pct, date: new Date().toISOString() }));
+  updateGainDisplay();
+}
+
+function updateGainDisplay() {
+  const pre = JSON.parse(localStorage.getItem('kirk_l2_pre_ps') || 'null');
+  const post = JSON.parse(localStorage.getItem('kirk_l2_post_ps') || 'null');
+  if (!pre || !post) return;
+  document.getElementById('l2-gain').style.display = 'block';
+  document.getElementById('pre-score-display').textContent = pre.score + '%';
+  document.getElementById('post-score-display').textContent = post.score + '%';
+  const gain = post.score - pre.score;
+  document.getElementById('gain-display').textContent = (gain >= 0 ? '+' : '') + gain + '%';
+  const interp = gain >= 30 ? 'Strong learning gain — course had significant impact on knowledge acquisition.' :
+                 gain >= 15 ? 'Moderate learning gain — course improved understanding of key concepts.' :
+                 gain >= 0  ? 'Modest learning gain — consider revisiting objectives with lower post scores.' :
+                              'No learning gain detected — review course delivery and learner engagement.';
+  document.getElementById('gain-interpretation').textContent = interp;
+}
+
+function buildObs() {
+  let checked = 0;
+  document.getElementById('obs-checklist').innerHTML = OBS_BEHAVIORS.map((item, i) => `
+    <div class="obs-item">
+      <div class="obs-check" id="obs-${i}" onclick="toggleObs(${i})">&nbsp;</div>
+      <div class="obs-content">
+        <div class="obs-behavior">${item.b}</div>
+        <div class="obs-context">${item.ctx} &nbsp;·&nbsp; <span class="obs-code">${item.code}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleObs(i) {
+  const el = document.getElementById('obs-' + i);
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '\u00A0';
+  const count = document.querySelectorAll('.obs-check.checked').length;
+  document.getElementById('obs-score').textContent = count + '/10';
+  document.getElementById('obs-bar').style.width = (count * 10) + '%';
+}
+
+function buildInterview() {
+  document.getElementById('interview-guide').innerHTML = INTERVIEW_QS.map((item, i) => `
+    <div class="interview-item">
+      <div class="iv-q"><span>Q${i+1}</span>${item.q}</div>
+      <div class="iv-probe">${item.probe}</div>
+      <textarea class="iv-notes" placeholder="Interviewer notes..."></textarea>
+    </div>`).join('');
+}
+
+function showTab(id, cls) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.tab-btn.' + cls).forEach(b => b.classList.add('active'));
+  // Show overview tab differently
+  if (id === 'overview') document.querySelector('.tab-btn.overview').classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildL1(); buildL2(); buildObs(); buildInterview();
+  updateGainDisplay();
+});
+</script>
+</body>
+</html>

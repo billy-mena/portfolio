@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Id · Domain 6: Publishing | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--id:#00C896;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#001A10 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,200,150,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--id);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--id);color:#000;border-color:var(--id);}
+.adobe-sim{background:#303030;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3A3A3A;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#00C896;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 240px;min-height:340px;}
+.adobe-tools{background:#303030;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;}
+.tool-btn.active{background:rgba(0,200,150,.2);color:#00C896;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#5A5A5A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.id-page{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.adobe-panels{background:#303030;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;overflow-y:auto;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;cursor:pointer;flex-shrink:0;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;min-width:55px;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:#00C896;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;}
+.adj-btn.highlight{border-color:#00C896;color:#00C896;}
+.err-row{display:flex;align-items:flex-start;gap:6px;padding:4px 6px;border-bottom:0.5px solid #1A1A1A;font-size:9px;cursor:pointer;}
+.err-row:hover{background:#3A3A3A;}
+.err-icon{font-size:9px;flex-shrink:0;margin-top:1px;}
+.err-text{color:#CCC;flex:1;}
+.err-ok{color:#00C896;}
+.err-warn{color:#FF9A00;}
+.err-bad{color:#FF4D6D;}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link id active">InDesign</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-id">InDesign</span>
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id · Domain 6 — Final</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Publishing</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">4 objectives · 6 tasks · Guided &amp; Independent modes · Completes the InDesign ACP course</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+<aside class="task-list">
+  <div class="task-list-title">Domain 6 tasks</div>
+  <div class="task-item active" onclick="loadTask('id-6-1a')" id="nav-id61a">
+    <div class="task-icon" id="icon-id61a">6.1</div>
+    <div class="task-info"><div class="task-obj">Id-6.1</div><div class="task-name">Preflight — live errors, custom profiles</div></div>
+    <div class="task-score" id="sc-id61a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-6-2a')" id="nav-id62a">
+    <div class="task-icon" id="icon-id62a">6.2</div>
+    <div class="task-info"><div class="task-obj">Id-6.2</div><div class="task-name">Package — collect fonts, links, instructions</div></div>
+    <div class="task-score" id="sc-id62a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-6-3a')" id="nav-id63a">
+    <div class="task-icon" id="icon-id63a">6.3</div>
+    <div class="task-info"><div class="task-obj">Id-6.3a</div><div class="task-name">Export PDF Print — press-quality settings</div></div>
+    <div class="task-score" id="sc-id63a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-6-3b')" id="nav-id63b">
+    <div class="task-icon" id="icon-id63b">6.3</div>
+    <div class="task-info"><div class="task-obj">Id-6.3b</div><div class="task-name">Export PDF Interactive &amp; EPUB</div></div>
+    <div class="task-score" id="sc-id63b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-6-4a')" id="nav-id64a">
+    <div class="task-icon" id="icon-id64a">6.4</div>
+    <div class="task-info"><div class="task-obj">Id-6.4</div><div class="task-name">Print dialog — marks, bleeds, separations</div></div>
+    <div class="task-score" id="sc-id64a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-6-mc')" id="nav-id6mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 6</div><div class="task-name">Final knowledge check</div></div>
+    <div class="task-score" id="sc-id6mc">—</div>
+  </div>
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d5-visual-elements.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 5</div></div>
+  </a>
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:var(--correct);">✓</div>
+    <div class="task-info"><div class="task-name" style="color:var(--correct);">InDesign complete →</div></div>
+  </a>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS={
+
+'id-6-1a':{
+  id:'id-6-1a',tool:'indesign',domain:6,
+  objective:'6.1',objectiveText:'Use Preflight to detect and fix document errors',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'preflight',
+  scenario:'A magazine document has three problems: a missing linked image, an overset text frame, and a font that is not embedded. Use the Preflight panel to identify and fix all errors before delivery.',
+  steps:[
+    {id:1,instruction:'Open the Preflight panel. Window → Output → Preflight. The status dot shows the error count.',
+     expectedAction:'menu-click',expectedTarget:'window-preflight',
+     hint1:'Go to Window → Output.',hint2:'Window → Output → Preflight.',hint3:'Window → Output → Preflight opens the live preflight panel.',
+     correctFeedback:'Preflight panel open. It shows 3 errors. Expand each category to see details and click to navigate to the problem.',
+     incorrectFeedback:'Go to Window → Output → Preflight.',
+     acpContext:'ACP Id-6.1: The Preflight panel runs continuously in the background. The coloured dot in the status bar (bottom-left of the document window) reflects the live preflight state — green = no errors, red = errors.',gagneEvent:3},
+    {id:2,instruction:'Fix the missing link. In the Preflight panel, click the "Missing Links" error to expand it, then click the page number to jump to the affected frame. Use the Links panel to Relink.',
+     expectedAction:'click',expectedTarget:'preflight-missing-link',
+     hint1:'Click the Missing Links error in Preflight.',hint2:'Click the error → InDesign jumps to the missing image → use Window → Links → Relink to find the file.',hint3:'Preflight panel → click Missing Links → jump to frame → Links panel → Relink button → navigate to file → Open.',
+     correctFeedback:'Missing link resolved. The yellow triangle in the Links panel becomes a chain icon.',
+     incorrectFeedback:'Click the Missing Links error in Preflight to jump to it.',
+     acpContext:'ACP Id-6.1: Clicking an error in Preflight navigates directly to the problem. This is far faster than hunting through a 200-page document manually.',gagneEvent:6},
+    {id:3,instruction:'Fix the overset text. Click the "Overset Text" error to navigate to the frame. Thread it to a new text frame on the following page.',
+     expectedAction:'click',expectedTarget:'preflight-overset',
+     hint1:'Click the Overset Text error in Preflight.',hint2:'Click the error → navigate to the frame with the red + out-port → thread the overflow to a new frame.',hint3:'Preflight → Overset Text → click to navigate → click red + out-port → draw a new frame on the next page.',
+     correctFeedback:'Overset text resolved by threading. The Preflight error disappears.',
+     incorrectFeedback:'Click the Overset Text error in Preflight and thread the overflow.',
+     acpContext:'ACP Id-6.1: Overset text is content that does not fit in the current text frame(s). It must be resolved before exporting — overset text is silently lost in some export formats.',gagneEvent:6},
+    {id:4,instruction:'Create a custom Preflight profile. In the Preflight panel menu (≡), choose Define Profiles. Create a "Print Ready" profile that checks for images below 300 ppi.',
+     expectedAction:'click',expectedTarget:'define-preflight-profile',
+     hint1:'Open the Preflight panel menu.',hint2:'Panel ≡ → Define Profiles → New Profile → name it → set image resolution minimum to 300 ppi.',hint3:'Preflight panel ≡ → Define Profiles → + → name: Print Ready → Links → Minimum Image Resolution: 300 ppi → OK.',
+     correctFeedback:'Custom "Print Ready" Preflight profile created. It will flag any placed image below 300 ppi.',
+     incorrectFeedback:'Choose Define Profiles from the Preflight panel menu.',
+     acpContext:'ACP Id-6.1: Custom Preflight profiles let you define exactly what counts as an "error" for your workflow. Share profiles with your team as .idpp files via panel menu → Save Profile.',gagneEvent:7},
+    {id:5,instruction:'Embed the Preflight profile. In the Preflight panel, set the active profile to "Print Ready". The panel now checks against your custom rules.',
+     expectedAction:'click',expectedTarget:'set-preflight-profile',
+     hint1:'Find the profile dropdown in the Preflight panel.',hint2:'Preflight panel → Profile dropdown → select Print Ready.',hint3:'Preflight panel → top dropdown → Print Ready → panel now checks against your custom rules.',
+     correctFeedback:'Print Ready profile active. Any image below 300 ppi will now be flagged as an error.',
+     incorrectFeedback:'Select the Print Ready profile from the Preflight panel profile dropdown.',
+     acpContext:'ACP Id-6.1: The default [Basic] profile only checks for obvious errors. Custom profiles aligned to your printer\'s specifications catch problems that default checking misses.',gagneEvent:7}
+  ]
+},
+
+'id-6-2a':{
+  id:'id-6-2a',tool:'indesign',domain:6,
+  objective:'6.2',objectiveText:'Package a document — collect fonts, links, and write instructions',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'package',
+  scenario:'Package a magazine document for delivery to an external printer. Collect all linked images, document fonts, and add printing instructions. Verify what the Package function includes.',
+  steps:[
+    {id:1,instruction:'Open Package. File → Package (Alt+Shift+Ctrl+P / Option+Shift+Cmd+P).',
+     expectedAction:'menu-click',expectedTarget:'file-package',
+     hint1:'Go to the File menu.',hint2:'File → Package.',hint3:'File → Package (Alt+Shift+Ctrl+P).',
+     correctFeedback:'Package Summary dialog opens. It reports: fonts (embedded/not), links (present/missing/modified), colours (spot/process), and print settings.',
+     incorrectFeedback:'Go to File → Package.',
+     acpContext:'ACP Id-6.2: Always run Preflight before Package. Package will warn you about problems but will not fix them. Fixing errors before packaging prevents surprises at the printer.',gagneEvent:4},
+    {id:2,instruction:'Review the summary. Click "Report" to save a text file listing all document information — fonts used, linked files, ink coverage.',
+     expectedAction:'click',expectedTarget:'package-report',
+     hint1:'Find the Report button in the Package Summary.',hint2:'Click Report → choose a save location → a .txt report is generated.',hint3:'Package Summary → Report button → save as a .txt file → the report details all document assets.',
+     correctFeedback:'Report saved. The report is sent alongside the packaged files as documentation for the printer.',
+     incorrectFeedback:'Click the Report button in the Package Summary dialog.',
+     acpContext:'ACP Id-6.2: The Package Report lists every font (name, type, protection status), every link (path, status, colour space, ppi), all inks used, and print settings — essential production documentation.',gagneEvent:5},
+    {id:3,instruction:'Click Package (or Continue). In the next dialog, ensure "Copy Fonts", "Copy Linked Graphics", and "Update Graphic Links" are all checked.',
+     expectedAction:'click',expectedTarget:'package-options',
+     hint1:'Click Package/Continue to see the options dialog.',hint2:'Package options dialog → check: Copy Fonts, Copy Linked Graphics, Update Graphic Links.',hint3:'Package/Continue → verify all three checkboxes → Create Packaged Folder.',
+     correctFeedback:'Package options verified. All three checkboxes must be checked for a complete print-ready package.',
+     incorrectFeedback:'Click Package and verify the three checkboxes are enabled.',
+     acpContext:'ACP Id-6.2: "Update Graphic Links in Package" ensures the packaged .indd file references the local copies, not the originals. Without this, the printer opens your .indd and it looks for files on your hard drive — which they do not have.',gagneEvent:6},
+    {id:4,instruction:'Add printing instructions. In the Printing Instructions dialog, type the job name, contact, and any special instructions for the printer. Click Continue.',
+     expectedAction:'input',expectedTarget:'print-instructions',expectedValue:'print',matchType:'contains',
+     hint1:'A Printing Instructions dialog appears before the final Package.',hint2:'Fill in job name, contact name, and any special instructions.',hint3:'Printing Instructions → Job Name: Magazine Issue 12 → add contact details → Click Continue.',
+     correctFeedback:'Printing instructions added. A document called "Instructions.txt" is placed in the root of the packaged folder.',
+     incorrectFeedback:'Fill in the Printing Instructions dialog fields.',
+     acpContext:'ACP Id-6.2: Printing instructions are included as a plain text file in the package folder. Include: trim size, number of pages, colour specification (CMYK / spot colours), binding method, and any special finishing.',gagneEvent:7},
+    {id:5,instruction:'Click Create Packaged Folder (or Package). InDesign creates a folder containing the .indd, a Document Fonts folder, a Links folder, and the Instructions file.',
+     expectedAction:'click',expectedTarget:'create-package-folder',
+     hint1:'Click the final Package/Create button.',hint2:'Click Create Packaged Folder → InDesign collects everything into a new folder.',hint3:'Click Create Packaged Folder → InDesign builds the package folder with all assets.',
+     correctFeedback:'Package complete. The folder contains: .indd file, Document Fonts subfolder, Links subfolder, and Instructions.txt. Zip and send to printer.',
+     incorrectFeedback:'Click Create Packaged Folder to complete the package.',
+     acpContext:'ACP Id-6.2: The packaged .indd file is a COPY — your original is unchanged. The packaged copy has updated link paths pointing to the local Links folder.',gagneEvent:7}
+  ]
+},
+
+'id-6-3a':{
+  id:'id-6-3a',tool:'indesign',domain:6,
+  objective:'6.3a',objectiveText:'Export a press-quality PDF for print production',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'export-pdf',
+  scenario:'Export a magazine spread as a print-ready PDF/X-1a file: crop marks, bleed marks, 3mm bleed, all spreads, high-resolution images, no transparency flattening issues.',
+  steps:[
+    {id:1,instruction:'Open Export to PDF. File → Export (Ctrl+E / Cmd+E). Choose Adobe PDF (Print) from the format dropdown.',
+     expectedAction:'menu-click',expectedTarget:'file-export-pdf',
+     hint1:'Go to File → Export.',hint2:'File → Export (Ctrl+E) → Format: Adobe PDF (Print).',hint3:'File → Export → Adobe PDF (Print) → Save.',
+     correctFeedback:'Export Adobe PDF (Print) dialog opens with preset options.',
+     incorrectFeedback:'Go to File → Export and choose Adobe PDF (Print).',
+     acpContext:'ACP Id-6.3a: InDesign has two PDF export paths: Adobe PDF (Print) for press/print production and Adobe PDF (Interactive) for digital/screen PDFs with hyperlinks and media. Choose the correct one for your output.',gagneEvent:4},
+    {id:2,instruction:'Set the PDF Preset to [PDF/X-1a:2001]. This is the most common print-safe preset.',
+     expectedAction:'select',expectedTarget:'pdf-preset',expectedValue:'pdf/x-1a',matchType:'contains',
+     hint1:'Find the Adobe PDF Preset dropdown at the top of the dialog.',hint2:'PDF Preset dropdown → [PDF/X-1a:2001].',hint3:'Adobe PDF Preset → [PDF/X-1a:2001] → this locks colour to CMYK and flattens transparency.',
+     correctFeedback:'PDF/X-1a selected. This preset ensures CMYK colour, embedded fonts, no RGB, and transparency flattened — safe for most commercial printers.',
+     incorrectFeedback:'Select [PDF/X-1a:2001] from the PDF Preset dropdown.',
+     acpContext:'ACP Id-6.3a: PDF/X presets: PDF/X-1a = CMYK only, no live transparency, most compatible. PDF/X-4 = allows live transparency and colour-managed RGB, more modern. Ask your printer which they prefer.',gagneEvent:5},
+    {id:3,instruction:'Set Marks and Bleeds: check Crop Marks, Bleed Marks. Set Bleed to 3mm on all sides (or "Use Document Bleed Settings").',
+     expectedAction:'click',expectedTarget:'marks-bleeds-tab',
+     hint1:'Click the Marks and Bleeds tab on the left side of the dialog.',hint2:'Marks and Bleeds tab → check Crop Marks and Bleed Marks → Bleed: 3mm or Use Document Bleed.',hint3:'Marks and Bleeds → Crop Marks ✓ → Bleed Marks ✓ → Bleed: Use Document Bleed Settings.',
+     correctFeedback:'Crop marks and bleed configured. The PDF will include trim marks and the 3mm bleed on all sides.',
+     incorrectFeedback:'Click the Marks and Bleeds tab and enable Crop Marks and Bleed Marks.',
+     acpContext:'ACP Id-6.3a: Crop marks show where to cut. Bleed marks show the bleed boundary. Registration marks help the press align CMYK plates. Always include these for commercial print jobs.',gagneEvent:6},
+    {id:4,instruction:'Set Pages: export as Spreads. In the General tab, set Pages → choose Spreads.',
+     expectedAction:'click',expectedTarget:'export-spreads',
+     hint1:'Go to the General tab.',hint2:'General tab → Pages section → select Spreads.',hint3:'General tab → Pages: All → check Spreads → exports left/right pages as single wide PDF pages.',
+     correctFeedback:'Spreads selected. Each PDF page will show both the left and right page of a spread together.',
+     incorrectFeedback:'In the General tab, select Spreads for the Pages option.',
+     acpContext:'ACP Id-6.3a: Spreads vs Pages: export as Spreads for designer review. Export as individual Pages for most printers — they impose (arrange) pages for their press. Ask your printer which they need.',gagneEvent:6},
+    {id:5,instruction:'Click Export to generate the PDF.',
+     expectedAction:'click',expectedTarget:'export-pdf-btn',
+     hint1:'Click Export.',hint2:'Click Export to generate the PDF.',hint3:'Click Export → InDesign processes and saves the PDF file.',
+     correctFeedback:'PDF exported. Open it in Acrobat to verify crop marks, bleed, and that all pages exported correctly.',
+     incorrectFeedback:'Click Export to generate the print PDF.',
+     acpContext:'ACP Id-6.3a: Always open the exported PDF in Adobe Acrobat and use Output Preview (View → Tools → Print Production → Output Preview) to check separations, bleed, and ink coverage.',gagneEvent:7}
+  ]
+},
+
+'id-6-3b':{
+  id:'id-6-3b',tool:'indesign',domain:6,
+  objective:'6.3b',objectiveText:'Export PDF Interactive and EPUB',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'export-interactive',
+  scenario:'Export a digital version of the magazine as an Interactive PDF with hyperlinks, and separately export an EPUB for e-reader distribution.',
+  steps:[
+    {id:1,instruction:'Export Interactive PDF. File → Export → Adobe PDF (Interactive). This is a different export path from PDF Print.',
+     expectedAction:'menu-click',expectedTarget:'file-export-interactive',
+     hint1:'File → Export → choose Adobe PDF (Interactive) — not Adobe PDF (Print).',hint2:'File → Export → Format dropdown → Adobe PDF (Interactive).',hint3:'File → Export → Adobe PDF (Interactive) → Save.',
+     correctFeedback:'Export Interactive PDF dialog open. This format supports hyperlinks, bookmarks, buttons, video, and audio.',
+     incorrectFeedback:'Go to File → Export and choose Adobe PDF (Interactive).',
+     acpContext:'ACP Id-6.3b: PDF (Interactive) vs PDF (Print): Interactive = for screen, supports hyperlinks/media, no print marks. Print = for commercial printing, CMYK, crop marks. Never mix these up for client delivery.',gagneEvent:4},
+    {id:2,instruction:'In the Export Interactive PDF dialog, check "Include All" for hyperlinks and bookmarks. Set View: Fit Page. Click OK.',
+     expectedAction:'click',expectedTarget:'interactive-pdf-ok',
+     hint1:'Set the options in the Export Interactive PDF dialog.',hint2:'Hyperlinks: All → Bookmarks: All → View: Fit Page → OK.',hint3:'Include hyperlinks ✓ → Include bookmarks ✓ → View after Export ✓ → OK.',
+     correctFeedback:'Interactive PDF settings applied.',
+     incorrectFeedback:'Set the Interactive PDF options and click OK.',
+     acpContext:'ACP Id-6.3b: Hyperlinks must be created in InDesign before export (Window → Interactive → Hyperlinks) to appear in the PDF. Bookmarks come from the Table of Contents (Layout → Table of Contents).',gagneEvent:6},
+    {id:3,instruction:'Export EPUB. File → Export → EPUB (Reflowable). An EPUB reflows content for any screen size.',
+     expectedAction:'menu-click',expectedTarget:'file-export-epub',
+     hint1:'File → Export → EPUB (Reflowable).',hint2:'File → Export → Format: EPUB (Reflowable) → Save.',hint3:'File → Export → EPUB (Reflowable) → name the file → Save.',
+     correctFeedback:'EPUB export dialog opens. EPUB (Reflowable) reflows content to fit any device. EPUB (Fixed Layout) preserves the exact design layout.',
+     incorrectFeedback:'Go to File → Export → EPUB (Reflowable).',
+     acpContext:'ACP Id-6.3b: EPUB types: Reflowable = text wraps to screen size, good for text-heavy content (books, articles). Fixed Layout = preserves exact design, good for magazines, children\'s books, illustrated publications.',gagneEvent:5},
+    {id:4,instruction:'In the EPUB Export Options, set Cover Image to "Rasterize First Page". Set Image Settings resolution to 150 ppi. Click OK.',
+     expectedAction:'click',expectedTarget:'epub-ok',
+     hint1:'Set the EPUB options.',hint2:'Cover: Rasterize First Page → Image Resolution: 150 ppi → OK.',hint3:'EPUB Export Options → Cover: Rasterize First Page → Image: 150 ppi → OK.',
+     correctFeedback:'EPUB exported. 150 ppi is standard for screen images — lower than print (300 ppi) but sufficient for devices.',
+     incorrectFeedback:'Set EPUB options and click OK.',
+     acpContext:'ACP Id-6.3b: EPUB image resolution: 150–200 ppi for screen. Print images at 300 ppi will produce oversized EPUB files. Always downsample images for digital export.',gagneEvent:7}
+  ]
+},
+
+'id-6-4a':{
+  id:'id-6-4a',tool:'indesign',domain:6,
+  objective:'6.4',objectiveText:'Use the Print dialog — marks, bleeds, and colour separations',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'print-dialog',
+  scenario:'Print a proof of a CMYK magazine document. Configure the Print dialog: include crop marks and bleed, enable separations preview, and verify ink usage.',
+  steps:[
+    {id:1,instruction:'Open the Print dialog. File → Print (Ctrl+P / Cmd+P).',
+     expectedAction:'menu-click',expectedTarget:'file-print',
+     hint1:'Go to File → Print.',hint2:'File → Print (Ctrl+P).',hint3:'File → Print — the comprehensive InDesign Print dialog opens.',
+     correctFeedback:'Print dialog open. The left panel has category tabs: General, Setup, Marks and Bleed, Output, Graphics, Colour Management, Advanced, Summary.',
+     incorrectFeedback:'Go to File → Print.',
+     acpContext:'ACP Id-6.4: The InDesign Print dialog is more complex than Photoshop or Illustrator\'s because publications have more production variables. The Summary tab shows a plain-text review of all settings.',gagneEvent:3},
+    {id:2,instruction:'Enable crop marks and bleed. Click the Marks and Bleed tab. Check Crop Marks and Use Document Bleed Settings.',
+     expectedAction:'click',expectedTarget:'print-marks-bleed',
+     hint1:'Click the Marks and Bleed tab.',hint2:'Marks and Bleed → Crop Marks ✓ → Use Document Bleed Settings ✓.',hint3:'Marks and Bleed tab → check Crop Marks → check Use Document Bleed Settings.',
+     correctFeedback:'Crop marks and bleed enabled for printing.',
+     incorrectFeedback:'Click the Marks and Bleed tab and enable Crop Marks and bleed.',
+     acpContext:'ACP Id-6.4: For proofing, include crop marks and bleed to verify the design reaches the bleed edge. For final offset print, the printer usually handles this from the PDF you supply.',gagneEvent:6},
+    {id:3,instruction:'Set colour output to Separations. Click the Output tab. Set Colour to Separations (Host-Based).',
+     expectedAction:'click',expectedTarget:'print-separations',
+     hint1:'Click the Output tab.',hint2:'Output tab → Colour dropdown → Separations (Host-Based).',hint3:'Output → Colour: Separations (Host-Based) → each CMYK plate prints as a separate grey sheet.',
+     correctFeedback:'Separations mode set. Printing will output one grey sheet per ink plate (Cyan, Magenta, Yellow, Black, plus any spot colours).',
+     incorrectFeedback:'Click the Output tab and set Colour to Separations (Host-Based).',
+     acpContext:'ACP Id-6.4: Separations printing outputs each colour plate as a separate greyscale sheet. Use to verify: no RGB colours, no unintended spot colours, correct ink coverage per plate.',gagneEvent:6},
+    {id:4,instruction:'Check ink coverage in the Output panel. The ink list shows all inks in the document. Click the eye icon next to each to preview individual plates.',
+     expectedAction:'click',expectedTarget:'ink-list-eye',
+     hint1:'In the Output tab, look for the ink list at the bottom.',hint2:'Output tab → ink list shows C, M, Y, K and any spots → click the eye icon to toggle plate visibility.',hint3:'Output tab → ink list → click eye icon next to Cyan to preview only the Cyan plate.',
+     correctFeedback:'Ink preview active. You can see which elements print on each plate — essential for checking that logos use the correct spot colour.',
+     incorrectFeedback:'Click the eye icon next to an ink in the Output tab ink list.',
+     acpContext:'ACP Id-6.4: Unexpected inks in the list (e.g. a Pantone spot colour you did not intend to use, or RGB colours converted to spot) mean unexpected printing plates and additional cost.',gagneEvent:7},
+    {id:5,instruction:'Review the print summary. Click the Summary tab to see a plain-text review of all settings before printing.',
+     expectedAction:'click',expectedTarget:'print-summary',
+     hint1:'Click the Summary tab.',hint2:'Summary tab → review all settings in plain text.',hint3:'Print dialog → Summary tab → read all settings → click Print if correct.',
+     correctFeedback:'Summary shows all settings. Review before clicking Print — this is the final check.',
+     incorrectFeedback:'Click the Summary tab in the Print dialog.',
+     acpContext:'ACP Id-6.4: The Summary tab is especially useful when handing off print settings to a client or colleague — copy the text into an email to document exactly what settings were used.',gagneEvent:8}
+  ]
+},
+
+'id-6-mc':{
+  id:'id-6-mc',tool:'indesign',domain:6,
+  objective:'6.1–6.4',objectiveText:'Domain 6 final knowledge check — InDesign complete',
+  bloomsLevel:'Understand',estimatedMinutes:8,uiType:'mc',
+  questions:[
+    {q:'What does the Preflight panel\'s red dot in InDesign\'s status bar indicate?',options:['A print job is in progress','The document has errors that need resolving before output','The document is saved','The document is using RGB colours'],correct:1,explanation:'A red dot in the Preflight status bar means the document has errors — missing links, overset text, missing fonts, low-resolution images, etc. Green = no errors. Always resolve errors before packaging or exporting.',acpObj:'Id-6.1'},
+    {q:'When you Package a document (File → Package), which three items are collected?',options:['Only the .indd file','The .indd file, all linked images and graphics, and document fonts','The .indd file and a PDF only','Only fonts and linked images, not the .indd'],correct:1,explanation:'Package collects: (1) the InDesign document (.indd), (2) all linked graphics (in a Links subfolder), and (3) all fonts used in the document (in a Document Fonts subfolder). It also generates an Instructions file if you provide one.',acpObj:'Id-6.2'},
+    {q:'Which PDF export format should you use for commercial print production?',options:['Adobe PDF (Interactive)','Adobe PDF (Print) with PDF/X-1a or PDF/X-4 preset','Export as JPEG at 300ppi','Spreads-only PDF with no marks'],correct:1,explanation:'Adobe PDF (Print) is for press production. Use PDF/X-1a (CMYK only, transparency flattened) or PDF/X-4 (allows live transparency, colour-managed) depending on your printer\'s requirements. PDF (Interactive) is for digital/screen delivery only.',acpObj:'Id-6.3a'},
+    {q:'What is the difference between EPUB (Reflowable) and EPUB (Fixed Layout) in InDesign?',options:['There is no functional difference','Reflowable text adapts to any screen size; Fixed Layout preserves the exact design layout at a fixed size','Fixed Layout is only for print','Reflowable is for magazines; Fixed Layout is for books'],correct:1,explanation:'Reflowable EPUB allows text to reflow to fit any device screen — ideal for text-heavy books and articles. Fixed Layout EPUB preserves the exact InDesign layout at a set size — ideal for magazines, picture books, and highly designed publications.',acpObj:'Id-6.3b'},
+    {q:'In the Print dialog Output tab, setting Colour to "Separations" will:',options:['Print all inks on one page in colour','Print one greyscale sheet per ink plate — Cyan, Magenta, Yellow, Black, plus any spot colours','Print only the black plate','Convert all colours to greyscale for proofing'],correct:1,explanation:'Separations mode prints each ink channel as a separate greyscale sheet. The density of grey shows how much of that ink prints in each area. Use to verify plate content, check for unintended spot colours, and check ink coverage.',acpObj:'Id-6.4'},
+    {q:'You need to check whether any images in your document are below 300 ppi before sending to print. What is the most efficient InDesign approach?',options:['Manually check each image in the Links panel','Export to PDF and inspect in Acrobat','Create a custom Preflight profile that flags images below 300 ppi minimum resolution','Use the Separations Preview panel'],correct:2,explanation:'A custom Preflight profile with a minimum image resolution of 300 ppi will automatically flag all low-resolution images as errors. The Preflight panel then shows you each instance with a link to navigate directly to the problem.',acpObj:'Id-6.1'}
+  ]
+}
+};
+
+/* ═══ ENGINE ══════════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[],mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array((task.steps||[]).length).fill(null);mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${t.objective}</span>
+      <span class="badge badge-id">InDesign</span>
+      <span class="badge badge-live">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+function renderUI(t){
+  if(t.uiType==='mc'){document.getElementById('adobe-sim').innerHTML='';return;}
+  const map={'preflight':preflightUI,'package':packageUI,'export-pdf':exportPdfUI,'export-interactive':exportInteractiveUI,'print-dialog':printDialogUI};
+  document.getElementById('adobe-sim').innerHTML=map[t.uiType]?map[t.uiType]():'';
+}
+
+function idShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Id</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function defaultCanvas(){
+  return`<div class="adobe-canvas">
+    <div class="id-page" style="width:180px;height:130px;position:relative;padding:8px;overflow:hidden;">
+      <div style="font-size:8px;font-weight:600;color:#1A1A2E;margin-bottom:3px;">Magazine title</div>
+      <div style="font-size:6.5px;color:#333;line-height:1.5;">Body text flows here. Lorem ipsum dolor sit amet consectetur.</div>
+      <div id="missing-img" style="position:absolute;bottom:8px;right:8px;width:55px;height:40px;background:#EEE;border:0.5px dashed #FF4D6D;display:flex;align-items:center;justify-content:center;font-size:6px;color:#FF4D6D;">?missing</div>
+      <div id="overset-indicator" style="position:absolute;bottom:8px;left:8px;width:10px;height:10px;background:#FF4D6D;border-radius:1px;display:flex;align-items:center;justify-content:center;font-size:6px;color:#FFF;font-weight:700;">+</div>
+    </div>
+  </div>`;
+}
+
+function preflightUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-preflight')">Window</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    defaultCanvas(),
+    `<div class="panel-hdr">Preflight <span id="pf-dot" style="font-size:9px;color:#FF4D6D;">● 3 errors</span></div>
+     <div class="panel-body">
+       <div class="prop-row"><span class="prop-label">Profile</span>
+         <select class="prop-select" id="pf-profile" onchange="doAction('set-preflight-profile')">
+           <option>[Basic]</option>
+           <option id="print-ready-opt">Print Ready</option>
+         </select></div>
+     </div>
+     <div id="pf-errors">
+       <div class="err-row err-bad" onclick="doAction('preflight-missing-link')"><span class="err-icon">🔗</span><span class="err-text">Missing Links (1)<br><span style="color:#888;font-size:8px;">photo.psd — p.3</span></span></div>
+       <div class="err-row err-bad" onclick="doAction('preflight-overset')"><span class="err-icon">T</span><span class="err-text">Overset Text (1)<br><span style="color:#888;font-size:8px;">Article body — p.5</span></span></div>
+       <div class="err-row err-warn" onclick="doAction('define-preflight-profile')"><span class="err-icon">A</span><span class="err-text">Fonts not embedded (1)<br><span style="color:#888;font-size:8px;">Helvetica Neue</span></span></div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('window-preflight')">Window → Output → Preflight</div>
+       <div class="adj-btn" onclick="doAction('define-preflight-profile')">Panel ≡ → Define Profiles</div>
+       <div class="adj-btn" onclick="doAction('set-preflight-profile')">Activate Print Ready profile</div>
+     </div>`
+  );
+}
+
+function packageUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-package')">File</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:.5rem;">
+      <div id="pkg-folder" style="display:none;background:#1A1A1A;border:0.5px solid #444;border-radius:4px;padding:6px 10px;width:180px;">
+        <div style="font-size:9px;color:#00C896;font-weight:600;margin-bottom:4px;">📁 Magazine_Issue12_Package/</div>
+        <div style="font-size:8px;color:#CCC;padding-left:8px;">📄 Magazine_Issue12.indd</div>
+        <div style="font-size:8px;color:#CCC;padding-left:8px;">📁 Document Fonts/</div>
+        <div style="font-size:8px;color:#888;padding-left:16px;">HelveticaNeue.otf</div>
+        <div style="font-size:8px;color:#CCC;padding-left:8px;">📁 Links/</div>
+        <div style="font-size:8px;color:#888;padding-left:16px;">photo.psd · logo.ai</div>
+        <div style="font-size:8px;color:#CCC;padding-left:8px;">📄 Instructions.txt</div>
+      </div>
+      <div id="pkg-placeholder" style="font-size:9px;color:#888;">File → Package to collect all assets</div>
+    </div>`,
+    `<div class="panel-hdr">Package</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-package')">File → Package (Alt+Shift+Ctrl+P)</div>
+       <div class="adj-btn" onclick="doAction('package-report')">Summary → Report (saves .txt)</div>
+       <div class="adj-btn" onclick="doAction('package-options')">Check: Copy Fonts ✓ Copy Links ✓</div>
+       <div class="adj-btn" onclick="doAction('print-instructions')">Printing Instructions → fill in</div>
+       <div class="adj-btn" onclick="doAction('create-package-folder')">Create Packaged Folder</div>
+     </div>
+     <div class="panel-body">
+       <div style="font-size:9px;color:#888;line-height:1.6;">Package contents:<br>• .indd file<br>• Document Fonts/  folder<br>• Links/ folder<br>• Instructions.txt</div>
+     </div>`
+  );
+}
+
+function exportPdfUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-export-pdf')">File</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="align-items:center;justify-content:center;">
+      <div class="id-page" style="width:140px;height:100px;position:relative;">
+        <div style="position:absolute;inset:-6px;border:0.5px dashed rgba(255,0,0,.4);"></div>
+        <div id="crop-marks-vis" style="display:none;">
+          <div style="position:absolute;top:-12px;left:-1px;width:1px;height:7px;background:#000;opacity:.5;"></div>
+          <div style="position:absolute;top:-12px;right:-1px;width:1px;height:7px;background:#000;opacity:.5;"></div>
+          <div style="position:absolute;bottom:-12px;left:-1px;width:1px;height:7px;background:#000;opacity:.5;"></div>
+          <div style="position:absolute;bottom:-12px;right:-1px;width:1px;height:7px;background:#000;opacity:.5;"></div>
+          <div style="position:absolute;left:-12px;top:-1px;height:1px;width:7px;background:#000;opacity:.5;"></div>
+          <div style="position:absolute;right:-12px;top:-1px;height:1px;width:7px;background:#000;opacity:.5;"></div>
+        </div>
+        <div style="padding:6px;font-size:7px;color:#1A1A2E;">
+          <div style="font-size:9px;font-weight:600;">Magazine</div>
+          <div style="margin-top:3px;font-size:6.5px;color:#333;">PDF Print export preview</div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Export PDF Print</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-export-pdf')">File → Export → PDF (Print)</div>
+       <div class="prop-row" style="margin-top:4px;"><span class="prop-label">Preset</span>
+         <select class="prop-select highlight" onchange="doSelect('pdf-preset',this.value.toLowerCase())">
+           <option value="">— Select —</option>
+           <option value="high quality">[High Quality Print]</option>
+           <option value="pdf/x-1a">[PDF/X-1a:2001]</option>
+           <option value="pdf/x-4">[PDF/X-4:2008]</option>
+         </select></div>
+       <div class="adj-btn" onclick="doAction('marks-bleeds-tab')">Marks and Bleeds tab → Crop Marks ✓</div>
+       <div class="adj-btn" onclick="doAction('export-spreads')">General → Pages: Spreads</div>
+       <div class="adj-btn" onclick="doAction('export-pdf-btn')" style="background:#00C896;color:#000;border-color:#00C896;margin-top:4px;font-weight:600;">Export</div>
+     </div>`
+  );
+}
+
+function exportInteractiveUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-export-interactive')">File</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:.4rem;padding:.5rem;align-items:center;justify-content:center;">
+      <div id="interactive-pdf-badge" style="display:none;background:rgba(0,200,150,.1);border:0.5px solid rgba(0,200,150,.3);border-radius:4px;padding:4px 8px;font-size:8px;color:#00C896;">Interactive PDF exported ✓</div>
+      <div id="epub-badge" style="display:none;background:rgba(49,168,255,.1);border:0.5px solid rgba(49,168,255,.3);border-radius:4px;padding:4px 8px;font-size:8px;color:#31A8FF;">EPUB (Reflowable) exported ✓</div>
+      <div class="id-page" style="width:100px;height:130px;padding:5px;position:relative;">
+        <div style="font-size:7px;font-weight:600;color:#1A1A2E;">Digital Edition</div>
+        <div style="font-size:6px;color:#31A8FF;margin-top:2px;text-decoration:underline;cursor:pointer;">→ hyperlink</div>
+        <div style="font-size:6px;color:#333;margin-top:4px;line-height:1.5;">Reflowable text adapts to any screen width automatically.</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Digital export</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-export-interactive')">File → Export → PDF (Interactive)</div>
+       <div class="adj-btn" onclick="doAction('interactive-pdf-ok')">Hyperlinks ✓ Bookmarks ✓ → OK</div>
+       <div class="adj-btn" onclick="doMenu('file-export-epub')">File → Export → EPUB (Reflowable)</div>
+       <div class="adj-btn" onclick="doAction('epub-ok')">Cover: Rasterize First Page → OK</div>
+     </div>
+     <div class="panel-body">
+       <div style="font-size:9px;color:#888;line-height:1.6;">PDF Interactive: hyperlinks,<br>buttons, video, audio<br><br>EPUB Reflowable: adapts to<br>any screen / device<br><br>EPUB Fixed Layout: preserves<br>exact design layout</div>
+     </div>`
+  );
+}
+
+function printDialogUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-print')">File</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:4px;padding:.5rem;align-items:center;justify-content:center;">
+      <div style="display:flex;gap:4px;">
+        ${['C','M','Y','K'].map((p,i)=>`
+          <div style="text-align:center;">
+            <div id="plate-${p}" style="width:38px;height:50px;background:#EEE;border:0.5px solid #AAA;position:relative;transition:all .3s;cursor:pointer;" onclick="doAction('ink-list-eye')">
+              <div style="position:absolute;inset:0;background:${i===0?'rgba(0,200,255,.4)':i===1?'rgba(255,0,150,.4)':i===2?'rgba(255,220,0,.4)':'rgba(0,0,0,.5)'};"></div>
+              <div style="position:absolute;top:2px;left:2px;font-size:7px;font-weight:700;color:${i===3?'#FFF':'#000'};font-family:var(--font-mono);">${p}</div>
+            </div>
+            <div style="font-size:7px;color:#888;margin-top:2px;">${p} plate</div>
+          </div>`).join('')}
+      </div>
+      <div id="sep-label" style="font-size:8px;color:#888;margin-top:4px;">Separations preview</div>
+    </div>`,
+    `<div class="panel-hdr">Print</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-print')">File → Print (Ctrl+P)</div>
+       <div class="adj-btn" onclick="doAction('print-marks-bleed')">Marks &amp; Bleed → Crop Marks ✓</div>
+       <div class="adj-btn" onclick="doAction('print-separations')">Output → Colour: Separations</div>
+       <div class="adj-btn" onclick="doAction('ink-list-eye')">Ink list → eye icon to preview plate</div>
+       <div class="adj-btn" onclick="doAction('print-summary')">Summary tab → review settings</div>
+     </div>
+     <div class="panel-body" id="sep-panel" style="display:none;">
+       <div style="font-size:9px;color:#888;margin-bottom:4px;">Inks in document</div>
+       ${['Cyan','Magenta','Yellow','Black'].map(p=>`<div class="err-row"><span class="err-icon err-ok">👁</span><span class="err-text">${p}</span></div>`).join('')}
+     </div>`
+  );
+}
+
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+
+function applyEffect(t){
+  const fx={
+    'window-preflight':()=>{},
+    'preflight-missing-link':()=>{const el=document.getElementById('missing-img');if(el){el.style.borderColor='#00C896';el.style.color='#00C896';el.textContent='✓ relinked';}const e=document.querySelector('.err-row.err-bad');if(e)e.style.opacity='.4';document.getElementById('pf-dot').textContent='● 2 errors';},
+    'preflight-overset':()=>{const el=document.getElementById('overset-indicator');if(el){el.style.background='#00C896';}const rows=document.querySelectorAll('.err-row.err-bad');if(rows[1])rows[1].style.opacity='.4';document.getElementById('pf-dot').textContent='● 1 error';},
+    'define-preflight-profile':()=>{const opt=document.getElementById('print-ready-opt');if(opt){opt.style.color='#00C896';}},
+    'set-preflight-profile':()=>{document.getElementById('pf-dot').textContent='● 0 errors';document.getElementById('pf-dot').style.color='#00C896';},
+    'file-package':()=>{},
+    'package-report':()=>{},
+    'package-options':()=>{},
+    'print-instructions':()=>{},
+    'create-package-folder':()=>{document.getElementById('pkg-folder').style.display='block';document.getElementById('pkg-placeholder').style.display='none';},
+    'file-export-pdf':()=>{},
+    'pdf-preset':()=>{},
+    'marks-bleeds-tab':()=>{const el=document.getElementById('crop-marks-vis');if(el)el.style.display='block';},
+    'export-spreads':()=>{},
+    'export-pdf-btn':()=>{},
+    'file-export-interactive':()=>{},
+    'interactive-pdf-ok':()=>{const b=document.getElementById('interactive-pdf-badge');if(b)b.style.display='block';},
+    'file-export-epub':()=>{},
+    'epub-ok':()=>{const b=document.getElementById('epub-badge');if(b)b.style.display='block';},
+    'file-print':()=>{},
+    'print-marks-bleed':()=>{},
+    'print-separations':()=>{const p=document.getElementById('sep-panel');if(p)p.style.display='block';const l=document.getElementById('sep-label');if(l)l.style.color='#00C896';},
+    'ink-list-eye':()=>{document.querySelectorAll('[id^="plate-"]').forEach((el,i)=>{el.style.outline=i===0?'2px solid #31A8FF':'none';});},
+    'print-summary':()=>{}
+  };
+  if(fx[t])fx[t]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask||currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">
+      Domain 6 final check · ${qs.length} questions <span style="color:var(--correct);">· InDesign complete</span>
+    </div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`<div onclick="selectMC(${qi},${oi},${q.correct})" id="mc-opt-${qi}-${oi}" style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;">${opt}</div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;line-height:1.5;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()">Submit &amp; complete InDesign</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{el.style.borderColor='var(--color-border-tertiary)';el.style.background='var(--surface)';el.style.color='var(--text-secondary)';});
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(0,200,150,.4)';sel.style.background='rgba(0,200,150,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}el.style.cursor='default';el.style.pointerEvents='none';});
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation+` <span style="font-family:var(--font-mono);font-size:.7rem;opacity:.7;">${q.acpObj}</span>`;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const id=currentTask.id.replace(/-/g,'');const sc=document.getElementById('sc-'+id);if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+id);if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#00C896'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#00C896;">Id-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button><a href="../index.html" class="btn btn-primary btn-sm" style="text-decoration:none;background:var(--correct);border-color:var(--correct);color:#000;">InDesign complete ✓</a></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('id-6-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Illustrator ACP 2025 — Simulator Slide Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ai:#FF9A00;--bg:#1A1A00;--bg1:#16140A;--bg2:#2A1800;
+  --surf:#2A2810;--surf2:#352F10;--border:rgba(255,255,255,.08);
+  --text:#FFF8E8;--text2:#C8B890;--text3:#806840;
+  --correct:#00D68F;--wrong:#FF4D6D;--partial:#FFB800;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;}
+.deck{display:grid;grid-template-rows:auto 1fr auto;height:100vh;max-width:1100px;margin:0 auto;}
+.topbar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.tb-logo{font-weight:700;font-size:.9rem;color:var(--ai);font-family:var(--mono);}
+.tb-title{font-size:.85rem;color:var(--text2);flex:1;}
+.progress-track{height:3px;background:var(--surf2);flex:1;border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--ai);border-radius:2px;transition:width .4s ease;}
+.tb-counter{font-size:.8rem;color:var(--text3);font-family:var(--mono);}
+.slide-viewport{overflow:hidden;position:relative;}
+.slide{position:absolute;inset:0;padding:2rem 2.5rem;display:flex;flex-direction:column;opacity:0;transform:translateX(40px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
+.slide.out{opacity:0;transform:translateX(-40px);}
+.bottombar{background:var(--bg1);border-top:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;}
+.nav-btn{padding:.45rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--text2);transition:all .15s;font-family:var(--font);}
+.nav-btn:hover{background:var(--surf);color:var(--text);}
+.nav-btn.primary{background:var(--ai);color:#000;border-color:var(--ai);}
+.nav-btn.primary:hover{opacity:.88;}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--surf2);transition:all .2s;cursor:pointer;}
+.dot.active{background:var(--ai);}
+.dot.done{background:var(--correct);}
+.dot-row{display:flex;gap:5px;align-items:center;}
+.kb-hint{font-size:.72rem;color:var(--text3);margin-left:auto;}
+
+/* Slide types */
+.slide-cover{background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);}
+.cover-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;}
+.cover-title{font-size:2.4rem;font-weight:700;line-height:1.15;margin-bottom:.75rem;background:linear-gradient(135deg,#FFF 30%,var(--ai));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cover-sub{font-size:1rem;color:var(--text2);max-width:520px;margin-bottom:1.5rem;line-height:1.6;}
+.cbadge{font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:20px;border:0.5px solid;margin-right:.4rem;display:inline-block;margin-bottom:.4rem;}
+.slide-domain{background:linear-gradient(135deg,var(--bg) 0%,#1A1000 100%);}
+.domain-num{font-family:var(--mono);font-size:.78rem;color:var(--ai);font-weight:500;margin-bottom:.3rem;}
+.domain-h{font-size:1.8rem;font-weight:700;margin-bottom:.5rem;}
+.domain-desc{font-size:.9rem;color:var(--text2);max-width:560px;line-height:1.65;margin-bottom:1.25rem;}
+.obj-chip{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .75rem;background:var(--surf);border:0.5px solid var(--border);border-radius:8px;font-size:.82rem;margin-bottom:.35rem;}
+.obj-code{font-family:var(--mono);font-size:.7rem;color:var(--ai);min-width:42px;padding-top:1px;}
+.obj-text{color:var(--text2);}
+.slide-task{}
+.task-header-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem;flex-wrap:wrap;}
+.acp-tag{font-family:var(--mono);font-size:.72rem;padding:3px 9px;border-radius:4px;background:var(--bg2);color:var(--ai);border:0.5px solid rgba(255,154,0,.3);}
+.bloom-tag{font-size:.7rem;padding:3px 9px;border-radius:20px;background:rgba(0,214,143,.1);color:var(--correct);border:0.5px solid rgba(0,214,143,.25);}
+.ai-tag{font-size:.68rem;padding:2px 8px;border-radius:10px;background:rgba(155,142,240,.15);color:#9B8EF0;border:0.5px solid rgba(155,142,240,.25);}
+.task-title{font-size:1.2rem;font-weight:600;margin-bottom:.5rem;}
+.task-scenario{font-size:.87rem;color:var(--text2);line-height:1.65;padding:.7rem 1rem;background:var(--surf);border-radius:8px;border-left:3px solid var(--ai);margin-bottom:1rem;}
+.steps-list{display:flex;flex-direction:column;gap:.45rem;overflow-y:auto;max-height:calc(100vh - 320px);}
+.step-item{display:flex;gap:.75rem;align-items:flex-start;padding:.55rem .875rem;background:var(--surf);border:0.5px solid var(--border);border-radius:8px;}
+.step-num{width:22px;height:22px;border-radius:50%;background:rgba(255,154,0,.15);color:var(--ai);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:1px;font-family:var(--mono);}
+.step-instr{font-size:.85rem;color:var(--text);line-height:1.5;}
+.step-hint{font-size:.77rem;color:var(--text3);margin-top:.2rem;font-style:italic;}
+.step-acp{font-size:.7rem;color:var(--text3);margin-top:.2rem;font-family:var(--mono);}
+.step-item.current{border-color:rgba(255,154,0,.4);background:rgba(255,154,0,.06);}
+.slide-mc{}
+.mc-q-counter{font-family:var(--mono);font-size:.72rem;color:var(--text3);margin-bottom:.3rem;}
+.mc-question{font-size:1rem;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:.875rem;}
+.mc-option{padding:.45rem .75rem;border-radius:7px;border:0.5px solid var(--border);background:var(--surf);font-size:.83rem;color:var(--text2);cursor:pointer;margin-bottom:.35rem;transition:all .15s;}
+.mc-option:hover{border-color:rgba(255,154,0,.35);}
+.mc-option.selected{border-color:rgba(255,154,0,.5);background:rgba(255,154,0,.08);}
+.mc-option.correct{border-color:rgba(0,214,143,.5);background:rgba(0,214,143,.08);color:#7FFFD4;}
+.mc-option.wrong{border-color:rgba(255,77,109,.5);background:rgba(255,77,109,.08);}
+.fb{padding:.6rem .875rem;border-radius:8px;font-size:.82rem;line-height:1.55;margin-top:.5rem;display:none;}
+.fb-ok{background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.25);color:#7FFFD4;}
+.fb-ng{background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.25);color:#FFB3C1;}
+.slide-summary{background:linear-gradient(135deg,var(--bg) 0%,#00280A 100%);}
+.sum-icon{font-size:2.5rem;margin-bottom:.75rem;}
+.sum-title{font-size:1.8rem;font-weight:700;margin-bottom:.5rem;color:var(--correct);}
+.sum-sub{font-size:.92rem;color:var(--text2);max-width:520px;line-height:1.65;margin-bottom:1.5rem;}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;max-width:500px;}
+.sum-card{background:var(--surf);border:0.5px solid var(--border);border-radius:10px;padding:.875rem;text-align:center;}
+.sum-n{font-size:1.5rem;font-weight:700;color:var(--ai);}
+.sum-l{font-size:.75rem;color:var(--text3);margin-top:2px;}
+.ns-item{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;font-size:.85rem;color:var(--text2);}
+.ns-arrow{color:var(--ai);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="topbar">
+  <span class="tb-logo">Ai</span>
+  <span class="tb-title" id="tb-title">Adobe Illustrator — ACP 2025 Certification Prep</span>
+  <div class="progress-track"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <span class="tb-counter" id="tb-ctr">1 / 20</span>
+</div>
+
+<div class="slide-viewport" id="vp">
+
+<!-- 0 Cover -->
+<div class="slide slide-cover active" data-slide="0">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:680px;">
+    <p class="cover-eyebrow">ACP 2025 · Adobe Certified Professional</p>
+    <h1 class="cover-title">Graphic Design &amp; Illustration<br>Using Adobe Illustrator</h1>
+    <p class="cover-sub">Complete certification preparation aligned to official Certiport ACP 2025 exam objectives. Guided and independent practice modes. Domains 2–5 covered in this deck.</p>
+    <div>
+      <span class="cbadge" style="background:rgba(255,154,0,.1);color:var(--ai);border-color:rgba(255,154,0,.3);">Illustrator v29.x</span>
+      <span class="cbadge" style="background:rgba(0,214,143,.1);color:var(--correct);border-color:rgba(0,214,143,.25);">17 Live tasks</span>
+      <span class="cbadge" style="background:rgba(155,142,240,.1);color:#9B8EF0;border-color:rgba(155,142,240,.25);">✦ AI objectives</span>
+      <span class="cbadge" style="background:rgba(255,184,0,.1);color:var(--partial);border-color:rgba(255,184,0,.25);">~3–5 hours</span>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem;font-size:.78rem;color:var(--text3);">Press → or click Next · Keyboard: ← → arrows</div>
+</div>
+
+<!-- 1 Domain 2 intro -->
+<div class="slide slide-domain" data-slide="1">
+  <div class="domain-num">Domain 2 of 5</div>
+  <h2 class="domain-h">Document Management</h2>
+  <p class="domain-desc">Configure documents for any output, manage multiple artboards, place and link assets professionally, and export using current best-practice workflows.</p>
+  <div class="obj-chip"><span class="obj-code">Ai-2.1</span><span class="obj-text">Document settings — dimensions, artboard count, colour mode, raster effects, presets</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-2.2</span><span class="obj-text">Artboard tool — create, resize, rename, duplicate, rearrange</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-2.3</span><span class="obj-text">Place assets — embedding vs linking, Links panel, Edit Original</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-2.4</span><span class="obj-text">Save/export — .ai, .pdf, .svg, Export for Screens, Asset Export, Package</span></div>
+</div>
+
+<!-- 2 Task: New document -->
+<div class="slide slide-task" data-slide="2">
+  <div class="task-header-row"><span class="acp-tag">Ai-2.1a/b</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span></div>
+  <h3 class="task-title">Task: New document settings &amp; presets</h3>
+  <div class="task-scenario">Create a social media document: <strong>1080×1080 px, 3 artboards, RGB, 72 ppi raster effects</strong>. Save as a preset named "Social Square 1080".</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">File → New (Ctrl+N). The New Document dialog opens with preset tabs.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Set Width and Height to 1080 px. Set Artboards to 3.</div><div class="step-hint">Units: Pixels. 1080 = Instagram square standard.</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Colour Mode: RGB. Raster Effects: 72 ppi (Screen).</div><div class="step-acp">Ai-2.1a · 72 ppi = screen. 300 ppi = print. Raster Effects controls shadow/glow resolution.</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Click the Save Preset icon. Name it "Social Square 1080" → OK → Create.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d2-document-mgmt.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a><button class="nav-btn" onclick="markDone(2)" style="margin-left:.5rem;">Mark complete ✓</button></div>
+</div>
+
+<!-- 3 Task: Artboards -->
+<div class="slide slide-task" data-slide="3">
+  <div class="task-header-row"><span class="acp-tag">Ai-2.2a</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span></div>
+  <h3 class="task-title">Task: Manage multiple artboards</h3>
+  <div class="task-scenario">Duplicate Artboard 1, resize Artboard 2 to <strong>1200×630 px</strong> (Facebook), rename it, and rearrange artboards in the panel.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Press Shift+O — Artboard tool. Click an artboard to select it.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Alt+drag the artboard to duplicate it (copies artwork too).</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">With Artboard 2 selected, enter W: 1200, H: 630 in the Options Bar.</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Window → Artboards. Double-click the name to rename it "Facebook". Drag the row to reorder.</div><div class="step-acp">Ai-2.2a · Artboard names become filenames when exporting — always name them first.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d2-document-mgmt.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 4 MC Domain 2 -->
+<div class="slide slide-mc" data-slide="4">
+  <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ai-2.3 / 2.4</div>
+  <div class="mc-q-counter">Knowledge check · Domain 2 · Question 1 of 2</div>
+  <p class="mc-question">When placing an asset using File → Place with "Link" checked, what happens if you move the original file to a different folder?</p>
+  <div id="mc4-opts">
+    <div class="mc-option" onclick="answerMC(4,0,3)">The document automatically updates the file path</div>
+    <div class="mc-option" onclick="answerMC(4,1,3)">Nothing — the file is embedded inside the .ai document</div>
+    <div class="mc-option" onclick="answerMC(4,2,3)">The placed image stays visible but cannot be printed</div>
+    <div class="mc-option" onclick="answerMC(4,3,3)">The link breaks — the Links panel shows a missing-link warning</div>
+  </div>
+  <div class="fb fb-ok" id="mc4-fb"></div>
+</div>
+
+<!-- 5 MC Domain 2 Q2 -->
+<div class="slide slide-mc" data-slide="5">
+  <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ai-2.4b/c</div>
+  <div class="mc-q-counter">Knowledge check · Domain 2 · Question 2 of 2</div>
+  <p class="mc-question">Which command collects the .ai file, all linked images, and document fonts into a single folder for sharing with a printer?</p>
+  <div id="mc5-opts">
+    <div class="mc-option" onclick="answerMC(5,0,2)">File → Save a Copy</div>
+    <div class="mc-option" onclick="answerMC(5,1,2)">File → Export → Export for Screens</div>
+    <div class="mc-option" onclick="answerMC(5,2,2)">File → Package</div>
+    <div class="mc-option" onclick="answerMC(5,3,2)">File → Save As → PDF</div>
+  </div>
+  <div class="fb fb-ok" id="mc5-fb"></div>
+</div>
+
+<!-- 6 Domain 3 intro -->
+<div class="slide slide-domain" data-slide="6">
+  <div class="domain-num">Domain 3 of 5</div>
+  <h2 class="domain-h">Workflow &amp; Interface Customization</h2>
+  <p class="domain-desc">Workspace setup, precise drawing aids, colour management, brushes, symbols, graphic styles, pattern generation, and full layer control.</p>
+  <div class="obj-chip"><span class="obj-code">Ai-3.1</span><span class="obj-text">Workspaces, panels, preferences (Type units, Smart Guides)</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-3.2</span><span class="obj-text">Guides, grids, drawing modes (Draw Behind, Draw Inside)</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-3.3</span><span class="obj-text">Swatches (global, spot), gradients (linear, radial, Gradient Mesh)</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-3.4</span><span class="obj-text">Brushes, graphic styles, symbols (dynamic/static), Generate Patterns</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-3.5</span><span class="obj-text">Layers — sublayers, stacking, Merge, Collect in New Layer, Paste Remembers Layers</span></div>
+</div>
+
+<!-- 7 Concept: swatches -->
+<div class="slide slide-task" data-slide="7">
+  <div class="task-header-row"><span class="acp-tag">Ai-3.3a/b</span><span class="bloom-tag">Understand</span></div>
+  <h3 class="task-title">Concept: Global, process, and spot swatches</h3>
+  <div class="steps-list" style="max-height:none;">
+    <div class="step-item"><div class="step-num" style="background:rgba(255,154,0,.15);">G</div><div><div class="step-instr" style="font-weight:500;">Global process colour</div><div class="step-hint">White triangle in corner. Edit once → all objects update. Best for brand colours.</div></div></div>
+    <div class="step-item"><div class="step-num" style="background:rgba(155,142,240,.15);color:#9B8EF0;">S</div><div><div class="step-instr" style="font-weight:500;">Spot colour (Pantone)</div><div class="step-hint">Dot in corner. Pre-mixed ink — printed with a dedicated press plate. More expensive but exact colour match. Always use Pantone names.</div></div></div>
+    <div class="step-item"><div class="step-num" style="background:rgba(49,168,255,.15);color:#31A8FF;">P</div><div><div class="step-instr" style="font-weight:500;">Process colour (non-global)</div><div class="step-hint">No triangle, no dot. CMYK mix. Editing it only changes the swatch — not objects using it. Good for one-off colours.</div></div></div>
+    <div class="step-item"><div class="step-num" style="background:rgba(0,214,143,.15);color:var(--correct);">ASE</div><div><div class="step-instr" style="font-weight:500;">Export colour groups as .ase</div><div class="step-hint">Window → Swatches → panel menu → Save Swatch Library as ASE. Share palettes with other Adobe apps.</div></div></div>
+  </div>
+</div>
+
+<!-- 8 Task: Layers -->
+<div class="slide slide-task" data-slide="8">
+  <div class="task-header-row"><span class="acp-tag">Ai-3.5</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span></div>
+  <h3 class="task-title">Task: Layer management</h3>
+  <div class="task-scenario">Create sublayers, reorder layers, merge two layers, collect selected objects into a new layer, and use Paste Remembers Layers.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Window → Layers (F7). Select Layer 1. Alt+click New Layer button → creates a sublayer.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Drag layers in the panel to reorder. Top = drawn in front.</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Ctrl+click two layers → panel menu (≡) → Merge Selected.</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Select objects → panel menu → Collect in New Layer.</div></div></div>
+    <div class="step-item"><div class="step-num">5</div><div><div class="step-instr">Layers panel ≡ → Paste Remembers Layers (toggle on). Pasted objects return to their original layer.</div><div class="step-acp">Ai-3.5c · Without this, paste always goes to the active layer — breaks layer organisation.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d3-workflow.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 9 Domain 4 intro -->
+<div class="slide slide-domain" data-slide="9">
+  <div class="domain-num">Domain 4 of 5</div>
+  <h2 class="domain-h">Objects, Paths &amp; Text</h2>
+  <p class="domain-desc">The core creation domain — vector drawing, AI-powered generation, path modification tools, and professional typography.</p>
+  <div class="obj-chip"><span class="obj-code">Ai-4.1a/b</span><span class="obj-text">Pen tool (corner/curve/convert), Curvature Pen, Pencil, Paintbrush</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-4.1c/d</span><span class="obj-text">Image Trace (Make → preset → Expand), shape tools (Polygon, Star)</span></div>
+  <div class="obj-chip" style="border-color:rgba(155,142,240,.3);"><span class="obj-code" style="color:#9B8EF0;">Ai-4.1e ✦</span><span class="obj-text">Generate Vectors — Adobe Firefly AI (2025 ACP objective)</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-4.2</span><span class="obj-text">Pathfinder (Unite, Minus Front), Shape Builder, Simplify, Join</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-4.3/4.4</span><span class="obj-text">Point type, area type, Type on a Path, Character/Paragraph Styles, Create Outlines</span></div>
+</div>
+
+<!-- 10 Task: Pen tool -->
+<div class="slide slide-task" data-slide="10">
+  <div class="task-header-row"><span class="acp-tag">Ai-4.1a/b</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span></div>
+  <h3 class="task-title">Task: Pen tool &amp; Curvature Pen</h3>
+  <div class="task-scenario">Trace a logo silhouette using the Pen tool, creating corner and curved anchor points. Convert a smooth point to a corner, then redraw a path with the Curvature Pen.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Press P — Pen tool. Click = corner point. Click+drag = smooth curve point.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Alt+click a smooth anchor point to convert it to a corner (breaks direction handles).</div><div class="step-hint">The Convert Anchor Point tool (Shift+C) also does conversions.</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Close the path by clicking back on the first anchor point (cursor shows °).</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Shift+~ — Curvature Pen. Just click: smooth curves created automatically without dragging.</div><div class="step-acp">Ai-4.1b · Double-click in Curvature Pen = corner point. Faster for organic, flowing shapes.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d4-objects-paths.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 11 Task: Generate Vectors AI -->
+<div class="slide slide-task" data-slide="11">
+  <div class="task-header-row"><span class="acp-tag">Ai-4.1e</span><span class="bloom-tag">Apply</span><span class="ai-tag">✦ AI — 2025</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~7 min</span></div>
+  <h3 class="task-title">Task: Generate Vectors — Adobe Firefly</h3>
+  <div class="task-scenario">Use Generate Vectors to create a custom vector icon from a text prompt. Edit the generated vector paths with standard Illustrator tools.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Edit → Generate Vectors. The AI prompt panel opens.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Type a descriptive prompt (subject + style + colours) → click Generate.</div><div class="step-hint">Example: "simple mountain landscape line art, minimal style"</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">4 variations appear. Click the best one to place it on the artboard.</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Object → Ungroup (Ctrl+Shift+G). Press A (Direct Selection) to edit individual anchor points.</div><div class="step-acp">Ai-4.1e · Generated vectors are actual scalable SVG paths — not raster. Fully editable with all vector tools.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d4-objects-paths.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 12 Task: Pathfinder -->
+<div class="slide slide-task" data-slide="12">
+  <div class="task-header-row"><span class="acp-tag">Ai-4.2a/b</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span></div>
+  <h3 class="task-title">Task: Pathfinder &amp; Shape Builder</h3>
+  <div class="task-scenario">Combine and subtract shapes to create a logo mark. Use both the Pathfinder panel and the Shape Builder tool.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Window → Pathfinder (Shift+Ctrl+F9). Top row = Shape Modes.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Select both circles → Unite (merges into one shape, takes bottom object's colour).</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Select rectangle + triangle → Minus Front (subtracts top shape from all below).</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Shift+M — Shape Builder. Drag across regions to merge. Alt+drag to delete a region.</div><div class="step-acp">Ai-4.2a · Shape Builder is more interactive than Pathfinder for complex multi-shape work.</div></div></div>
+    <div class="step-item"><div class="step-num">5</div><div><div class="step-instr">Select a complex path → Object → Path → Simplify. Reduce anchor points without losing shape quality.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d4-objects-paths.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 13 MC Domain 4 -->
+<div class="slide slide-mc" data-slide="13">
+  <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ai-4.1–4.4</div>
+  <div class="mc-q-counter">Knowledge check · Domain 4 · Question 1 of 2</div>
+  <p class="mc-question">After using Image Trace to convert a raster image to vectors, what must you do before you can edit individual paths?</p>
+  <div id="mc13-opts">
+    <div class="mc-option" onclick="answerMC(13,0,1)">Use the Direct Selection tool immediately</div>
+    <div class="mc-option" onclick="answerMC(13,1,1)">Click Expand — this converts the live trace to actual editable vector paths</div>
+    <div class="mc-option" onclick="answerMC(13,2,1)">Save as SVG first</div>
+    <div class="mc-option" onclick="answerMC(13,3,1)">Apply Object → Path → Simplify</div>
+  </div>
+  <div class="fb" id="mc13-fb"></div>
+</div>
+
+<!-- 14 MC Domain 4 Q2 -->
+<div class="slide slide-mc" data-slide="14">
+  <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ai-4.4b</div>
+  <div class="mc-q-counter">Knowledge check · Domain 4 · Question 2 of 2</div>
+  <p class="mc-question">Why should you convert text to outlines (Type → Create Outlines) before sending a file to a printer?</p>
+  <div id="mc14-opts">
+    <div class="mc-option" onclick="answerMC(14,0,2)">It reduces the file size significantly</div>
+    <div class="mc-option" onclick="answerMC(14,1,2)">It makes text editable in any application</div>
+    <div class="mc-option" onclick="answerMC(14,2,2)">It ensures the text displays correctly even if the printer's system doesn't have the font installed</div>
+    <div class="mc-option" onclick="answerMC(14,3,2)">It converts the text to a raster image for better print quality</div>
+  </div>
+  <div class="fb" id="mc14-fb"></div>
+</div>
+
+<!-- 15 Domain 5 intro -->
+<div class="slide slide-domain" data-slide="15">
+  <div class="domain-num">Domain 5 of 5</div>
+  <h2 class="domain-h">Modifying Object Appearance &amp; Position</h2>
+  <p class="domain-desc">Selection tools, Isolation Mode, transforms and Repeat, the Appearance panel, AI Generative Shape Fill, masks, transparency, and alignment.</p>
+  <div class="obj-chip"><span class="obj-code">Ai-5.1</span><span class="obj-text">Group Selection, Isolation Mode, Free Transform, Repeat (Radial, Grid, Mirror)</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-5.2</span><span class="obj-text">Appearance panel (multiple fills/strokes), Recolor Artwork, 3D effects</span></div>
+  <div class="obj-chip" style="border-color:rgba(155,142,240,.3);"><span class="obj-code" style="color:#9B8EF0;">Ai-5.2c ✦</span><span class="obj-text">Generative Shape Fill — AI fills vector shapes from text prompt</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-5.3</span><span class="obj-text">Clipping masks (top object = clip shape), opacity masks (white=opaque, black=transparent)</span></div>
+  <div class="obj-chip"><span class="obj-code">Ai-5.4</span><span class="obj-text">Align panel — to Selection / Key Object / Artboard; Distribute Spacing</span></div>
+</div>
+
+<!-- 16 Task: Clipping & Opacity Masks -->
+<div class="slide slide-task" data-slide="16">
+  <div class="task-header-row"><span class="acp-tag">Ai-5.3a/b</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span></div>
+  <h3 class="task-title">Task: Clipping masks &amp; opacity masks</h3>
+  <div class="task-scenario">Constrain a background pattern to a logo shape using a clipping mask. Apply an opacity mask to a photo for a soft fade edge.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Place the clip shape on TOP of the content. Select both. Object → Clipping Mask → Make (Ctrl+7).</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">The clipping path loses its fill/stroke. Content shows only within its boundary.</div><div class="step-hint">To release: Object → Clipping Mask → Release (Alt+Ctrl+7).</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">For opacity mask: select photo + gradient shape. Window → Transparency. Panel menu (≡) → Make Opacity Mask.</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">Click the mask thumbnail (right thumbnail) in the Transparency panel to edit the mask independently.</div><div class="step-acp">Ai-5.3b · Opacity mask: white = fully opaque, black = transparent, grey = semi-transparent.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d5-appearance.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 17 Task: Align -->
+<div class="slide slide-task" data-slide="17">
+  <div class="task-header-row"><span class="acp-tag">Ai-5.4a/b</span><span class="bloom-tag">Apply</span><span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~7 min</span></div>
+  <h3 class="task-title">Task: Align &amp; distribute objects</h3>
+  <div class="task-scenario">Distribute 5 icons with equal spacing, align them to the artboard right edge, then use Key Object alignment for one fixed reference.</div>
+  <div class="steps-list">
+    <div class="step-item current"><div class="step-num">1</div><div><div class="step-instr">Window → Align (Shift+F7). Always check "Align to:" first.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-instr">Set "Align to" → Artboard. Select all. Click Distribute Spacing Horizontal (equal gaps).</div><div class="step-hint">Distribute Spacing = equal gaps. Distribute Objects = equal centres. Use Spacing for even gaps.</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-instr">Click Align Right Edge → all objects move to the right artboard edge.</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-instr">For Key Object: select all → click one object again (blue border appears = key object) → align. It stays fixed; others move to it.</div><div class="step-acp">Ai-5.4b · Key Object prevents that specific object from moving during alignment operations.</div></div></div>
+  </div>
+  <div style="margin-top:.875rem;"><a href="../simulator/d5-appearance.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+</div>
+
+<!-- 18 MC Domain 5 -->
+<div class="slide slide-mc" data-slide="18">
+  <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ai-5.1–5.4</div>
+  <div class="mc-q-counter">Knowledge check · Domain 5 · Question 1 of 1</div>
+  <p class="mc-question">You select 6 icons and want equal gaps between them. In the Align panel, which option produces this result?</p>
+  <div id="mc18-opts">
+    <div class="mc-option" onclick="answerMC(18,0,1)">Align to Artboard → Align Centre Horizontal</div>
+    <div class="mc-option" onclick="answerMC(18,1,1)">Align to Selection → Distribute Spacing Horizontal</div>
+    <div class="mc-option" onclick="answerMC(18,2,1)">Key Object → Align Left Edge</div>
+    <div class="mc-option" onclick="answerMC(18,3,1)">Align to Artboard → Distribute Objects Horizontal</div>
+  </div>
+  <div class="fb" id="mc18-fb"></div>
+</div>
+
+<!-- 19 Summary -->
+<div class="slide slide-summary" data-slide="19">
+  <div class="sum-icon">✓</div>
+  <h2 class="sum-title">Illustrator ACP Complete</h2>
+  <p class="sum-sub">All 5 domains covered. Practise the interactive simulators before attempting the ACP exam. The exam is 50 minutes: MC first, then Live-in-the-App tasks inside real Illustrator.</p>
+  <div class="sum-grid">
+    <div class="sum-card"><div class="sum-n">17</div><div class="sum-l">Tasks covered</div></div>
+    <div class="sum-card"><div class="sum-n">6</div><div class="sum-l">MC sets</div></div>
+    <div class="sum-card"><div class="sum-n" id="score-display">—</div><div class="sum-l">Your MC score</div></div>
+  </div>
+  <div style="margin-top:1.25rem;">
+    <div class="ns-item"><span class="ns-arrow">→</span>Use the interactive simulators: D2, D3, D4, D5</div>
+    <div class="ns-item"><span class="ns-arrow">→</span>Download Ai task briefs and answer keys</div>
+    <div class="ns-item"><span class="ns-arrow">→</span>New 2025: Generate Vectors (Ai-4.1e) + Generative Shape Fill (Ai-5.2c) — both testable</div>
+    <div class="ns-item"><span class="ns-arrow">→</span>InDesign course coming in a future session</div>
+  </div>
+</div>
+
+</div><!-- end viewport -->
+
+<div class="bottombar">
+  <button class="nav-btn" id="btn-prev" onclick="go(cur-1)" disabled>← Prev</button>
+  <div class="dot-row" id="dot-row"></div>
+  <button class="nav-btn primary" id="btn-next" onclick="go(cur+1)">Next →</button>
+  <span class="kb-hint">← → keys</span>
+</div>
+</div>
+
+<script>
+const TOTAL=20;let cur=0;
+const MC_ANS={
+  4:{c:3,e:'A linked asset is just a reference path. If the original file moves, the link breaks — shown as a red ? in the Links panel. Embed (uncheck Link) for self-contained portability.'},
+  5:{c:2,e:'File → Package collects the .ai, all linked files, and document fonts into one folder. This is the standard print delivery workflow.'},
+  13:{c:1,e:'Image Trace creates a live preview. You must click Expand to convert it to actual editable vector paths. After expanding, ungroup to access individual shapes.'},
+  14:{c:2,e:'Converting to outlines embeds the letterforms as vector paths, eliminating any font dependency. The recipient needs no fonts installed. Cannot be converted back — keep a copy with live text.'},
+  18:{c:1,e:'Distribute Spacing creates equal gaps between object edges. Distribute Objects distributes by centres — unequal gaps when objects have different widths.'}
+};
+let mcC=0,mcT=0;
+
+function buildDots(){
+  const r=document.getElementById('dot-row');r.innerHTML='';
+  const n=Math.min(TOTAL,14);
+  for(let i=0;i<n;i++){const d=document.createElement('div');d.className='dot'+(i===cur?' active':'');d.onclick=()=>go(i);r.appendChild(d);}
+}
+
+function go(n){
+  if(n<0||n>=TOTAL)return;
+  document.querySelectorAll('.slide')[cur].classList.remove('active');
+  document.querySelectorAll('.slide')[cur].classList.add('out');
+  setTimeout(()=>{document.querySelectorAll('.slide')[Math.min(cur,n)].classList.remove('out');},400);
+  cur=n;
+  document.querySelectorAll('.slide')[cur].classList.add('active');
+  document.querySelectorAll('.slide')[cur].classList.remove('out');
+  updateUI();
+}
+
+function updateUI(){
+  document.getElementById('tb-ctr').textContent=(cur+1)+' / '+TOTAL;
+  document.getElementById('prog').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').textContent=cur>=TOTAL-1?'Finish ✓':'Next →';
+  if(cur===19)updateScore();
+  buildDots();
+}
+
+function answerMC(slide,chosen,correct){
+  const ans=MC_ANS[slide];if(!ans||ans.answered)return;ans.answered=true;
+  mcT++;if(chosen===correct)mcC++;
+  document.querySelectorAll('#mc'+slide+'-opts .mc-option').forEach((el,i)=>{
+    el.style.cursor='default';el.style.pointerEvents='none';
+    if(i===correct)el.classList.add('correct');
+    if(i===chosen&&chosen!==correct)el.classList.add('wrong');
+  });
+  const fb=document.getElementById('mc'+slide+'-fb');
+  if(fb&&ans.e){fb.style.display='block';fb.className='fb '+(chosen===correct?'fb-ok':'fb-ng');fb.innerHTML='<strong>'+(chosen===correct?'✓ Correct':'✗ Incorrect')+'</strong> — '+ans.e;}
+}
+
+function markDone(slide){
+  const btn=document.querySelectorAll('[data-slide="'+slide+'"] button:last-child')[0];
+  if(btn){btn.textContent='✓ Done';btn.style.background='rgba(0,214,143,.15)';btn.style.color='var(--correct)';btn.style.borderColor='rgba(0,214,143,.3)';}
+}
+
+function updateScore(){
+  const el=document.getElementById('score-display');
+  if(el)el.textContent=mcT>0?Math.round(mcC/mcT*100)+'%':'N/A';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);
+});
+
+window.addEventListener('DOMContentLoaded',()=>{buildDots();updateUI();});
+</script>
+</body>
+</html>

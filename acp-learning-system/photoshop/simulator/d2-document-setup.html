@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ps · Domain 2: Project Setup & Interface | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+/* ── Page layout ─────────────────────────────────────── */
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.domain-hero h1{font-size:1.6rem;margin-bottom:.3rem;}
+.domain-hero p{color:var(--text-secondary);font-size:.9rem;}
+.domain-meta{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;}
+
+/* ── Task list sidebar ───────────────────────────────── */
+.sim-layout{display:grid;grid-template-columns:280px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.6rem;}
+.task-item{display:flex;align-items:center;gap:.6rem;padding:.6rem .875rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.25rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(49,168,255,.35);}
+.task-item.completed{border-color:rgba(0,214,143,.25);}
+.task-icon{width:28px;height:28px;border-radius:6px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.7rem;color:var(--text-tertiary);}
+.task-name{font-size:.8rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.7rem;color:var(--text-tertiary);margin-left:auto;flex-shrink:0;}
+
+/* ── Simulator area ──────────────────────────────────── */
+.sim-main{}
+.task-header{margin-bottom:1.25rem;}
+.task-header h2{font-size:1.15rem;margin:.4rem 0 .5rem;}
+.task-scenario{font-size:.9rem;color:var(--text-secondary);line-height:1.65;margin-bottom:.875rem;padding:.75rem 1rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--accent);}
+.task-meta{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.6rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.5rem;border-radius:var(--radius-md);font-size:.8rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
+
+/* ── Adobe UI Simulator panel ────────────────────────── */
+.adobe-sim{background:#2B2B2B;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3C3C3C;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:var(--ps-blue);padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;}
+.menu-item:hover,.menu-item.active{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 220px;min-height:380px;}
+.adobe-tools{background:#2B2B2B;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:14px;color:#AAA;border:none;background:transparent;transition:background .12s;position:relative;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(49,168,255,.2);color:var(--ps-blue);}
+.tool-btn.highlight{animation:pulse-ring 1.2s infinite;border:1.5px solid var(--accent);}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#555;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.canvas-doc{background:#FFFFFF;position:relative;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.canvas-doc.highlight-frame{outline:2px dashed var(--accent);outline-offset:4px;}
+.canvas-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:.5rem;color:#888;}
+.adobe-panels{background:#2B2B2B;border-left:1px solid #1A1A1A;overflow-y:auto;display:flex;flex-direction:column;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;cursor:pointer;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:8px 10px;}
+.panel-body.collapsed{display:none;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 6px;border-radius:3px;width:80px;text-align:right;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(49,168,255,.25);}
+.prop-input:focus{outline:none;border-color:var(--accent);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(49,168,255,.25);}
+
+/* ── New Document dialog ─────────────────────────────── */
+.dialog-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;}
+.dialog-box{background:#3C3C3C;border-radius:6px;padding:0;width:520px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,.8);border:0.5px solid #555;}
+.dialog-title{background:#333;padding:12px 16px;font-size:12px;font-weight:600;color:#EEE;border-radius:6px 6px 0 0;border-bottom:1px solid #1A1A1A;}
+.dialog-body{padding:14px 16px;}
+.dialog-row{display:flex;gap:12px;margin-bottom:10px;align-items:center;}
+.dialog-label{font-size:11px;color:#AAA;min-width:90px;}
+.dialog-input{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:11px;padding:5px 8px;border-radius:3px;flex:1;font-family:var(--font-mono);}
+.dialog-input:focus{outline:none;border-color:var(--accent);}
+.dialog-input.highlight-input{border-color:var(--accent);box-shadow:0 0 0 2px rgba(49,168,255,.3);}
+.dialog-input.correct-input{border-color:var(--correct);background:rgba(0,214,143,.05);}
+.dialog-input.error-input{border-color:var(--incorrect);}
+.dialog-select{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:11px;padding:5px 6px;border-radius:3px;flex:1;cursor:pointer;}
+.dialog-select.highlight-input{border-color:var(--accent);box-shadow:0 0 0 2px rgba(49,168,255,.3);}
+.dialog-select.correct-input{border-color:var(--correct);}
+.dialog-footer{padding:10px 16px;background:#2B2B2B;border-radius:0 0 6px 6px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #1A1A1A;}
+.dialog-btn{padding:6px 18px;border-radius:3px;font-size:11px;font-weight:500;cursor:pointer;border:none;}
+.dialog-btn-ok{background:var(--ps-blue);color:#000;}
+.dialog-btn-ok:hover{opacity:.85;}
+.dialog-btn-cancel{background:#555;color:#CCC;}
+.dialog-btn-cancel:hover{background:#666;}
+
+/* ── Callout / highlight ring ────────────────────────── */
+.callout-ring{position:absolute;border:2px solid var(--accent);border-radius:4px;pointer-events:none;z-index:40;transition:all .3s;}
+.callout-label{position:absolute;background:var(--accent);color:#000;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap;top:-22px;left:0;}
+
+/* ── Step / feedback panel ───────────────────────────── */
+.step-panel{margin-top:1rem;}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.step-counter{font-size:.8rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.3);margin-bottom:.4rem;}
+.step-instruction{font-size:.925rem;color:var(--text-primary);line-height:1.6;margin-bottom:.6rem;}
+.hint-btn-row{display:flex;gap:.5rem;margin-bottom:.75rem;}
+
+/* ── Score report ────────────────────────────────────── */
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid;}
+.score-pct{font-size:1.75rem;font-weight:700;}
+.score-lbl{font-size:.75rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.75rem;text-align:center;}
+.score-stat-n{font-size:1.5rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.75rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;}
+
+@media(max-width:900px){
+  .sim-layout{grid-template-columns:1fr;}
+  .task-list{position:static;}
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ps active">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div class="domain-meta">
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="acp-tag">Ps · Domain 2</span>
+      <span class="badge badge-live">Live tasks</span>
+      <span class="badge badge-mc">+ MC</span>
+    </div>
+    <h1>Project Setup &amp; Interface</h1>
+    <p>5 objectives · Guided &amp; Independent modes · ACP 2025 exam-aligned</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="sim-layout">
+
+    <!-- Task list sidebar -->
+    <aside class="task-list">
+      <div class="task-list-title">Domain 2 tasks</div>
+
+      <div class="task-item active" id="nav-ps21" onclick="loadTaskById('ps-2-1a')">
+        <div class="task-icon" id="icon-ps21">2.1</div>
+        <div class="task-info">
+          <div class="task-obj">Ps-2.1a</div>
+          <div class="task-name">New document setup</div>
+        </div>
+        <div class="task-score" id="score-ps21">—</div>
+      </div>
+
+      <div class="task-item" id="nav-ps21b" onclick="loadTaskById('ps-2-1b')">
+        <div class="task-icon" id="icon-ps21b">2.1</div>
+        <div class="task-info">
+          <div class="task-obj">Ps-2.1b</div>
+          <div class="task-name">Document presets</div>
+        </div>
+        <div class="task-score" id="score-ps21b">—</div>
+      </div>
+
+      <div class="task-item" id="nav-ps22" onclick="loadTaskById('ps-2-2a')">
+        <div class="task-icon" id="icon-ps22">2.2</div>
+        <div class="task-info">
+          <div class="task-obj">Ps-2.2a</div>
+          <div class="task-name">Workspace &amp; panels</div>
+        </div>
+        <div class="task-score" id="score-ps22">—</div>
+      </div>
+
+      <div class="task-item" id="nav-ps23" onclick="loadTaskById('ps-2-3a')">
+        <div class="task-icon" id="icon-ps23">2.3</div>
+        <div class="task-info">
+          <div class="task-obj">Ps-2.3a</div>
+          <div class="task-name">Import &amp; place assets</div>
+        </div>
+        <div class="task-score" id="score-ps23">—</div>
+      </div>
+
+      <div class="task-item" id="nav-ps24" onclick="loadTaskById('ps-2-4a')">
+        <div class="task-icon" id="icon-ps24">2.4</div>
+        <div class="task-info">
+          <div class="task-obj">Ps-2.4a</div>
+          <div class="task-name">Color &amp; swatches</div>
+        </div>
+        <div class="task-score" id="score-ps24">—</div>
+      </div>
+
+      <div class="task-item" id="nav-ps25" onclick="loadTaskById('ps-2-5a')">
+        <div class="task-icon" id="icon-ps25">2.5</div>
+        <div class="task-info">
+          <div class="task-obj">Ps-2.5a</div>
+          <div class="task-name">Brushes &amp; patterns</div>
+        </div>
+        <div class="task-score" id="score-ps25">—</div>
+      </div>
+
+      <hr class="divider" style="margin:1rem 0;">
+      <div style="font-size:.75rem;color:var(--text-tertiary);margin-bottom:.5rem;">Domain 2 MC questions</div>
+      <div class="task-item" onclick="loadTaskById('ps-2-mc')">
+        <div class="task-icon">MC</div>
+        <div class="task-info">
+          <div class="task-obj">Domain 1–2</div>
+          <div class="task-name">Knowledge check</div>
+        </div>
+      </div>
+
+      <hr class="divider" style="margin:1rem 0;">
+      <div style="font-size:.75rem;color:var(--text-tertiary);padding:.25rem 0;">Your progress</div>
+      <div id="progress-summary"></div>
+    </aside>
+
+    <!-- Main simulator -->
+    <main class="sim-main">
+
+      <!-- Task header -->
+      <div id="task-header" class="task-header"></div>
+
+      <!-- Mode toggle -->
+      <div class="mode-bar">
+        <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided (Learn)</button>
+        <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent (Practice)</button>
+      </div>
+
+      <!-- Adobe UI Simulator -->
+      <div id="adobe-sim-container"></div>
+
+      <!-- Step panel -->
+      <div class="step-panel card">
+        <div id="step-panel"></div>
+        <div id="feedback-area" style="margin-top:.75rem;"></div>
+        <div id="hint-area" style="margin-top:.5rem;"></div>
+        <div id="step-actions" style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;"></div>
+      </div>
+
+      <!-- Score report -->
+      <div id="score-report" style="display:none;" class="card"></div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+
+/* ── Task configs (ACP 2025 official objectives) ──────────────────── */
+const TASKS = {
+
+  'ps-2-1a': {
+    id: 'ps-2-1a', tool: 'photoshop', domain: 2,
+    objective: '2.1a', objectiveText: 'Set appropriate document settings',
+    bloomsLevel: 'Apply', estimatedMinutes: 8,
+    scenario: 'A client needs a print-ready flyer. Create a new Photoshop document with these exact specifications: Width 8.5 in, Height 11 in, Portrait orientation, Resolution 300 pixels/inch, Color Mode RGB, Bit Depth 8 bit, White background. These settings ensure the artwork meets professional print standards.',
+    uiType: 'new-document-dialog',
+    steps: [
+      { id:1, instruction:'Open the New Document dialog. Go to File in the menu bar, then click New.', expectedAction:'menu-click', expectedTarget:'file-new', hint1:'Look at the menu bar at the top — the very first menu is File.', hint2:'Click File in the menu bar, then select New from the dropdown.', hint3:'The keyboard shortcut is Ctrl+N (Windows) or Cmd+N (Mac). Click File → New.', correctFeedback:'New Document dialog opened. You\'ll see options for width, height, resolution, and color settings.', incorrectFeedback:'Click File in the menu bar first, then choose New.', acpContext:'ACP Ps 2.1a: The File → New dialog is where all document specifications are set before you begin work.', gagneEvent:3 },
+      { id:2, instruction:'Set the Width to 8.5 and change the unit to Inches.', expectedAction:'input', expectedTarget:'width', expectedValue:'8.5', matchType:'exact', hint1:'Look for the Width field in the New Document dialog.', hint2:'The Width field shows a number and a unit dropdown next to it. Type 8.5 in the number field.', hint3:'Click the Width input, clear it, type 8.5. Then click the unit dropdown next to it and select Inches.', correctFeedback:'Width set to 8.5 inches — correct for US Letter size.', incorrectFeedback:'Enter 8.5 in the Width field. Make sure the unit is set to Inches, not pixels or centimeters.', acpContext:'ACP Ps 2.1a: Print documents use inches. Width/height in pixels is for screen output only.', gagneEvent:6 },
+      { id:3, instruction:'Set the Height to 11 and confirm the unit is Inches.', expectedAction:'input', expectedTarget:'height', expectedValue:'11', matchType:'exact', hint1:'The Height field is directly below the Width field.', hint2:'Click the Height field and type 11. The unit should already be Inches from the previous step.', hint3:'Type 11 in the Height field. If the unit still shows pixels, click the dropdown beside it and select Inches.', correctFeedback:'Height set to 11 inches — US Letter portrait format confirmed.', incorrectFeedback:'Enter 11 in the Height field. Both Width and Height units must be Inches for a print document.', acpContext:'ACP Ps 2.1a: 8.5 × 11 inches is US Letter — the most common print document size.', gagneEvent:6 },
+      { id:4, instruction:'Set the Resolution to 300 pixels/inch.', expectedAction:'input', expectedTarget:'resolution', expectedValue:'300', matchType:'exact', hint1:'Look for the Resolution field below Width and Height.', hint2:'The Resolution field shows a number (possibly 72) and "Pixels/Inch". Click the field and type 300.', hint3:'Click the Resolution field, select all text, and type 300. The unit should read Pixels/Inch.', correctFeedback:'300 ppi set — this is the industry standard for print. 72 ppi is for screen only.', incorrectFeedback:'Set Resolution to 300. The current value (likely 72) is screen resolution — print requires 300.', acpContext:'ACP Ps 2.1a: 300 pixels/inch is required for quality print output. 72 ppi produces blurry printed results.', gagneEvent:6 },
+      { id:5, instruction:'Set Color Mode to RGB Color and Bit Depth to 8 bit.', expectedAction:'select', expectedTarget:'color-mode', expectedValue:'rgb', matchType:'exact', hint1:'Find the Color Mode dropdown — it\'s below Resolution.', hint2:'Click the Color Mode dropdown and select RGB Color. Then check the Bit Depth dropdown next to it — select 8 bit.', hint3:'Color Mode dropdown: choose "RGB Color". The adjacent dropdown controls bit depth: choose "8 bit".', correctFeedback:'RGB 8-bit set. RGB is used for digital displays and most print workflows. 8-bit is the standard for most projects.', incorrectFeedback:'Set Color Mode to RGB Color. Find the dropdown that says "Grayscale" or "CMYK" and switch it to RGB Color.', acpContext:'ACP Ps 2.1a: RGB color mode is standard for Photoshop work. CMYK is typically applied at the print production stage.', gagneEvent:6 },
+      { id:6, instruction:'Set Background Contents to White, then click Create.', expectedAction:'click', expectedTarget:'create-btn', hint1:'Look for a Background Contents dropdown — it controls what fills the canvas initially.', hint2:'The Background Contents dropdown offers White, Black, or Transparent. Select White, then click the blue Create button.', hint3:'Set Background Contents to White (if not already), then click the Create button in the bottom-right of the dialog.', correctFeedback:'Document created with all correct specifications. You now have an 8.5×11 in, 300 ppi, RGB 8-bit document — print-ready.', incorrectFeedback:'Select White for Background Contents, then click Create to generate the document.', acpContext:'ACP Ps 2.1a: White background is standard for print layouts. Transparent is used when the document will be layered in another application.', gagneEvent:7 }
+    ]
+  },
+
+  'ps-2-1b': {
+    id: 'ps-2-1b', tool: 'photoshop', domain: 2,
+    objective: '2.1b', objectiveText: 'Create and use document presets',
+    bloomsLevel: 'Apply', estimatedMinutes: 6,
+    scenario: 'Your studio produces social media graphics every week at 1080×1080 px, 72 ppi, RGB. Instead of entering these settings manually every time, save them as a custom preset called "Social Square 1080".', 
+    uiType: 'preset-dialog',
+    steps: [
+      { id:1, instruction:'Open the New Document dialog (File → New) and configure Width: 1080 px, Height: 1080 px, Resolution: 72, Color Mode: RGB.', expectedAction:'dialog-configured', expectedTarget:'preset-setup', hint1:'Go to File → New to open the New Document dialog.', hint2:'Set Width and Height both to 1080. Change the unit to Pixels. Set Resolution to 72. Color Mode should be RGB.', hint3:'In the New Document dialog: Width=1080, Height=1080, unit=Pixels, Resolution=72 Pixels/Inch, Color Mode=RGB Color.', correctFeedback:'Settings configured: 1080×1080 px, 72 ppi, RGB. Now save these as a preset.', incorrectFeedback:'Configure the document: 1080×1080 pixels, 72 ppi resolution, RGB color mode.', acpContext:'ACP Ps 2.1b: Document presets save time for repetitive project types. Social media graphics are a common use case.', gagneEvent:5 },
+      { id:2, instruction:'Click the Save Preset button (the floppy disk / save icon near the preset name field).', expectedAction:'click', expectedTarget:'save-preset-btn', hint1:'Look for a small save/floppy disk icon near the top of the New Document dialog.', hint2:'In the New Document dialog, there\'s a field to name the preset and a save icon. Click the save icon.', hint3:'The preset name field is near the top of the dialog. Type your preset name there, then click the save (floppy disk) icon to the right.', correctFeedback:'Save Preset dialog opened. Now name the preset.', incorrectFeedback:'Find the save preset button — it looks like a floppy disk or a bookmark icon near the preset name field.', acpContext:'ACP Ps 2.1b: The New Document dialog has a built-in preset saver. Presets appear in the "Saved" tab for quick access.', gagneEvent:6 },
+      { id:3, instruction:'Name the preset "Social Square 1080" and click Save Preset.', expectedAction:'input', expectedTarget:'preset-name', expectedValue:'social square 1080', matchType:'contains', hint1:'A dialog appears asking for a name. Type the preset name.', hint2:'Type "Social Square 1080" in the name field (capitalization and spacing don\'t affect functionality).', hint3:'In the name field type: Social Square 1080 — then click the Save Preset or OK button.', correctFeedback:'Preset "Social Square 1080" saved. It now appears in the Saved tab of New Document for instant access.', incorrectFeedback:'Enter the preset name in the name field, then click Save Preset.', acpContext:'ACP Ps 2.1b: Descriptive preset names (size + purpose) help teams find the right preset quickly.', gagneEvent:7 }
+    ]
+  },
+
+  'ps-2-2a': {
+    id: 'ps-2-2a', tool: 'photoshop', domain: 2,
+    objective: '2.2a', objectiveText: 'Identify and manipulate elements of the interface',
+    bloomsLevel: 'Understand', estimatedMinutes: 7,
+    scenario: 'A new designer on your team needs to customize their Photoshop workspace for photo retouching. Demonstrate how to show/hide panels, save a custom workspace, and identify 5 key interface elements.',
+    uiType: 'workspace-sim',
+    steps: [
+      { id:1, instruction:'Identify the Options Bar — click on it to confirm its location.', expectedAction:'click', expectedTarget:'options-bar', hint1:'The Options Bar runs horizontally across the top of the screen, just below the menu bar.', hint2:'It shows tool-specific settings that change depending on which tool is active. It is just below the menu bar.', hint3:'Click anywhere on the horizontal bar directly below the menu bar — it shows settings like brush size, opacity, etc.', correctFeedback:'Options Bar identified. This bar shows context-sensitive settings for the currently active tool.', incorrectFeedback:'The Options Bar is the horizontal bar directly below the menu bar — click on it.', acpContext:'ACP Ps 2.2a: The Options Bar is one of the 5 key interface elements: Menu bar, Options bar, Toolbar, Canvas, Panels.', gagneEvent:4 },
+      { id:2, instruction:'Open the Properties panel. Go to Window in the menu bar and click Properties.', expectedAction:'menu-click', expectedTarget:'window-properties', hint1:'Go to the Window menu in the menu bar.', hint2:'Click Window in the menu bar. A dropdown list of all panels appears. Find Properties and click it.', hint3:'Window menu → scroll to Properties → click to toggle it on (a checkmark means it\'s visible).', correctFeedback:'Properties panel opened. It shows context-sensitive properties for the selected layer or object.', incorrectFeedback:'Click Window in the menu bar, then select Properties from the list.', acpContext:'ACP Ps 2.2a: The Window menu controls all panel visibility. Any panel not visible can be opened from Window menu.', gagneEvent:6 },
+      { id:3, instruction:'Dock the Properties panel to the right panel group by dragging it next to the Layers panel.', expectedAction:'panel-dock', expectedTarget:'properties-docked', hint1:'Panels can be docked together. Click and drag the Properties panel tab.', hint2:'Click the Properties panel title tab and drag it to the right side of the screen near the Layers panel until a blue line appears.', hint3:'Drag the Properties panel tab into the same group as the Layers panel on the right — release when you see the blue insertion line.', correctFeedback:'Properties panel docked. Keeping related panels grouped reduces screen clutter.', incorrectFeedback:'Click and drag the Properties panel tab to the right panel column until a blue docking guide appears, then release.', acpContext:'ACP Ps 2.2a: Docking panels saves screen space. Related panels (Layers, Properties, Channels) are typically grouped together.', gagneEvent:6 },
+      { id:4, instruction:'Save this as a custom workspace named "Retouching". Go to Window → Workspace → New Workspace.', expectedAction:'menu-click', expectedTarget:'window-workspace-new', hint1:'Go to the Window menu.', hint2:'Window → Workspace → New Workspace opens the save workspace dialog.', hint3:'Click Window menu → hover over Workspace (near the bottom) → click New Workspace in the submenu.', correctFeedback:'New Workspace dialog opened. Name it "Retouching" and save.', incorrectFeedback:'Navigate to Window → Workspace → New Workspace.', acpContext:'ACP Ps 2.2a: Custom workspaces save panel layouts. Teams share workspace files so everyone uses a consistent setup.', gagneEvent:6 },
+      { id:5, instruction:'Name the workspace "Retouching" and click Save.', expectedAction:'input', expectedTarget:'workspace-name', expectedValue:'retouching', matchType:'contains', hint1:'A small dialog asks for a workspace name.', hint2:'Type "Retouching" in the Name field.', hint3:'Type Retouching in the Name field, then click Save.', correctFeedback:'"Retouching" workspace saved. It now appears in Window → Workspace for one-click restore.', incorrectFeedback:'Type the workspace name "Retouching" and click Save.', acpContext:'ACP Ps 2.2a: Use descriptive names that indicate the workflow: "Retouching", "Web Design", "Typography".', gagneEvent:7 }
+    ]
+  },
+
+  'ps-2-3a': {
+    id: 'ps-2-3a', tool: 'photoshop', domain: 2,
+    objective: '2.3a', objectiveText: 'Open and place assets in a Photoshop document',
+    bloomsLevel: 'Apply', estimatedMinutes: 7,
+    scenario: 'You have an open Photoshop document and need to add a client logo. Place the logo as a linked Smart Object so that any updates to the original logo file automatically update in your document.',
+    uiType: 'place-asset-sim',
+    steps: [
+      { id:1, instruction:'Use File → Place Linked to add the asset as a linked Smart Object.', expectedAction:'menu-click', expectedTarget:'file-place-linked', hint1:'Go to the File menu.', hint2:'File menu → look for "Place Linked" (or "Place Embedded" — choose Linked for this task).', hint3:'File → Place Linked. This opens a file browser where you select the logo file.', correctFeedback:'"Place Linked" selected. This method creates a Smart Object that maintains a live link to the original file.', incorrectFeedback:'Click File in the menu bar, then choose Place Linked.', acpContext:'ACP Ps 2.3a: Place Linked creates a linked Smart Object. Updates to the source file automatically reflect in the document. Place Embedded copies the file inside the PSD.', gagneEvent:5 },
+      { id:2, instruction:'Select the logo file and click Place. The logo appears on the canvas with a transform bounding box.', expectedAction:'click', expectedTarget:'place-confirm', hint1:'A file browser opens. Navigate to the file and click Place.', hint2:'Find the logo file in the file browser and double-click it, or click it once and then click the Place button.', hint3:'In the file browser, locate "client-logo.png" and double-click it to place it into the document.', correctFeedback:'Logo placed on the canvas as a linked Smart Object. You can see the transform handles around it.', incorrectFeedback:'Select the logo file in the browser, then click Place to insert it.', acpContext:'ACP Ps 2.3a: After placing, the asset appears with a transform bounding box (Free Transform). You must commit the transform to finalize the placement.', gagneEvent:6 },
+      { id:3, instruction:'Commit the transform by pressing Enter (or clicking the checkmark in the Options Bar).', expectedAction:'click', expectedTarget:'commit-transform', hint1:'After placing, the asset has transform handles. You need to accept the placement.', hint2:'Press Enter on your keyboard to commit, OR click the checkmark icon in the Options Bar.', hint3:'Press Enter key OR click the ✓ checkmark in the Options Bar to finalize the placement.', correctFeedback:'Transform committed. The logo is now placed as a linked Smart Object layer in the Layers panel.', incorrectFeedback:'Press Enter or click the checkmark in the Options Bar to accept the placement.', acpContext:'ACP Ps 2.3a: You must commit (Enter or ✓) after placing. The layer shows a chain-link icon indicating it\'s a linked Smart Object.', gagneEvent:7 },
+      { id:4, instruction:'In the Layers panel, confirm the layer has a Smart Object icon. Then open the Links panel (Window → Links) to see the linked asset.', expectedAction:'menu-click', expectedTarget:'window-links', hint1:'A placed asset always becomes a Smart Object. Check the Layers panel for the icon.', hint2:'Go to Window → Links to open the Links panel, which shows all placed/linked assets.', hint3:'Window → Links. The Links panel shows file name, status, and whether it\'s embedded or linked.', correctFeedback:'Links panel open. The logo appears as a linked asset. The chain icon confirms it\'s linked (not embedded).', incorrectFeedback:'Navigate to Window → Links to open the Links panel.', acpContext:'ACP Ps 2.3a: The Links panel manages all placed assets. A warning icon (!) means the linked file has been moved or modified.', gagneEvent:7 }
+    ]
+  },
+
+  'ps-2-4a': {
+    id: 'ps-2-4a', tool: 'photoshop', domain: 2,
+    objective: '2.4a', objectiveText: 'Work with color: Color Picker, swatches, Eyedropper',
+    bloomsLevel: 'Apply', estimatedMinutes: 8,
+    scenario: 'Your client\'s brand color is #FF6B35 (a warm orange). Set this as the foreground color, add it to the Swatches panel, then use the Eyedropper to sample a color from the canvas.',
+    uiType: 'color-sim',
+    steps: [
+      { id:1, instruction:'Click the foreground color swatch (the solid square in the toolbar) to open the Color Picker.', expectedAction:'click', expectedTarget:'fg-color-swatch', hint1:'Look at the bottom of the toolbar on the left side of the screen.', hint2:'There are two overlapping squares at the bottom of the toolbar. The front square is the foreground color. Click it.', hint3:'The two overlapping squares near the bottom of the toolbar represent foreground (front) and background (back) colors. Click the front square.', correctFeedback:'Color Picker opened. This is where you set precise color values using hex, RGB, HSB, or other color models.', incorrectFeedback:'Click the solid (front) color square at the bottom of the Toolbar — this opens the Color Picker.', acpContext:'ACP Ps 2.4a: The foreground color is used by painting tools (Brush, Fill). The background color is used by the Eraser and gradient fills.', gagneEvent:4 },
+      { id:2, instruction:'In the Color Picker, find the hex value field (#) at the bottom and type the hex code: FF6B35.', expectedAction:'input', expectedTarget:'hex-input', expectedValue:'ff6b35', matchType:'exact', hint1:'In the Color Picker, look for a small text field with a # symbol next to it.', hint2:'The hex input field is near the bottom of the Color Picker. Click it, select all, and type FF6B35.', hint3:'Click the # hex field at the bottom of the Color Picker. Type FF6B35 (no #). The color preview updates immediately.', correctFeedback:'Hex #FF6B35 entered — a warm orange. The color preview shows this color.', incorrectFeedback:'Find the hex (#) input field in the Color Picker and type FF6B35.', acpContext:'ACP Ps 2.4a: Hex values provide exact brand color matching. Always use client-provided hex codes to ensure color accuracy.', gagneEvent:6 },
+      { id:3, instruction:'Click OK to set the foreground color, then open the Swatches panel (Window → Swatches) and click the + button to save this color.', expectedAction:'click', expectedTarget:'add-swatch', hint1:'Click OK in the Color Picker to apply, then open Window → Swatches.', hint2:'After clicking OK, go to Window → Swatches. In the Swatches panel, click the Create New Swatch icon (+) at the bottom.', hint3:'Color Picker → OK. Then Window → Swatches. In the panel, click the + (New Swatch) icon, name it "Brand Orange", click OK.', correctFeedback:'Brand color saved as a swatch. Swatches ensure consistent color use across all documents in a project.', incorrectFeedback:'Click OK in the Color Picker first, then Window → Swatches → click the + icon to add the current foreground color.', acpContext:'ACP Ps 2.4a: Swatches save named colors for reuse. You can export swatches as .ase files to share with Illustrator and InDesign.', gagneEvent:7 },
+      { id:4, instruction:'Select the Eyedropper tool (I) from the toolbar and click on an orange area on the canvas to sample that color.', expectedAction:'tool-select', expectedTarget:'eyedropper', hint1:'The Eyedropper tool is in the toolbar. Its keyboard shortcut is I.', hint2:'Press I on your keyboard, or find the Eyedropper icon in the toolbar (it looks like an eyedropper). Then click on the orange area.', hint3:'Press the I key to select the Eyedropper. Move your cursor to the orange area on the canvas and click to sample the color.', correctFeedback:'Color sampled with the Eyedropper. The foreground color now shows the sampled color.', incorrectFeedback:'Select the Eyedropper tool (press I) then click on the orange area of the image.', acpContext:'ACP Ps 2.4a: The Eyedropper samples colors from anywhere on the canvas (or the screen). Sample Size setting affects the averaged area.', gagneEvent:6 }
+    ]
+  },
+
+  'ps-2-5a': {
+    id: 'ps-2-5a', tool: 'photoshop', domain: 2,
+    objective: '2.5a/b', objectiveText: 'Work with brushes, styles, and patterns',
+    bloomsLevel: 'Apply', estimatedMinutes: 7,
+    scenario: 'Create a custom textured brush from a small PNG image, then save a layer style combination (drop shadow + color overlay) as a named style for reuse across a project.',
+    uiType: 'brush-style-sim',
+    steps: [
+      { id:1, instruction:'Open the Brushes panel (Window → Brushes) to see the brush library.', expectedAction:'menu-click', expectedTarget:'window-brushes', hint1:'Go to the Window menu.', hint2:'Window → Brushes opens the full brush management panel (different from the Brush Tool Options).', hint3:'Click Window in the menu bar, then click Brushes. This opens the panel that shows all brush presets, groups, and settings.', correctFeedback:'Brushes panel open. You can see the brush library with preset groups, sizes, and custom brush options.', incorrectFeedback:'Click Window in the menu bar, then select Brushes.', acpContext:'ACP Ps 2.5a: The Brushes panel is the main hub for all brush management. The Brush Settings panel (F5) controls brush dynamics.', gagneEvent:4 },
+      { id:2, instruction:'Load a brush library. Click the menu icon (≡) in the Brushes panel and choose Get More Brushes or Import Brushes.', expectedAction:'click', expectedTarget:'brushes-menu-import', hint1:'There\'s a small menu icon in the top-right of the Brushes panel.', hint2:'Click the hamburger menu (≡) in the top-right corner of the Brushes panel. Options include Import Brushes and Get More Brushes.', hint3:'In the Brushes panel, click the flyout menu icon (3 lines / ≡) in the upper right. Choose "Import Brushes" to load a .abr file.', correctFeedback:'Brush import option accessed. You can import .abr files or download additional brushes from Adobe.', incorrectFeedback:'Click the flyout menu (≡) in the Brushes panel, then choose Import Brushes.', acpContext:'ACP Ps 2.5a: Brushes are stored as .abr files. You can share brush libraries across teams by importing/exporting .abr files.', gagneEvent:6 },
+      { id:3, instruction:'Now apply a Drop Shadow layer style to a text layer. Select the text layer in the Layers panel, then click the Layer Styles icon (fx) at the bottom of the Layers panel.', expectedAction:'click', expectedTarget:'fx-button', hint1:'Look at the bottom of the Layers panel for a row of small icons.', hint2:'The fx icon is at the bottom of the Layers panel. Click it with the text layer selected.', hint3:'In the Layers panel, click on the text layer to select it. Then click the fx icon at the bottom of the panel and choose Drop Shadow.', correctFeedback:'Layer Style dialog opened with Drop Shadow. Set your values and also add a Color Overlay.', incorrectFeedback:'Select the text layer first, then click the fx icon at the bottom of the Layers panel.', acpContext:'ACP Ps 2.5b: Layer styles are non-destructive effects attached to a layer. They can be copied, pasted, and saved as Styles presets.', gagneEvent:6 },
+      { id:4, instruction:'Save this style combination. In the Styles panel (Window → Styles), click the + icon to create a new style named "Project Headline Style".', expectedAction:'click', expectedTarget:'save-style', hint1:'Open Window → Styles to access the Styles panel.', hint2:'After setting the layer style effects, open Window → Styles and click the + (New Style) icon.', hint3:'Window → Styles → click the + button at the bottom of the panel → name it "Project Headline Style" → click OK.', correctFeedback:'Style "Project Headline Style" saved. It now appears in the Styles panel and can be applied to any layer with one click.', incorrectFeedback:'Open Window → Styles, then click + to save the current layer\'s styles as a new named style.', acpContext:'ACP Ps 2.5b: Saved styles create visual consistency. Apply a saved style to any layer in any document to instantly replicate the effect.', gagneEvent:7 }
+    ]
+  },
+
+  'ps-2-mc': {
+    id: 'ps-2-mc', tool: 'photoshop', domain: 2,
+    objective: '1.3 / 2.1 / 2.2', objectiveText: 'Domain 1–2 knowledge check',
+    bloomsLevel: 'Understand', estimatedMinutes: 10,
+    uiType: 'mc-questions',
+    questions: [
+      { q:'A client needs a banner for print at 24 inches wide. Which resolution should you set the document to?', options:['72 ppi','150 ppi','300 ppi','600 ppi'], correct:2, explanation:'300 ppi is the industry standard for print. 72 ppi is for screen only. 600 ppi creates unnecessarily large files.', acpObj:'Ps-2.1a' },
+      { q:'You placed an asset using File → Place Linked. Which icon appears on the layer thumbnail in the Layers panel?', options:['A lock icon','A chain/link icon inside a smart object badge','A camera icon','A star icon'], correct:1, explanation:'Linked Smart Objects show a chain icon badge on the thumbnail. Regular Smart Objects (Place Embedded) show the smart object icon without the chain.', acpObj:'Ps-2.3a' },
+      { q:'Which color mode should you use for a document intended for website display?', options:['CMYK','Grayscale','RGB','LAB'], correct:2, explanation:'RGB (Red, Green, Blue) is the color mode for all screen/digital output. CMYK is for print production. Monitors emit RGB light.', acpObj:'Ps-2.1a / Ps-1.3b' },
+      { q:'What is the keyboard shortcut to open a New Document in Photoshop?', options:['Ctrl/Cmd + O','Ctrl/Cmd + N','Ctrl/Cmd + S','Ctrl/Cmd + W'], correct:1, explanation:'Ctrl+N (Windows) / Cmd+N (Mac) opens New Document. Ctrl+O opens an existing file. Ctrl+S saves the current file.', acpObj:'Ps-2.1a' },
+      { q:'Which panel lists all externally linked assets in a Photoshop document and shows their link status?', options:['Properties panel','Character panel','Links panel','Info panel'], correct:2, explanation:'The Links panel (Window → Links) shows all linked and embedded Smart Object assets, their paths, and modification status.', acpObj:'Ps-2.3a' },
+      { q:'The Eyedropper tool samples colors from the canvas. Which keyboard shortcut activates it?', options:['E','I','S','D'], correct:1, explanation:'I activates the Eyedropper tool. E is the Eraser. S is Clone Stamp. D resets foreground/background colors to default (black/white).', acpObj:'Ps-2.4a' },
+      { q:'What is the difference between "destructive" and "nondestructive" editing in Photoshop?', options:['Destructive editing is faster; nondestructive is slower','Destructive editing permanently alters pixel data; nondestructive preserves the original','Destructive editing uses more RAM','There is no practical difference'], correct:1, explanation:'Destructive edits (e.g., Eraser directly on a layer) permanently change pixel data. Nondestructive methods (adjustment layers, Smart Objects, layer masks) preserve originals and remain editable.', acpObj:'Ps-1.3c' },
+      { q:'Where do you save a custom workspace in Photoshop?', options:['Edit → Preferences → Workspace','File → Save Workspace','Window → Workspace → New Workspace','Layer → New → Workspace'], correct:2, explanation:'Window → Workspace → New Workspace saves the current panel layout. Saved workspaces appear in the Workspace submenu for quick switching.', acpObj:'Ps-2.2a' }
+    ]
+  }
+};
+
+/* ── UI rendering ─────────────────────────────────────────────────── */
+let currentTask = null;
+let currentMode = 'guided';
+let currentStep = 0;
+let stepResults = [];
+let currentHintLevel = 0;
+let mcAnswers = {};
+
+function loadTaskById(id) {
+  const task = TASKS[id];
+  if (!task) return;
+  currentTask = task;
+  currentStep = 0;
+  stepResults = new Array((task.steps||[]).length).fill(null);
+  currentHintLevel = 0;
+  mcAnswers = {};
+
+  document.querySelectorAll('.task-item').forEach(el => el.classList.remove('active'));
+  const navId = 'nav-' + id.replace(/-/g,'').replace('ps','ps').substring(0,7);
+  // simpler: find by onclick
+  document.querySelectorAll('.task-item').forEach(el => {
+    if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+id+"'")) {
+      el.classList.add('active');
+    }
+  });
+
+  renderTaskHeader(task);
+  renderAdobeUI(task);
+  renderStep(task, 0);
+  document.getElementById('score-report').style.display = 'none';
+}
+
+function renderTaskHeader(task) {
+  const el = document.getElementById('task-header');
+  const toolColor = '#31A8FF';
+  el.innerHTML = `
+    <div class="task-meta">
+      <span class="acp-tag">${task.tool.charAt(0).toUpperCase()}s-${task.objective}</span>
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="badge badge-${task.uiType==='mc-questions'?'mc':'live'}">${task.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.8rem;">~${task.estimatedMinutes} min</span>
+    </div>
+    <h2>${task.objectiveText}</h2>
+    <div class="task-scenario">${task.scenario||''}</div>
+  `;
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  currentStep = 0;
+  stepResults = new Array((currentTask.steps||[]).length).fill(null);
+  currentHintLevel = 0;
+  document.getElementById('btn-guided').classList.toggle('active', mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active', mode==='independent');
+  document.getElementById('score-report').style.display = 'none';
+  if (currentTask) {
+    renderAdobeUI(currentTask);
+    renderStep(currentTask, 0);
+  }
+}
+
+/* ── Adobe UI rendering ───────────────────────────────────────────── */
+function renderAdobeUI(task) {
+  const container = document.getElementById('adobe-sim-container');
+  if (task.uiType === 'mc-questions') { container.innerHTML = ''; return; }
+  if (task.uiType === 'new-document-dialog' || task.uiType === 'preset-dialog') {
+    container.innerHTML = renderNewDocDialog(task);
+  } else if (task.uiType === 'workspace-sim') {
+    container.innerHTML = renderWorkspaceSim(task);
+  } else if (task.uiType === 'place-asset-sim') {
+    container.innerHTML = renderPlaceSim(task);
+  } else if (task.uiType === 'color-sim') {
+    container.innerHTML = renderColorSim(task);
+  } else if (task.uiType === 'brush-style-sim') {
+    container.innerHTML = renderBrushSim(task);
+  }
+}
+
+function renderNewDocDialog(task) {
+  const isPreset = task.uiType === 'preset-dialog';
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item active" id="menu-file" onclick="handleMenuClick('file-new')">File</span>
+      <span class="menu-item">Edit</span><span class="menu-item">Image</span>
+      <span class="menu-item">Layer</span><span class="menu-item">Window</span>
+    </div>
+    <div style="position:relative;background:#404040;min-height:340px;display:flex;align-items:center;justify-content:center;">
+      <div class="dialog-box" id="new-doc-dialog">
+        <div class="dialog-title">New Document${isPreset?' · Configure and Save Preset':''}</div>
+        <div class="dialog-body">
+          ${isPreset?'<div style="font-size:10px;color:#AAA;margin-bottom:10px;">Enter settings, then click the Save Preset icon to save for future use.</div>':''}
+          <div class="dialog-row">
+            <span class="dialog-label">Width</span>
+            <input class="dialog-input" id="inp-width" placeholder="e.g. 8.5" oninput="validateInput('width',this.value)">
+            <select class="dialog-select" id="sel-unit" style="max-width:80px;">
+              <option>Inches</option><option>Pixels</option><option>cm</option><option>mm</option>
+            </select>
+          </div>
+          <div class="dialog-row">
+            <span class="dialog-label">Height</span>
+            <input class="dialog-input" id="inp-height" placeholder="e.g. 11" oninput="validateInput('height',this.value)">
+          </div>
+          <div class="dialog-row">
+            <span class="dialog-label">Resolution</span>
+            <input class="dialog-input" id="inp-res" value="72" oninput="validateInput('resolution',this.value)">
+            <span style="font-size:10px;color:#AAA;margin-left:4px;">Pixels/Inch</span>
+          </div>
+          <div class="dialog-row">
+            <span class="dialog-label">Color Mode</span>
+            <select class="dialog-select" id="sel-colormode" onchange="validateInput('color-mode',this.value.toLowerCase().replace(' color',''))">
+              <option value="rgb">RGB Color</option>
+              <option value="cmyk">CMYK Color</option>
+              <option value="grayscale">Grayscale</option>
+              <option value="lab">Lab Color</option>
+            </select>
+            <select class="dialog-select" id="sel-bitdepth" style="max-width:70px;">
+              <option>8 bit</option><option>16 bit</option><option>32 bit</option>
+            </select>
+          </div>
+          <div class="dialog-row">
+            <span class="dialog-label">Background</span>
+            <select class="dialog-select" id="sel-bg">
+              <option>White</option><option>Black</option><option>Transparent</option>
+            </select>
+          </div>
+          ${isPreset?`<div class="dialog-row" style="margin-top:10px;">
+            <span class="dialog-label">Preset Name</span>
+            <input class="dialog-input" id="inp-preset-name" placeholder="e.g. Social Square 1080" oninput="validateInput('preset-name',this.value.toLowerCase())">
+            <button class="dialog-btn dialog-btn-ok" style="margin-left:6px;padding:5px 10px;" onclick="handleAction('save-preset-btn')">💾</button>
+          </div>`:''}
+        </div>
+        <div class="dialog-footer">
+          <button class="dialog-btn dialog-btn-cancel">Cancel</button>
+          <button class="dialog-btn dialog-btn-ok" id="btn-create" onclick="handleAction('create-btn')">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderWorkspaceSim(task) {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" id="menu-window" onclick="handleMenuClick('window-properties')">Window</span>
+      <span class="menu-item">Edit</span><span class="menu-item">Image</span><span class="menu-item">Layer</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active" title="Move (V)">↖</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" title="Brush (B)">✏</div>
+        <div class="tool-btn" title="Type (T)" style="font-weight:700;font-size:13px;">T</div>
+      </div>
+      <div style="display:flex;flex-direction:column;">
+        <div class="options-bar" id="options-bar" onclick="handleAction('options-bar')"
+          style="background:#2B2B2B;border-bottom:1px solid #1A1A1A;padding:5px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:32px;">
+          <span style="font-size:10px;color:#888;">Options Bar — click here</span>
+          <span style="font-size:10px;color:#555;">Mode: Normal &nbsp;|&nbsp; Opacity: 100% &nbsp;|&nbsp; Flow: 100%</span>
+        </div>
+        <div class="adobe-canvas" style="flex:1;">
+          <div class="canvas-placeholder">
+            <div style="font-size:32px;">🖼</div>
+            <div style="font-size:11px;">Canvas area</div>
+          </div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr" onclick="handleMenuClick('window-workspace-new')">Workspace ▾</div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:#AAA;margin-bottom:6px;">Window → Workspace → New Workspace</div>
+          <input id="inp-workspace-name" class="dialog-input" style="width:100%;font-size:10px;" placeholder="Workspace name..." oninput="validateInput('workspace-name',this.value.toLowerCase())">
+          <button onclick="handleAction('save-workspace')" style="margin-top:6px;width:100%;padding:4px;background:var(--ps-blue);color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;">Save Workspace</button>
+        </div>
+        <div class="panel-hdr">Properties</div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:#888;">No selection</div>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:#CCC;padding:3px 0;border-bottom:0.5px solid #444;">Layer 1</div>
+          <div style="font-size:10px;color:#888;padding:3px 0;">Background</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPlaceSim(task) {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item" id="menu-file-place" onclick="handleMenuClick('file-place-linked')">File</span>
+      <span class="menu-item" id="menu-window-links" onclick="handleMenuClick('window-links')">Window</span>
+      <span class="menu-item">Edit</span><span class="menu-item">Layer</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn">✏</div>
+      </div>
+      <div class="adobe-canvas" style="position:relative;">
+        <div id="canvas-doc" class="canvas-doc" style="width:200px;height:150px;background:#F0F0F0;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:11px;color:#AAA;">Document canvas</span>
+          <div id="placed-asset" style="display:none;position:absolute;inset:20px;background:rgba(49,168,255,.1);border:2px dashed var(--ps-blue);display:none;align-items:center;justify-content:center;">
+            <span style="font-size:10px;color:var(--ps-blue);">client-logo.png [Linked SO]</span>
+          </div>
+        </div>
+        <div id="commit-overlay" style="display:none;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);">
+          <button onclick="handleAction('commit-transform')" class="dialog-btn dialog-btn-ok" style="font-size:10px;padding:4px 12px;">✓ Commit transform (Enter)</button>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body" id="layers-panel">
+          <div style="font-size:10px;color:#888;font-style:italic;">No placed asset yet</div>
+        </div>
+        <div class="panel-hdr">Links</div>
+        <div class="panel-body" id="links-panel">
+          <div style="font-size:10px;color:#888;">Window → Links to open</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderColorSim(task) {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" id="menu-window-swatches" onclick="handleMenuClick('window-swatches')">Window</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn" id="tool-eyedropper" onclick="handleAction('eyedropper')" title="Eyedropper (I)">💧</div>
+        <div class="tool-sep"></div>
+        <div style="position:relative;width:32px;height:32px;margin:4px auto;">
+          <div id="fg-color-swatch" onclick="handleAction('fg-color-swatch')" title="Foreground color"
+            style="width:22px;height:22px;position:absolute;top:0;left:0;background:#333;border:1.5px solid #888;cursor:pointer;border-radius:2px;z-index:1;"></div>
+          <div style="width:22px;height:22px;position:absolute;bottom:0;right:0;background:#FFF;border:1px solid #555;border-radius:2px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;flex:1;">
+        <div class="adobe-canvas">
+          <div style="position:relative;">
+            <div style="width:220px;height:160px;background:linear-gradient(135deg,#FF6B35 0%,#FF9A00 40%,#3A7BD5 100%);border-radius:4px;cursor:crosshair;" onclick="sampleColor()">
+              <div style="position:absolute;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,.7);">Click to sample color</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Color Picker</div>
+        <div class="panel-body" id="color-picker-panel" style="display:none;">
+          <div class="prop-row"><span class="prop-label">R</span><input class="prop-input" id="inp-r" style="width:40px;"></div>
+          <div class="prop-row"><span class="prop-label">G</span><input class="prop-input" id="inp-g" style="width:40px;"></div>
+          <div class="prop-row"><span class="prop-label">B</span><input class="prop-input" id="inp-b" style="width:40px;"></div>
+          <div class="prop-row"><span class="prop-label">#</span><input class="prop-input" id="inp-hex" placeholder="ff6b35" style="width:70px;font-size:10px;" oninput="validateInput('hex-input',this.value.toLowerCase())"></div>
+          <button onclick="handleAction('add-swatch')" style="width:100%;margin-top:6px;padding:4px;background:var(--ps-blue);color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;">OK / Add Swatch</button>
+        </div>
+        <div class="panel-hdr">Swatches</div>
+        <div class="panel-body" id="swatches-panel">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;" id="swatch-grid">
+            <div style="width:16px;height:16px;background:#FF0000;border-radius:2px;border:0.5px solid #555;" title="Red"></div>
+            <div style="width:16px;height:16px;background:#00FF00;border-radius:2px;border:0.5px solid #555;" title="Green"></div>
+            <div style="width:16px;height:16px;background:#0000FF;border-radius:2px;border:0.5px solid #555;" title="Blue"></div>
+          </div>
+          <button onclick="handleAction('add-swatch')" style="width:100%;margin-top:6px;padding:4px;background:#3A3A3A;color:#CCC;border:0.5px solid #555;border-radius:3px;font-size:10px;cursor:pointer;">+ New Swatch</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderBrushSim(task) {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" id="menu-window-brushes" onclick="handleMenuClick('window-brushes')">Window</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn">✏</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" style="font-size:10px;font-weight:700;">fx</div>
+      </div>
+      <div class="adobe-canvas">
+        <div style="width:200px;height:150px;background:#E8E8E8;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+          <div id="styled-text" style="font-size:18px;font-weight:700;color:#333;font-family:Georgia,serif;cursor:pointer;" onclick="handleAction('fx-button')">Sample Text ▶ click fx</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr" id="brushes-panel-hdr">Brushes</div>
+        <div class="panel-body" id="brushes-panel" style="display:none;">
+          <div style="font-size:10px;color:#AAA;margin-bottom:6px;">Brush library</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">
+            <div style="width:24px;height:24px;background:#444;border-radius:3px;border:0.5px solid #666;cursor:pointer;" title="Round soft"></div>
+            <div style="width:24px;height:24px;background:#444;border-radius:3px;border:0.5px solid #666;cursor:pointer;" title="Hard round"></div>
+          </div>
+          <button onclick="handleAction('brushes-menu-import')" style="width:100%;padding:4px;background:#3A3A3A;color:#CCC;border:0.5px solid #555;border-radius:3px;font-size:10px;cursor:pointer;">≡ Import Brushes</button>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:#CCC;padding:3px 0;cursor:pointer;display:flex;align-items:center;gap:5px;" onclick="handleAction('fx-button')">
+            <span style="font-size:9px;color:var(--ps-blue);">T</span> Headline text
+            <span style="margin-left:auto;font-size:9px;color:#888;" id="layer-fx">fx ▶</span>
+          </div>
+        </div>
+        <div class="panel-hdr">Styles</div>
+        <div class="panel-body" id="styles-panel">
+          <button onclick="handleAction('save-style')" style="width:100%;padding:4px;background:#3A3A3A;color:#CCC;border:0.5px solid #555;border-radius:3px;font-size:10px;cursor:pointer;">+ Save Style</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Step panel rendering ─────────────────────────────────────────── */
+function renderStep(task, stepIndex) {
+  if (task.uiType === 'mc-questions') { renderMCQuestions(task); return; }
+  const total = task.steps.length;
+  const step = task.steps[stepIndex];
+  if (!step) return;
+
+  const stepEl = document.getElementById('step-panel');
+  const dots = task.steps.map((_, i) => {
+    const r = stepResults[i];
+    const cls = r === null ? (i === stepIndex ? 'current' : '') :
+      r === 'correct' ? 'done' : 'error';
+    return `<div class="step-dot ${cls}"></div>`;
+  }).join('');
+
+  const gagneLabels = {1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+  const gagne = step.gagneEvent ? `<div class="gagne-tag">Gagne ${step.gagneEvent}: ${gagneLabels[step.gagneEvent]||''}</div>` : '';
+
+  stepEl.innerHTML = `
+    <div class="step-header">
+      <div class="step-counter">Step ${stepIndex+1} of ${total}</div>
+      <div class="step-dots">${dots}</div>
+    </div>
+    ${currentMode === 'guided' ? `${gagne}<p class="step-instruction">${step.instruction}</p>` : `<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent mode — complete all steps without guidance, then click Submit below.</p>`}
+  `;
+
+  const actEl = document.getElementById('step-actions');
+  if (currentMode === 'guided') {
+    actEl.innerHTML = `
+      <button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button>
+      <button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button>
+      <button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>
+      ${stepIndex > 0 ? '<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>' : ''}
+    `;
+  } else {
+    actEl.innerHTML = `<button class="btn btn-primary" onclick="submitIndependent()">Submit all answers</button>`;
+  }
+
+  clearFeedback();
+  document.getElementById('hint-area').innerHTML = '';
+}
+
+function renderMCQuestions(task) {
+  const simEl = document.getElementById('adobe-sim-container');
+  simEl.innerHTML = '';
+  const stepEl = document.getElementById('step-panel');
+  const questions = task.questions;
+  let qHtml = `<div style="font-size:.8rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">Knowledge check · ${questions.length} questions</div>`;
+  questions.forEach((q, qi) => {
+    qHtml += `<div class="mc-question" style="margin-bottom:1.25rem;">
+      <div style="font-size:.9rem;font-weight:500;color:var(--text-primary);margin-bottom:.5rem;">${qi+1}. ${q.q}</div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;">
+        ${q.options.map((opt, oi) => `
+          <label style="display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .75rem;border-radius:var(--radius-md);cursor:pointer;background:var(--surface);border:0.5px solid var(--border);font-size:.85rem;color:var(--text-secondary);transition:var(--transition);" id="mc-opt-${qi}-${oi}" onclick="selectMC(${qi},${oi})">
+            <input type="radio" name="mc-q-${qi}" value="${oi}" style="margin-top:2px;accent-color:var(--accent);">
+            ${opt}
+          </label>`).join('')}
+      </div>
+      <div id="mc-feedback-${qi}" style="margin-top:.4rem;"></div>
+    </div>`;
+  });
+  qHtml += `<button class="btn btn-primary" onclick="submitMC()" style="margin-top:.5rem;">Submit answers</button>`;
+  stepEl.innerHTML = qHtml;
+  document.getElementById('step-actions').innerHTML = '';
+  clearFeedback();
+}
+
+function selectMC(qi, oi) {
+  mcAnswers[qi] = oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el => {
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface)';
+  });
+  const sel = document.getElementById(`mc-opt-${qi}-${oi}`);
+  if (sel) { sel.style.borderColor = 'rgba(49,168,255,.4)'; sel.style.background = 'rgba(49,168,255,.08)'; }
+}
+
+function submitMC() {
+  const qs = currentTask.questions;
+  let correct = 0;
+  qs.forEach((q, qi) => {
+    const userAns = mcAnswers[qi];
+    const fbEl = document.getElementById(`mc-feedback-${qi}`);
+    if (userAns === undefined) { if(fbEl) fbEl.innerHTML = `<div class="feedback-block incorrect"><strong>✗ Not answered</strong><p>${q.explanation}</p></div>`; return; }
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) correct++;
+    if (fbEl) fbEl.innerHTML = `<div class="feedback-block ${isCorrect?'correct':'incorrect'}">
+      <strong>${isCorrect?'✓ Correct':'✗ Incorrect'}</strong>
+      <p>${q.explanation}</p>
+      <p style="margin-top:.3rem;font-size:.75rem;opacity:.8;font-family:var(--font-mono);">${q.acpObj}</p>
+    </div>`;
+    document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach((el, oi) => {
+      if (oi === q.correct) { el.style.borderColor = 'rgba(0,214,143,.4)'; el.style.background = 'rgba(0,214,143,.08)'; }
+      else if (oi === userAns && !isCorrect) { el.style.borderColor = 'rgba(255,77,109,.4)'; el.style.background = 'rgba(255,77,109,.08)'; }
+    });
+  });
+  const pct = Math.round((correct/qs.length)*100);
+  const passed = pct >= 70;
+  showScoreReport({ correct, partial:0, incorrect:qs.length-correct, total:qs.length, pct, passed, label: passed?'Passed':'Needs review' }, currentTask);
+}
+
+/* ── Interaction handlers ─────────────────────────────────────────── */
+function handleMenuClick(target) {
+  validateCurrentStep('menu-click', target, target);
+}
+
+function handleAction(target) {
+  validateCurrentStep('click', target, target);
+}
+
+function validateInput(target, value) {
+  if (currentMode === 'guided') {
+    validateCurrentStep('input', target, value);
+  }
+}
+
+function validateCurrentStep(action, target, value) {
+  if (!currentTask || currentTask.uiType === 'mc-questions') return;
+  const step = currentTask.steps[currentStep];
+  if (!step) return;
+
+  let result = null;
+  const expectedAction = step.expectedAction;
+  const expectedTarget = step.expectedTarget;
+  const expectedValue = step.expectedValue;
+
+  const actionMatch = !expectedAction || action === expectedAction;
+  let targetMatch = !expectedTarget || target === expectedTarget;
+  let valueMatch = true;
+  if (expectedValue !== undefined) {
+    if (step.matchType === 'contains') valueMatch = String(value).toLowerCase().includes(String(expectedValue).toLowerCase());
+    else valueMatch = String(value).toLowerCase().trim() === String(expectedValue).toLowerCase().trim();
+  }
+
+  if (actionMatch && targetMatch && valueMatch) {
+    result = 'correct';
+    stepResults[currentStep] = 'correct';
+    showFeedback('correct', step.correctFeedback, step.acpContext);
+    updateStepDots();
+    if (currentMode === 'guided') setTimeout(() => advanceToNextStep(), 1200);
+  } else if (actionMatch && targetMatch) {
+    showFeedback('incorrect', step.incorrectFeedback, step.acpContext);
+  }
+  // Update UI elements to reflect correct state
+  updateUIForStep(target, value, result === 'correct');
+}
+
+function updateUIForStep(target, value, correct) {
+  const el = document.getElementById('inp-' + target.replace('-',''));
+  if (el) { el.classList.toggle('correct-input', correct); el.classList.toggle('error-input', !correct && value); }
+}
+
+function advanceToNextStep() {
+  if (currentStep < currentTask.steps.length - 1) {
+    currentStep++;
+    currentHintLevel = 0;
+    renderStep(currentTask, currentStep);
+  } else {
+    completeTask();
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) { currentStep--; renderStep(currentTask, currentStep); }
+}
+
+function submitIndependent() {
+  // In independent mode, mark all steps as attempted
+  let correct = 0;
+  stepResults.forEach(r => { if (r === 'correct') correct++; });
+  const pct = Math.round((correct / currentTask.steps.length) * 100);
+  const passed = pct >= 70;
+  showScoreReport({ correct, partial:0, incorrect:currentTask.steps.length-correct, total:currentTask.steps.length, pct, passed, label: passed?'Passed':'Needs more practice' }, currentTask);
+}
+
+function completeTask() {
+  const correct = stepResults.filter(r => r === 'correct').length;
+  const total = currentTask.steps.length;
+  const pct = Math.round((correct / total) * 100);
+  const passed = pct >= 70;
+  showScoreReport({ correct, partial:0, incorrect:total-correct, total, pct, passed, label: passed?(pct===100?'Perfect!':'Passed'):'Needs more practice' }, currentTask);
+  updateTaskNavScore(currentTask.id, pct);
+}
+
+function showScoreReport(score, task) {
+  const el = document.getElementById('score-report');
+  el.style.display = 'block';
+  const color = score.passed ? (score.pct === 100 ? '#00D68F' : '#31A8FF') : '#FFB800';
+  el.innerHTML = `
+    <div class="score-report">
+      <div class="score-circle" style="border-color:${color};">
+        <div class="score-pct" style="color:${color};">${score.pct}%</div>
+        <div class="score-lbl">${score.label}</div>
+      </div>
+      <div class="score-grid">
+        <div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${score.correct}</span><span class="score-stat-l">Correct</span></div>
+        <div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">${score.partial}</span><span class="score-stat-l">Partial</span></div>
+        <div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${score.incorrect}</span><span class="score-stat-l">Incorrect</span></div>
+      </div>
+      <div class="acp-citation" style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;">
+        <span class="acp-tag">${task.tool.charAt(0).toUpperCase()}s-${task.objective}</span>
+        <span style="font-size:.85rem;color:var(--text-secondary);">${task.objectiveText}</span>
+      </div>
+      <div class="score-actions">
+        <button class="btn btn-ghost btn-sm" onclick="loadTaskById('${task.id}')">🔄 Try again</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Try independent':'📚 Review guided'}</button>
+      </div>
+      ${score.passed && !score.passed.alreadyShown ? '<p style="margin-top:1rem;font-size:.8rem;color:var(--correct);">✓ Task complete — select next task from the sidebar</p>' : ''}
+    </div>
+  `;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function updateTaskNavScore(taskId, pct) {
+  const scoreEl = document.getElementById('score-' + taskId.replace(/-/g,'').substring(0,8));
+  if (scoreEl) scoreEl.textContent = pct + '%';
+  const iconId = 'icon-' + taskId.replace(/-/g,'').substring(0,6);
+  const iconEl = document.getElementById(iconId);
+  if (iconEl && pct >= 70) iconEl.classList.add('done');
+}
+
+/* ── Hint system ──────────────────────────────────────────────────── */
+function showHint(level) {
+  if (!currentTask || currentMode !== 'guided') return;
+  const step = currentTask.steps[currentStep];
+  if (!step) return;
+  const hint = level === 1 ? step.hint1 : level === 2 ? step.hint2 : step.hint3;
+  document.getElementById('hint-area').innerHTML = `
+    <div class="feedback-block partial animate-fade">
+      <strong>💡 Hint ${level}</strong>
+      <p>${hint}</p>
+    </div>
+  `;
+}
+
+/* ── Color sample ─────────────────────────────────────────────────── */
+function sampleColor() {
+  const fgEl = document.getElementById('fg-color-swatch');
+  if (fgEl) fgEl.style.background = '#FF6B35';
+  handleAction('eyedropper');
+}
+
+/* ── Feedback helpers ─────────────────────────────────────────────── */
+function showFeedback(status, message, context) {
+  const el = document.getElementById('feedback-area');
+  if (!el) return;
+  const icons = { correct:'✓', incorrect:'✗', partial:'~' };
+  el.innerHTML = `
+    <div class="feedback-block ${status} animate-fade">
+      <strong>${icons[status]} ${status.charAt(0).toUpperCase()+status.slice(1)}</strong>
+      <p>${message}</p>
+      ${context ? `<p style="margin-top:.35rem;font-size:.78rem;opacity:.75;font-family:var(--font-mono);">${context}</p>` : ''}
+    </div>
+  `;
+}
+
+function clearFeedback() {
+  const el = document.getElementById('feedback-area');
+  if (el) el.innerHTML = '';
+}
+
+function updateStepDots() {
+  if (!currentTask) return;
+  const dots = currentTask.steps.map((_, i) => {
+    const r = stepResults[i];
+    const cls = r === null ? (i === currentStep ? 'current' : '') : r === 'correct' ? 'done' : 'error';
+    return `<div class="step-dot ${cls}"></div>`;
+  }).join('');
+  const dotsEl = document.querySelector('.step-dots');
+  if (dotsEl) dotsEl.innerHTML = dots;
+}
+
+/* ── Init ─────────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  loadTaskById('ps-2-1a');
+  ACPProgress.init();
+});
+</script>
+</body>
+</html>

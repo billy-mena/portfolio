@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photoshop — ACP 2025 Visual Design | ACP Learning System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/global.css">
+<style>
+.ps-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#0F3460 100%);padding:2.5rem 0 2rem;border-bottom:0.5px solid var(--border);position:relative;overflow:hidden;}
+.ps-hero::before{content:'Ps';position:absolute;right:-20px;top:-20px;font-size:220px;font-weight:700;color:rgba(49,168,255,.04);font-family:var(--font-mono);pointer-events:none;line-height:1;}
+.ps-hero h1{font-size:2rem;margin-bottom:.3rem;}
+.ps-hero p{color:var(--text-secondary);max-width:520px;}
+.hero-meta{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.875rem;}
+.domain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem;}
+.domain-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;position:relative;overflow:hidden;transition:var(--transition);}
+.domain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ps-blue);}
+.domain-card:hover{border-color:var(--border-strong);transform:translateY(-1px);}
+.domain-num{font-family:var(--font-mono);font-size:.75rem;color:var(--ps-blue);font-weight:500;margin-bottom:.3rem;}
+.domain-title{font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:.5rem;}
+.domain-desc{font-size:.82rem;color:var(--text-secondary);margin-bottom:.875rem;line-height:1.6;}
+.obj-list{list-style:none;margin-bottom:.875rem;}
+.obj-list li{font-size:.78rem;color:var(--text-secondary);padding:.2rem 0;display:flex;align-items:flex-start;gap:.4rem;line-height:1.4;}
+.obj-list li::before{content:'·';color:var(--ps-blue);flex-shrink:0;margin-top:1px;}
+.obj-code{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);flex-shrink:0;}
+.domain-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
+.progress-ring{width:36px;height:36px;border-radius:50%;border:3px solid var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;color:var(--text-tertiary);flex-shrink:0;margin-left:auto;}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem;}
+.info-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-md);padding:.875rem;text-align:center;}
+.info-n{font-size:1.5rem;font-weight:700;color:var(--ps-blue);}
+.info-l{font-size:.75rem;color:var(--text-tertiary);margin-top:2px;}
+@media(max-width:768px){.domain-grid{grid-template-columns:1fr;}.info-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="index.html" class="nav-link ps active">Photoshop</a>
+      <a href="../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="ps-hero">
+  <div class="container">
+    <div class="hero-meta">
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="acp-tag" style="font-size:.72rem;">ACP Visual Design · v26.x</span>
+    </div>
+    <h1>Visual Design Using Adobe Photoshop</h1>
+    <p>Complete ACP 2025 exam preparation — 6 domains, 22 objectives, 17 Live tasks + 8 MC sets. Guided and independent practice modes.</p>
+    <div class="hero-meta" style="margin-top:1.25rem;">
+      <span class="badge badge-live">17 Live tasks</span>
+      <span class="badge badge-mc">8 MC sets</span>
+      <span class="badge" style="background:rgba(49,168,255,.08);color:var(--text-tertiary);border:0.5px solid rgba(49,168,255,.2);">~3–5 hours</span>
+      <span class="badge" style="background:rgba(49,168,255,.08);color:var(--text-tertiary);">Bloom's: Remember → Create</span>
+    </div>
+  </div>
+</div>
+
+<div class="container page-wrap">
+  <div class="info-grid">
+    <div class="info-card"><div class="info-n">6</div><div class="info-l">Domains</div></div>
+    <div class="info-card"><div class="info-n">22</div><div class="info-l">ACP objectives</div></div>
+    <div class="info-card"><div class="info-n">17</div><div class="info-l">Live task sims</div></div>
+    <div class="info-card"><div class="info-n">50</div><div class="info-l">Min exam</div></div>
+  </div>
+
+  <div class="domain-grid">
+
+    <div class="domain-card">
+      <div style="display:flex;align-items:flex-start;gap:.5rem;">
+        <div style="flex:1;">
+          <div class="domain-num">Domain 1</div>
+          <div class="domain-title">Working in the Design Industry</div>
+        </div>
+        <div class="progress-ring" id="d1-ring">MC</div>
+      </div>
+      <div class="domain-desc">Industry terminology, copyright & licensing, digital image terminology, destructive vs. nondestructive editing, and design principles.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">1.1</span>Purpose, audience, and user experience terminology</li>
+        <li><span class="obj-code">1.2</span>Copyright, permissions, and licensing (incl. AI-generated content)</li>
+        <li><span class="obj-code">1.3</span>Digital image terminology — raster, vector, colour modes, bit depth</li>
+        <li><span class="obj-code">1.4</span>Photographic & design principles — rule of thirds, depth of field</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge badge-mc">MC only</span>
+        <a href="simulator/d2-document-setup.html#mc" class="btn btn-ghost btn-sm">Practice MC →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div style="display:flex;align-items:flex-start;gap:.5rem;">
+        <div style="flex:1;">
+          <div class="domain-num">Domain 2</div>
+          <div class="domain-title">Project Setup & Interface</div>
+        </div>
+        <div class="progress-ring" id="d2-ring">0%</div>
+      </div>
+      <div class="domain-desc">Document creation, workspace customisation, asset importing, colour management, brushes, and patterns.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">2.1</span>New document settings — resolution, colour mode, bit depth</li>
+        <li><span class="obj-code">2.2</span>Workspace panels, Options Bar, preferences, guides</li>
+        <li><span class="obj-code">2.3</span>Place assets — embedded vs linked Smart Objects</li>
+        <li><span class="obj-code">2.4</span>Colour Picker, swatches, Eyedropper, gradients</li>
+        <li><span class="obj-code">2.5</span>Brushes, styles, and patterns libraries</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge badge-live">Live tasks</span>
+        <a href="simulator/d2-document-setup.html" class="btn btn-primary btn-sm">Start Domain 2 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div style="display:flex;align-items:flex-start;gap:.5rem;">
+        <div style="flex:1;">
+          <div class="domain-num">Domain 3</div>
+          <div class="domain-title">Layers, Masks & Adjustments</div>
+        </div>
+        <div class="progress-ring" id="d3-ring">0%</div>
+      </div>
+      <div class="domain-desc">Layer organisation, all mask types (pixel, vector, clipping), Smart Objects, adjustment layers, and Smart Filters.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">3.1</span>Manage & organise layers — groups, lock, merge, Smart Objects</li>
+        <li><span class="obj-code">3.2</span>All 5 mask types — pixel, vector, clipping, frame, Select & Mask</li>
+        <li><span class="obj-code">3.3</span>Adjustment layers, presets, and Smart Filters</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge badge-live">Live tasks</span>
+        <a href="simulator/d3-layers-masks.html" class="btn btn-primary btn-sm">Start Domain 3 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div style="display:flex;align-items:flex-start;gap:.5rem;">
+        <div style="flex:1;">
+          <div class="domain-num">Domain 4</div>
+          <div class="domain-title">Adding Content to a Document</div>
+        </div>
+        <div class="progress-ring" id="d4-ring">0%</div>
+      </div>
+      <div class="domain-desc">Raster drawing tools, deletion tools, AI generative tools (2025), vector drawing with the Pen tool, and typography.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">4.1a</span>Brush, Smudge, Sharpen, Blur — creation tools</li>
+        <li><span class="obj-code">4.1b</span>Eraser, Background Eraser, History Brush</li>
+        <li><span class="obj-code" style="color:#9B8EF0;">4.1c ✦</span>Generative Fill & Sky Replacement (AI — 2025)</li>
+        <li><span class="obj-code">4.2</span>Pen tool, Curvature Pen, vector shapes, anchor points</li>
+        <li><span class="obj-code">4.3</span>Type tools, Character/Paragraph panels, rasterise text</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge badge-live">Live tasks</span>
+        <span class="badge" style="background:rgba(155,142,240,.15);color:#9B8EF0;border:0.5px solid rgba(155,142,240,.3);">✦ AI objectives</span>
+        <a href="simulator/d4-content.html" class="btn btn-primary btn-sm">Start Domain 4 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card" style="opacity:.7;">
+      <div class="domain-num">Domain 5</div>
+      <div class="domain-title">Modifying Visual Elements</div>
+      <div class="domain-desc">Selections, retouching & repair tools, AI Remove, canvas transforms, filters, layer styles, and materials.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">5.1</span>Select Subject, Object Selection, Select Sky, Color Range</li>
+        <li><span class="obj-code">5.2</span>Healing tools, Clone, Content-Aware, AI Remove, Burn/Dodge</li>
+        <li><span class="obj-code">5.3</span>Crop, canvas resize, rotate, warp, distort, perspective</li>
+        <li><span class="obj-code">5.4</span>Smart Filters, layer styles, materials</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge b-todo" style="background:var(--surface-2);color:var(--text-tertiary);">Coming in Session 3</span>
+      </div>
+    </div>
+
+    <div class="domain-card" style="opacity:.7;">
+      <div class="domain-num">Domain 6</div>
+      <div class="domain-title">Publishing Digital Media</div>
+      <div class="domain-desc">Export (Quick Export, Export As), save formats, bit depth, colour space, transparency support, and file compatibility.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">6.1</span>Export layers, artboards, Quick Export, Export As</li>
+        <li><span class="obj-code">6.2</span>Save — native formats, CC documents, image formats, transparency</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge" style="background:var(--surface-2);color:var(--text-tertiary);">Coming in Session 3</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:2rem;">
+    <div style="font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.75rem;">ACP exam format — what to expect</div>
+    <div class="grid-2" style="gap:1rem;">
+      <div>
+        <div style="font-size:.9rem;font-weight:500;color:var(--text-primary);margin-bottom:.3rem;">Section 1 — Selected Response</div>
+        <p style="font-size:.83rem;">Multiple-choice and scenario-based questions covering Domain 1 concepts: design terminology, copyright, colour theory, and design principles. No live software required.</p>
+      </div>
+      <div>
+        <div style="font-size:.9rem;font-weight:500;color:var(--text-primary);margin-bottom:.3rem;">Section 2 — Live-in-the-App</div>
+        <p style="font-size:.83rem;">Task-based questions performed directly inside Photoshop. You receive a brief and must complete specific tasks using the real application. This is what the simulator prepares you for.</p>
+      </div>
+    </div>
+    <div style="margin-top:.875rem;padding-top:.875rem;border-top:0.5px solid var(--border);font-size:.82rem;color:var(--text-secondary);">
+      <strong style="color:var(--text-primary);">Exam duration:</strong> 50 minutes &nbsp;·&nbsp;
+      <strong style="color:var(--text-primary);">Target candidate:</strong> ~150 hours of instruction and hands-on experience &nbsp;·&nbsp;
+      <strong style="color:var(--text-primary);">Delivered by:</strong> Certiport / NCS Pearson
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/progress.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => { ACPProgress.init(); });
+</script>
+</body>
+</html>

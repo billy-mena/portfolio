@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Illustrator — Kirkpatrick L1–L3 Evaluation Toolkit | ACP 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/global.css">
+<style>
+:root{--ai:#FF9A00;}
+.nav{background:var(--bg-1);border-bottom:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-weight:700;font-size:.9rem;color:var(--ai);font-family:var(--font-mono);}
+.nav-link{font-size:.83rem;color:var(--text-secondary);text-decoration:none;padding:.3rem .7rem;border-radius:6px;}
+.nav-link:hover{background:var(--surface);color:var(--text-primary);}
+.tab-bar{background:var(--bg-1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+.tab-btn{padding:.4rem 1rem;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);color:var(--text-secondary);background:transparent;transition:all .15s;font-family:var(--font-ui);}
+.tab-btn.l1.active{background:var(--ai);color:#000;border-color:var(--ai);}
+.tab-btn.l2.active{background:#31A8FF;color:#000;border-color:#31A8FF;}
+.tab-btn.l3.active{background:var(--correct);color:#000;border-color:var(--correct);}
+.tab-btn.ov.active{background:var(--surface-2);color:var(--text-primary);}
+.page{max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
+.panel{display:none;}.panel.active{display:block;}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.level-badge{font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.04em;display:inline-block;margin-right:.5rem;}
+.l1b{background:rgba(255,154,0,.15);color:var(--ai);border:0.5px solid rgba(255,154,0,.3);}
+.l2b{background:rgba(49,168,255,.15);color:#31A8FF;border:0.5px solid rgba(49,168,255,.3);}
+.l3b{background:rgba(0,214,143,.15);color:var(--correct);border:0.5px solid rgba(0,214,143,.3);}
+.survey-item{padding:.875rem 0;border-bottom:0.5px solid var(--border);}
+.survey-item:last-child{border-bottom:none;}
+.survey-q{font-size:.875rem;color:var(--text-primary);margin-bottom:.5rem;line-height:1.5;}
+.likert-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+.likert-label{font-size:.72rem;color:var(--text-tertiary);white-space:nowrap;}
+.likert-options{display:flex;gap:.4rem;}
+.likert-opt{width:34px;height:34px;border-radius:50%;border:0.5px solid var(--border);background:var(--bg-1);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text-tertiary);}
+.likert-opt:hover{border-color:var(--border-strong);color:var(--text-primary);}
+.likert-opt.selected{background:var(--ai);color:#000;border-color:var(--ai);}
+.open-q{margin-top:.5rem;}
+.open-q label{font-size:.78rem;color:var(--text-tertiary);display:block;margin-bottom:.3rem;}
+.open-q textarea{width:100%;background:var(--bg-1);border:0.5px solid var(--border);color:var(--text-primary);border-radius:8px;padding:.6rem .875rem;font-family:var(--font-ui);font-size:.83rem;resize:vertical;min-height:70px;}
+.kc-item{padding:.875rem 0;border-bottom:0.5px solid var(--border);}
+.kc-item:last-child{border-bottom:none;}
+.kc-q{font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.5rem;line-height:1.5;}
+.kc-opt{padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--border);background:var(--bg-1);font-size:.83rem;color:var(--text-secondary);cursor:pointer;transition:all .15s;margin-bottom:.3rem;}
+.kc-opt:hover{border-color:rgba(255,154,0,.3);}
+.kc-opt.selected{border-color:rgba(255,154,0,.4);background:rgba(255,154,0,.07);}
+.kc-opt.correct{border-color:rgba(0,214,143,.4);background:rgba(0,214,143,.07);color:#7FFFD4;}
+.kc-opt.wrong{border-color:rgba(255,77,109,.4);background:rgba(255,77,109,.07);}
+.pre-post-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.pp-col{background:var(--bg-1);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:.875rem;}
+.pp-label{font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:0.5px solid var(--border);color:var(--partial);}
+.pp-label.post{color:var(--correct);}
+.obs-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:0.5px solid var(--border);}
+.obs-item:last-child{border-bottom:none;}
+.obs-check{width:20px;height:20px;border-radius:4px;border:0.5px solid var(--border-strong);background:var(--bg-1);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .15s;margin-top:1px;}
+.obs-check.checked{background:var(--correct);border-color:var(--correct);color:#000;}
+.obs-behavior{font-size:.875rem;color:var(--text-primary);line-height:1.4;}
+.obs-context{font-size:.75rem;color:var(--text-tertiary);margin-top:.2rem;}
+.obs-code{font-family:var(--font-mono);font-size:.68rem;color:var(--ai);}
+.iv-q{font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.4rem;}
+.iv-probe{font-size:.75rem;color:var(--text-tertiary);margin-bottom:.4rem;font-style:italic;}
+.iv-notes{width:100%;background:var(--bg-1);border:0.5px solid var(--border);color:var(--text-primary);border-radius:7px;padding:.5rem .75rem;font-family:var(--font-ui);font-size:.82rem;resize:vertical;min-height:55px;}
+.score-bar{background:var(--bg-1);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-top:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.score-n{font-size:1.4rem;font-weight:700;}
+.score-l{font-size:.75rem;color:var(--text-tertiary);}
+.section-label{font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text-tertiary);margin:.875rem 0 .5rem;}
+.lc-card{display:flex;gap:.875rem;padding:1rem;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:.75rem;cursor:pointer;transition:all .15s;}
+.lc-card:hover{border-color:var(--border-strong);}
+.lc-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;}
+.lc-body{flex:1;}
+.lc-name{font-size:.95rem;font-weight:600;margin-bottom:.2rem;}
+.lc-desc{font-size:.83rem;color:var(--text-secondary);line-height:1.5;}
+.lc-items{font-size:.78rem;color:var(--text-tertiary);margin-top:.3rem;}
+@media print{.nav,.tab-bar{display:none;}.panel{display:block!important;}body{background:#FFF;color:#000;}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="nav-logo">Ai</span>
+  <a href="../index.html" class="nav-link">← Illustrator</a>
+  <a href="../index.html" class="nav-link">Home</a>
+  <button style="margin-left:auto;padding:.4rem 1rem;border-radius:20px;font-size:.8rem;background:transparent;border:0.5px solid var(--border);color:var(--text-secondary);cursor:pointer;font-family:var(--font-ui);" onclick="window.print()">🖨 Print</button>
+</nav>
+<div class="tab-bar">
+  <button class="tab-btn ov active" onclick="showTab('overview','ov')">Overview</button>
+  <button class="tab-btn l1" onclick="showTab('l1','l1')">L1 — Reaction</button>
+  <button class="tab-btn l2" onclick="showTab('l2','l2')">L2 — Learning</button>
+  <button class="tab-btn l3" onclick="showTab('l3','l3')">L3 — Behavior</button>
+</div>
+
+<div class="page">
+
+<!-- OVERVIEW -->
+<div class="panel active" id="panel-overview">
+  <p style="font-size:.9rem;font-weight:500;margin-bottom:.3rem;">Kirkpatrick Evaluation — ACP Illustrator 2025</p>
+  <p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:1.25rem;">Levels 1–3 measurable within course context. Level 4 (business results) requires longitudinal tracking.</p>
+
+  <div class="lc-card" onclick="showTab('l1','l1')">
+    <div class="lc-num" style="background:rgba(255,154,0,.15);color:var(--ai);">L1</div>
+    <div class="lc-body">
+      <div class="lc-name" style="color:var(--ai);">Reaction — Did learners find it valuable?</div>
+      <div class="lc-desc">Satisfaction with vector workflow simulations, AI objectives relevance, and real-world applicability.</div>
+      <div class="lc-items">5 Likert items · 2 open-ended questions · Administer immediately after completion</div>
+    </div>
+  </div>
+  <div class="lc-card" onclick="showTab('l2','l2')">
+    <div class="lc-num" style="background:rgba(49,168,255,.15);color:#31A8FF;">L2</div>
+    <div class="lc-body">
+      <div class="lc-name" style="color:#31A8FF;">Learning — Did learners gain knowledge?</div>
+      <div class="lc-desc">Matched pre/post assessments measuring understanding of vector concepts, tool selection, and ACP objectives.</div>
+      <div class="lc-items">5 pre + 5 post matched questions · ACP objectives Ai-2.1 → Ai-5.4 · ~8 minutes</div>
+    </div>
+  </div>
+  <div class="lc-card" onclick="showTab('l3','l3')">
+    <div class="lc-num" style="background:rgba(0,214,143,.15);color:var(--correct);">L3</div>
+    <div class="lc-body">
+      <div class="lc-name" style="color:var(--correct);">Behavior — Are learners applying skills?</div>
+      <div class="lc-desc">Observable professional vector workflow behaviours 2–4 weeks post-completion. Supervisor interview guide included.</div>
+      <div class="lc-items">10-item observation checklist · 5-question structured interview · 2–4 weeks post-course</div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-top:.875rem;">
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-primary);margin-bottom:.5rem;">Evaluation schedule</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
+      <div style="text-align:center;padding:.75rem;background:var(--bg-1);border-radius:8px;"><div style="font-size:.72rem;color:var(--ai);font-weight:600;margin-bottom:.25rem;">L2 Pre</div><div style="font-size:.83rem;color:var(--text-secondary);">Before course begins</div></div>
+      <div style="text-align:center;padding:.75rem;background:var(--bg-1);border-radius:8px;"><div style="font-size:.72rem;color:#31A8FF;font-weight:600;margin-bottom:.25rem;">L1 + L2 Post</div><div style="font-size:.83rem;color:var(--text-secondary);">Immediately after last session</div></div>
+      <div style="text-align:center;padding:.75rem;background:var(--bg-1);border-radius:8px;"><div style="font-size:.72rem;color:var(--correct);font-weight:600;margin-bottom:.25rem;">L3 Observation</div><div style="font-size:.83rem;color:var(--text-secondary);">2–4 weeks post-completion</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- L1 -->
+<div class="panel" id="panel-l1">
+  <div class="card">
+    <div style="margin-bottom:.875rem;"><span class="level-badge l1b">Level 1 — Reaction</span><span style="font-size:1rem;font-weight:600;">Learner Satisfaction Survey</span></div>
+    <p style="font-size:.78rem;color:var(--text-tertiary);margin-bottom:1rem;font-style:italic;">Administer immediately after completing the Illustrator ACP course. All responses are anonymous.</p>
+    <div id="l1-survey"></div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);">
+      <div class="open-q"><label>What was the most useful part of the Illustrator simulator tasks?</label><textarea placeholder="Write your response…"></textarea></div>
+      <div class="open-q" style="margin-top:.75rem;"><label>Which Illustrator objectives do you feel least confident about going into the ACP exam?</label><textarea placeholder="Write your response…"></textarea></div>
+    </div>
+    <div class="score-bar" id="l1-score-bar" style="display:none;">
+      <div><div class="score-n" id="l1-score" style="color:var(--ai);">—</div><div class="score-l">Average satisfaction (out of 5)</div></div>
+      <button class="btn btn-primary btn-sm" onclick="submitL1()">Save responses</button>
+    </div>
+    <button class="btn btn-primary" style="margin-top:1rem;" onclick="submitL1()">Submit survey</button>
+  </div>
+</div>
+
+<!-- L2 -->
+<div class="panel" id="panel-l2">
+  <div class="card">
+    <div style="margin-bottom:.875rem;"><span class="level-badge l2b">Level 2 — Learning</span><span style="font-size:1rem;font-weight:600;">Pre / Post Knowledge Assessment</span></div>
+    <p style="font-size:.78rem;color:var(--text-tertiary);margin-bottom:1rem;">Administer the Pre-assessment before instruction and the Post-assessment after course completion. Compare scores to calculate learning gain.</p>
+  </div>
+  <div class="pre-post-grid">
+    <div class="pp-col">
+      <div class="pp-label">Pre-assessment — Before instruction</div>
+      <div id="l2-pre"></div>
+      <button class="btn" style="margin-top:.875rem;width:100%;" onclick="scoreL2('pre')">Score pre-assessment</button>
+      <div id="l2-pre-result" style="margin-top:.5rem;font-size:.83rem;color:var(--partial);display:none;"></div>
+    </div>
+    <div class="pp-col">
+      <div class="pp-label post">Post-assessment — After instruction</div>
+      <div id="l2-post"></div>
+      <button class="btn btn-primary" style="margin-top:.875rem;width:100%;" onclick="scoreL2('post')">Score post-assessment</button>
+      <div id="l2-post-result" style="margin-top:.5rem;font-size:.83rem;color:var(--correct);display:none;"></div>
+    </div>
+  </div>
+  <div id="l2-gain" class="card" style="margin-top:1rem;display:none;">
+    <div style="font-size:.83rem;font-weight:600;margin-bottom:.5rem;">Learning gain analysis</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;text-align:center;">
+      <div><div class="score-n" id="pre-score-display" style="color:var(--partial);">—</div><div class="score-l">Pre-assessment</div></div>
+      <div><div class="score-n" id="post-score-display" style="color:var(--correct);">—</div><div class="score-l">Post-assessment</div></div>
+      <div><div class="score-n" id="gain-display" style="color:#31A8FF;">—</div><div class="score-l">Learning gain</div></div>
+    </div>
+    <div id="gain-interpretation" style="margin-top:.875rem;font-size:.83rem;color:var(--text-secondary);padding:.6rem .875rem;background:var(--bg-1);border-radius:8px;"></div>
+  </div>
+</div>
+
+<!-- L3 -->
+<div class="panel" id="panel-l3">
+  <div class="card">
+    <div style="margin-bottom:.75rem;"><span class="level-badge l3b">Level 3 — Behavior</span><span style="font-size:1rem;font-weight:600;">Behavioral Observation Checklist</span></div>
+    <p style="font-size:.78rem;color:var(--text-tertiary);margin-bottom:1rem;">Conduct 2–4 weeks after course completion during direct observation of the learner's Illustrator work sessions.</p>
+    <div id="obs-checklist"></div>
+    <div class="score-bar" style="margin-top:1rem;">
+      <div><div class="score-n" id="obs-score" style="color:var(--correct);">0/10</div><div class="score-l">Behaviors observed</div></div>
+      <div style="flex:1;max-width:200px;"><div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden;"><div id="obs-bar" style="height:100%;background:var(--correct);border-radius:3px;width:0%;transition:width .4s;"></div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:.75rem;"><span class="level-badge l3b">Level 3</span><span style="font-size:1rem;font-weight:600;">Supervisor Interview Guide</span></div>
+    <p style="font-size:.78rem;color:var(--text-tertiary);margin-bottom:1rem;">Structured interview for supervisor, mentor, or instructor. Allow 15–20 minutes, 3–4 weeks post-completion.</p>
+    <div id="interview-guide"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const L1_ITEMS=[
+  {q:'The vector drawing simulator tasks accurately replicated real Illustrator workflows.',code:'L1-1'},
+  {q:'The Generate Vectors and Generative Shape Fill AI tasks helped me understand how AI tools fit into professional vector workflows.',code:'L1-2'},
+  {q:'The three-level hint system (Hint 1–3) gave me just enough guidance without giving away the answer.',code:'L1-3'},
+  {q:'Switching between Guided and Independent modes helped me build confidence progressively.',code:'L1-4'},
+  {q:'I feel prepared to demonstrate Illustrator skills in a live ACP certification exam environment.',code:'L1-5'},
+];
+
+const L2_PRE=[
+  {q:'What is the difference between raster and vector graphics in terms of scalability?',options:['Raster scales without quality loss; vector loses quality when enlarged','Vector uses mathematical paths and scales to any size without quality loss; raster is pixel-based and loses quality when enlarged','There is no practical difference for screen work','Vector files are always larger than raster files'],correct:1,code:'Ai-1.3a'},
+  {q:'What does the Raster Effects setting in the New Document dialog control?',options:['The resolution of linked images','The resolution at which raster effects (shadows, glows) are rendered','The maximum canvas size','The default stroke weight'],correct:1,code:'Ai-2.1a'},
+  {q:'After applying Image Trace to a placed image, what must you click to get editable vector paths?',options:['Simplify','Release','Expand','Ungroup'],correct:2,code:'Ai-4.1c'},
+  {q:'In the Align panel, what does "Key Object" mean?',options:['The object that will be deleted','The object other selected objects align to, without it moving','The largest object in the selection','The object on the top layer'],correct:1,code:'Ai-5.4b'},
+  {q:'In Illustrator, which mask type uses grayscale values to control transparency?',options:['Clipping mask','Layer mask','Opacity mask','Vector mask'],correct:2,code:'Ai-5.3b'},
+];
+
+const L2_POST=[
+  {q:'A client wants their logo exported as a format that scales perfectly on any screen size. Which format should you use?',options:['JPEG','PNG','SVG','TIFF'],correct:2,code:'Ai-2.4a'},
+  {q:'You need the drop shadows in your illustration to print at 300ppi quality. Where do you set this before starting?',options:['File → Save As settings','New Document dialog → Raster Effects: 300ppi','Effect → Document Raster Effects Settings','Preferences → Units'],correct:1,code:'Ai-2.1a'},
+  {q:'After using Image Trace, how do you edit individual paths of the traced result?',options:['Double-click to enter Isolation Mode immediately','Click Expand, then ungroup to access individual paths','Use Object → Path → Simplify','Select with the Lasso tool'],correct:1,code:'Ai-4.1c'},
+  {q:'To distribute 5 icons with equal gaps between them (not equal centres), which Align panel option is correct?',options:['Distribute Objects: Horizontal','Distribute Spacing: Horizontal','Align to Artboard: Centre','Key Object, then Align Centre Horizontal'],correct:1,code:'Ai-5.4a'},
+  {q:'An opacity mask with a gradient going from black to white will produce what effect on the masked object?',options:['The object disappears entirely','The object fades from transparent (where mask is black) to fully visible (where mask is white)','The object gets a drop shadow','The object is clipped to a rectangular boundary'],correct:1,code:'Ai-5.3b'},
+];
+
+const OBS_BEHAVIORS=[
+  {b:'Uses File → Package before sending Illustrator files to clients or printers, ensuring all linked files and fonts are collected.',ctx:'Observed during: project delivery',code:'Ai-2.4c'},
+  {b:'Names artboards descriptively before exporting, so exported files have clear, organised filenames.',ctx:'Observed during: export workflows',code:'Ai-2.2a'},
+  {b:'Creates global swatches for brand colours so that editing one swatch updates all objects using it.',ctx:'Observed during: colour management',code:'Ai-3.3a'},
+  {b:'Converts text to outlines (Type → Create Outlines) before sending final artwork files to production.',ctx:'Observed during: file preparation',code:'Ai-4.4b'},
+  {b:'Uses the Shape Builder tool or Pathfinder to combine and subtract shapes rather than drawing combined shapes manually.',ctx:'Observed during: logo/icon creation',code:'Ai-4.2a'},
+  {b:'Uses the Appearance panel to apply multiple fills/strokes or live effects rather than duplicating objects.',ctx:'Observed during: styling tasks',code:'Ai-5.2a'},
+  {b:'Creates clipping masks with the correct workflow: clipping shape on top, Object → Clipping Mask → Make.',ctx:'Observed during: layout/masking work',code:'Ai-5.3a'},
+  {b:'Uses Generate Vectors or Generative Shape Fill to accelerate concept exploration, then refines with standard vector tools.',ctx:'Observed during: creative ideation',code:'Ai-4.1e'},
+  {b:'Uses Distribute Spacing (not Distribute Objects) to create equal gaps between UI icons or design elements.',ctx:'Observed during: layout alignment',code:'Ai-5.4a'},
+  {b:'Enters Isolation Mode to edit grouped objects rather than ungrouping them unnecessarily.',ctx:'Observed during: editing complex artwork',code:'Ai-5.1b'},
+];
+
+const INTERVIEW_QS=[
+  {q:'Since completing the Illustrator ACP course, have you observed the learner using non-destructive techniques — such as global swatches, Appearance panel effects, or Live Paint — in their work?',probe:'Ask for a specific recent example involving professional vector workflow.'},
+  {q:'Has the learner demonstrated appropriate file preparation when handing off work — including using File → Package, converting text to outlines, and choosing appropriate export formats?',probe:'Probe: do they understand when to use SVG vs PDF vs EPS?'},
+  {q:'Are there any specific Illustrator domains from the course (Pen tool, paths, typography, masking, alignment) where you still observe gaps in the learner\'s independent practice?',probe:'Note specific ACP objective areas for targeted remediation.'},
+  {q:'Has the learner begun using any of the 2025 AI features — Generate Vectors or Generative Shape Fill — in their actual projects? Do they understand these produce editable vector paths?',probe:'Distinguish between using AI as a creative starting point vs relying on it as the final output.'},
+  {q:'How would you describe the change in the learner\'s Illustrator proficiency and confidence since completing the ACP course?',probe:'Scale: Significant improvement / Some improvement / No observable change / Performance declined.'},
+];
+
+/* Build L1 */
+function buildL1(){
+  document.getElementById('l1-survey').innerHTML=L1_ITEMS.map((item,i)=>`
+    <div class="survey-item">
+      <div class="survey-q"><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-tertiary);margin-right:.4rem;">${item.code}</span>${item.q}</div>
+      <div class="likert-row">
+        <span class="likert-label">Strongly disagree</span>
+        <div class="likert-options">${[1,2,3,4,5].map(n=>`<div class="likert-opt" onclick="selectLikert(this,${i})">${n}</div>`).join('')}</div>
+        <span class="likert-label">Strongly agree</span>
+      </div>
+    </div>`).join('');
+}
+
+function selectLikert(el,qi){
+  el.closest('.likert-options').querySelectorAll('.likert-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const scores=[];
+  document.querySelectorAll('.likert-options').forEach(row=>{const sel=row.querySelector('.likert-opt.selected');if(sel)scores.push(parseInt(sel.textContent));});
+  if(scores.length===L1_ITEMS.length){const avg=(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1);document.getElementById('l1-score').textContent=avg+'/5';document.getElementById('l1-score-bar').style.display='flex';}
+}
+
+function submitL1(){alert('L1 responses recorded. In an LMS, these submit via SCORM API or xAPI.');}
+
+/* Build L2 */
+function buildL2(){
+  const buildQ=(qs,prefix,container)=>{
+    document.getElementById(container).innerHTML=qs.map((item,i)=>`
+      <div class="kc-item">
+        <div class="kc-q"><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--ai);margin-right:.35rem;">${item.code}</span>${item.q}</div>
+        ${item.options.map((opt,oi)=>`<div class="kc-opt" onclick="selectL2('${prefix}',${i},${oi},${item.correct})" id="${prefix}-${i}-${oi}">${String.fromCharCode(65+oi)}. ${opt}</div>`).join('')}
+      </div>`).join('');
+  };
+  buildQ(L2_PRE,'pre','l2-pre');buildQ(L2_POST,'post','l2-post');
+}
+
+const l2sel={pre:{},post:{}};
+function selectL2(phase,qi,oi,correct){
+  l2sel[phase][qi]={chosen:oi,correct:oi===correct};
+  const qs=phase==='pre'?L2_PRE:L2_POST;
+  qs[qi].options.forEach((_,idx)=>{const el=document.getElementById(`${phase}-${qi}-${idx}`);el.classList.remove('selected','correct','wrong');el.style.pointerEvents='none';if(idx===correct)el.classList.add('correct');if(idx===oi&&oi!==correct)el.classList.add('wrong');});
+}
+
+function scoreL2(phase){
+  const qs=phase==='pre'?L2_PRE:L2_POST;let c=0;
+  qs.forEach((_,i)=>{if(l2sel[phase][i]?.correct)c++;});
+  const pct=Math.round(c/qs.length*100);
+  const el=document.getElementById(`l2-${phase}-result`);el.style.display='block';el.textContent=`Score: ${c}/${qs.length} (${pct}%)`;
+  localStorage.setItem(`kirk_l2_${phase}_ai`,JSON.stringify({score:pct,date:new Date().toISOString()}));
+  updateGain();
+}
+
+function updateGain(){
+  const pre=JSON.parse(localStorage.getItem('kirk_l2_pre_ai')||'null');
+  const post=JSON.parse(localStorage.getItem('kirk_l2_post_ai')||'null');
+  if(!pre||!post)return;
+  document.getElementById('l2-gain').style.display='block';
+  document.getElementById('pre-score-display').textContent=pre.score+'%';
+  document.getElementById('post-score-display').textContent=post.score+'%';
+  const gain=post.score-pre.score;
+  document.getElementById('gain-display').textContent=(gain>=0?'+':'')+gain+'%';
+  document.getElementById('gain-interpretation').textContent=gain>=30?'Strong learning gain — course had significant impact on vector knowledge.':gain>=15?'Moderate learning gain — key concepts improved.':gain>=0?'Modest gain — review lower-scoring objectives.':'No gain detected — review course delivery and engagement.';
+}
+
+/* Build L3 */
+function buildObs(){
+  document.getElementById('obs-checklist').innerHTML=OBS_BEHAVIORS.map((item,i)=>`
+    <div class="obs-item">
+      <div class="obs-check" id="obs-${i}" onclick="toggleObs(${i})">&nbsp;</div>
+      <div>
+        <div class="obs-behavior">${item.b}</div>
+        <div class="obs-context">${item.ctx} &nbsp;·&nbsp; <span class="obs-code">${item.code}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleObs(i){
+  const el=document.getElementById('obs-'+i);el.classList.toggle('checked');el.textContent=el.classList.contains('checked')?'✓':'\u00A0';
+  const count=document.querySelectorAll('.obs-check.checked').length;
+  document.getElementById('obs-score').textContent=count+'/10';
+  document.getElementById('obs-bar').style.width=(count*10)+'%';
+}
+
+function buildInterview(){
+  document.getElementById('interview-guide').innerHTML=INTERVIEW_QS.map((item,i)=>`
+    <div style="padding:.875rem 0;border-bottom:0.5px solid var(--border);">
+      <div class="iv-q"><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--correct);margin-right:.35rem;">Q${i+1}</span>${item.q}</div>
+      <div class="iv-probe">${item.probe}</div>
+      <textarea class="iv-notes" placeholder="Interviewer notes…"></textarea>
+    </div>`).join('');
+}
+
+function showTab(id,cls){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.tab-btn.'+cls).forEach(b=>b.classList.add('active'));
+  if(id==='overview')document.querySelector('.tab-btn.ov').classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded',()=>{buildL1();buildL2();buildObs();buildInterview();updateGain();});
+</script>
+</body>
+</html>

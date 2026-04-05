@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photoshop ACP 2025 — Simulator Slide Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & tokens ─────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ps:#31A8FF;--bg:#1A1A2E;--bg1:#16213E;--bg2:#0F3460;
+  --surf:#252540;--surf2:#2E2E50;--border:rgba(255,255,255,.08);
+  --text:#F0F0FF;--text2:#A8A8C8;--text3:#6868A0;
+  --correct:#00D68F;--wrong:#FF4D6D;--partial:#FFB800;
+  --r:10px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;}
+
+/* ── Slide shell ─────────────────────────────────── */
+.deck{display:grid;grid-template-rows:auto 1fr auto;height:100vh;max-width:1100px;margin:0 auto;}
+
+/* Top bar */
+.topbar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.tb-logo{font-weight:700;font-size:.9rem;color:var(--ps);font-family:var(--mono);}
+.tb-title{font-size:.85rem;color:var(--text2);flex:1;}
+.tb-counter{font-size:.8rem;color:var(--text3);font-family:var(--mono);}
+.progress-track{height:3px;background:var(--surf2);flex:1;border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--ps);border-radius:2px;transition:width .4s ease;}
+
+/* Slide viewport */
+.slide-viewport{overflow:hidden;position:relative;}
+.slide{position:absolute;inset:0;padding:2rem 2.5rem;display:flex;flex-direction:column;opacity:0;transform:translateX(40px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all;}
+.slide.out-left{opacity:0;transform:translateX(-40px);}
+
+/* Bottom nav */
+.bottombar{background:var(--bg1);border-top:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;}
+.nav-btn{padding:.45rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--text2);transition:all .15s;font-family:var(--font);}
+.nav-btn:hover{background:var(--surf);color:var(--text);}
+.nav-btn.primary{background:var(--ps);color:#000;border-color:var(--ps);}
+.nav-btn.primary:hover{opacity:.88;}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.dot-row{display:flex;gap:5px;align-items:center;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--surf2);transition:all .2s;cursor:pointer;}
+.dot.active{background:var(--ps);box-shadow:0 0 5px var(--ps);}
+.dot.done{background:var(--correct);}
+.kb-hint{font-size:.72rem;color:var(--text3);margin-left:auto;}
+
+/* ── Slide types ─────────────────────────────────── */
+
+/* COVER */
+.slide-cover{background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);}
+.cover-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;}
+.cover-title{font-size:2.4rem;font-weight:700;line-height:1.15;margin-bottom:.75rem;background:linear-gradient(135deg,#FFF 30%,var(--ps));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cover-sub{font-size:1rem;color:var(--text2);max-width:520px;margin-bottom:1.5rem;line-height:1.6;}
+.cover-badges{display:flex;gap:.5rem;flex-wrap:wrap;}
+.cbadge{font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:20px;border:0.5px solid;}
+
+/* DOMAIN INTRO */
+.slide-domain{background:linear-gradient(135deg,var(--bg) 0%,#0F1B3D 100%);}
+.domain-num{font-family:var(--mono);font-size:.78rem;color:var(--ps);font-weight:500;margin-bottom:.3rem;}
+.domain-h{font-size:1.8rem;font-weight:700;margin-bottom:.5rem;}
+.domain-desc{font-size:.9rem;color:var(--text2);max-width:560px;line-height:1.65;margin-bottom:1.25rem;}
+.obj-chips{display:flex;flex-direction:column;gap:.4rem;}
+.obj-chip{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .75rem;background:var(--surf);border:0.5px solid var(--border);border-radius:8px;font-size:.82rem;}
+.obj-code{font-family:var(--mono);font-size:.7rem;color:var(--ps);min-width:38px;padding-top:1px;}
+.obj-text{color:var(--text2);}
+
+/* TASK SLIDE */
+.slide-task{}
+.task-header{display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem;}
+.acp-tag{font-family:var(--mono);font-size:.72rem;padding:3px 9px;border-radius:4px;background:var(--bg2);color:var(--ps);border:0.5px solid rgba(49,168,255,.3);}
+.bloom-tag{font-size:.7rem;padding:3px 9px;border-radius:20px;background:rgba(0,214,143,.1);color:var(--correct);border:0.5px solid rgba(0,214,143,.25);}
+.gagne-tag{font-size:.68rem;padding:2px 8px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);}
+.task-title{font-size:1.2rem;font-weight:600;margin-bottom:.5rem;}
+.task-scenario{font-size:.87rem;color:var(--text2);line-height:1.65;padding:.7rem 1rem;background:var(--surf);border-radius:8px;border-left:3px solid var(--ps);margin-bottom:1rem;}
+.steps-list{display:flex;flex-direction:column;gap:.5rem;overflow-y:auto;max-height:calc(100vh - 340px);}
+.step-item{display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .875rem;background:var(--surf);border:0.5px solid var(--border);border-radius:8px;}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--bg2);color:var(--ps);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;flex-shrink:0;font-family:var(--mono);}
+.step-content{flex:1;}
+.step-instr{font-size:.85rem;color:var(--text);line-height:1.5;}
+.step-hint{font-size:.77rem;color:var(--text3);margin-top:.2rem;font-style:italic;}
+.step-acp{font-size:.7rem;color:var(--text3);margin-top:.2rem;font-family:var(--mono);}
+.step-item.current{border-color:rgba(49,168,255,.4);background:rgba(49,168,255,.06);}
+.step-item.correct-step{border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.05);}
+
+/* INTERACTIVE TASK SLIDE */
+.task-interactive{display:grid;grid-template-columns:1fr 300px;gap:1.25rem;height:100%;align-items:start;}
+.task-left{}
+.task-right{display:flex;flex-direction:column;gap:.75rem;}
+.sim-placeholder{background:var(--surf);border:0.5px solid var(--border);border-radius:10px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:var(--text3);font-size:.83rem;cursor:pointer;transition:all .2s;}
+.sim-placeholder:hover{border-color:rgba(49,168,255,.3);color:var(--text2);}
+.sim-icon{font-size:2rem;margin-bottom:.25rem;}
+.action-area{background:var(--surf);border:0.5px solid var(--border);border-radius:10px;padding:.875rem;}
+.action-title{font-size:.78rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem;}
+.mc-option{padding:.45rem .75rem;border-radius:7px;border:0.5px solid var(--border);background:var(--bg);font-size:.83rem;color:var(--text2);cursor:pointer;margin-bottom:.35rem;transition:all .15s;}
+.mc-option:hover{border-color:rgba(49,168,255,.35);color:var(--text);}
+.mc-option.selected{border-color:rgba(49,168,255,.5);background:rgba(49,168,255,.08);color:var(--text);}
+.mc-option.correct{border-color:rgba(0,214,143,.5);background:rgba(0,214,143,.08);color:#7FFFD4;}
+.mc-option.wrong{border-color:rgba(255,77,109,.5);background:rgba(255,77,109,.08);}
+.fb-block{padding:.6rem .875rem;border-radius:8px;font-size:.82rem;line-height:1.55;margin-top:.5rem;}
+.fb-correct{background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.25);color:#7FFFD4;}
+.fb-wrong{background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.25);color:#FFB3C1;}
+.fb-info{background:rgba(49,168,255,.08);border:0.5px solid rgba(49,168,255,.25);color:#B5D4F4;}
+
+/* MC QUIZ SLIDE */
+.slide-mc{}
+.mc-header{margin-bottom:1rem;}
+.mc-q-counter{font-family:var(--mono);font-size:.72rem;color:var(--text3);margin-bottom:.3rem;}
+.mc-question{font-size:1rem;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:.875rem;}
+.mc-options{display:flex;flex-direction:column;gap:.4rem;}
+.mc-submit{margin-top:.875rem;}
+
+/* SUMMARY SLIDE */
+.slide-summary{background:linear-gradient(135deg,var(--bg) 0%,#0F3D1A 100%);}
+.summary-icon{font-size:3rem;margin-bottom:.75rem;}
+.summary-title{font-size:1.8rem;font-weight:700;margin-bottom:.5rem;color:var(--correct);}
+.summary-sub{font-size:.92rem;color:var(--text2);max-width:520px;line-height:1.65;margin-bottom:1.5rem;}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;max-width:500px;}
+.sum-card{background:var(--surf);border:0.5px solid var(--border);border-radius:10px;padding:.875rem;text-align:center;}
+.sum-n{font-size:1.5rem;font-weight:700;color:var(--ps);}
+.sum-l{font-size:.75rem;color:var(--text3);margin-top:2px;}
+.next-steps{margin-top:1.25rem;}
+.ns-item{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;font-size:.85rem;color:var(--text2);}
+.ns-arrow{color:var(--ps);font-size:.9rem;}
+
+/* ── Responsive ──────────────────────────────────── */
+@media(max-width:800px){
+  .task-interactive{grid-template-columns:1fr;}
+  .cover-title{font-size:1.8rem;}
+  .domain-h{font-size:1.4rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <span class="tb-logo">Ps</span>
+    <span class="tb-title" id="tb-title">Adobe Photoshop — ACP 2025 Certification Prep</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+    <span class="tb-counter" id="tb-counter">1 / 20</span>
+  </div>
+
+  <!-- SLIDE VIEWPORT -->
+  <div class="slide-viewport" id="viewport">
+
+    <!-- ═══ SLIDE 0 — Cover ═══════════════════════════════ -->
+    <div class="slide slide-cover active" data-slide="0">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:680px;">
+        <p class="cover-eyebrow">ACP 2025 · Adobe Certified Professional</p>
+        <h1 class="cover-title">Visual Design Using<br>Adobe Photoshop</h1>
+        <p class="cover-sub">Complete certification preparation aligned to official Certiport ACP 2025 exam objectives. Guided and independent practice modes. Domains 2–4 covered in this deck.</p>
+        <div class="cover-badges">
+          <span class="cbadge" style="background:rgba(49,168,255,.1);color:var(--ps);border-color:rgba(49,168,255,.3);">Photoshop v26.x</span>
+          <span class="cbadge" style="background:rgba(0,214,143,.1);color:var(--correct);border-color:rgba(0,214,143,.25);">17 Live tasks</span>
+          <span class="cbadge" style="background:rgba(155,142,240,.1);color:#9B8EF0;border-color:rgba(155,142,240,.25);">8 MC sets</span>
+          <span class="cbadge" style="background:rgba(255,184,0,.1);color:var(--partial);border-color:rgba(255,184,0,.25);">~3–5 hours</span>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;font-size:.78rem;color:var(--text3);">Press → or click Next to begin · Keyboard: ← → arrows</div>
+    </div>
+
+    <!-- ═══ SLIDE 1 — Domain 2 intro ═══════════════════ -->
+    <div class="slide slide-domain" data-slide="1">
+      <div class="domain-num">Domain 2 of 6</div>
+      <h2 class="domain-h">Project Setup &amp; Interface</h2>
+      <p class="domain-desc">Configure documents for professional output, master the Photoshop workspace, import and link assets, manage colour, and work with brushes and patterns.</p>
+      <div class="obj-chips">
+        <div class="obj-chip"><span class="obj-code">Ps-2.1</span><span class="obj-text">Create/modify documents — resolution, colour mode, bit depth, presets</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-2.2</span><span class="obj-text">Workspace, panels, Options Bar, guides, grids, preferences</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-2.3</span><span class="obj-text">Import assets — embedded vs linked Smart Objects, Links panel</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-2.4</span><span class="obj-text">Colour Picker, swatches, Eyedropper, gradients, swatch export (.ase)</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-2.5</span><span class="obj-text">Brushes, styles, and patterns — create, import, organise libraries</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 2 — Task: New Document ════════════════ -->
+    <div class="slide slide-task" data-slide="2">
+      <div class="task-header">
+        <span class="acp-tag">Ps-2.1a</span>
+        <span class="bloom-tag">Apply</span>
+        <span class="gagne-tag">Gagne 2–7</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <h3 class="task-title">Task: Set appropriate document settings</h3>
+      <div class="task-scenario">A client needs a print-ready flyer. Create a new Photoshop document: <strong>8.5 × 11 in, Portrait, 300 ppi, RGB Color, 8 bit, White background.</strong></div>
+      <div class="steps-list">
+        <div class="step-item current" id="s2-1"><div class="step-num">1</div><div class="step-content"><div class="step-instr">File → New (Ctrl/Cmd+N) to open the New Document dialog.</div><div class="step-acp">Ps-2.1a · Gagne 3: Stimulate recall</div></div></div>
+        <div class="step-item" id="s2-2"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Set Width: 8.5, Height: 11 — unit: Inches.</div><div class="step-hint">US Letter size. Width/height in pixels = screen only.</div></div></div>
+        <div class="step-item" id="s2-3"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Set Resolution: 300 Pixels/Inch.</div><div class="step-hint">300 ppi = print standard. 72 ppi = screen only.</div></div></div>
+        <div class="step-item" id="s2-4"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Set Color Mode: RGB Color, Bit Depth: 8 bit.</div></div></div>
+        <div class="step-item" id="s2-5"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Set Background Contents: White → Click Create.</div><div class="step-acp">Ps-2.1a · Gagne 7: Provide feedback</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;display:flex;gap:.5rem;">
+        <a href="../simulator/d2-document-setup.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a>
+        <button class="nav-btn" onclick="markTaskDone(2)">Mark complete ✓</button>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 — MC: Domain 2 knowledge check ══════ -->
+    <div class="slide slide-mc" data-slide="3">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 2 · Question 1 of 3</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-2.1a / 1.3b</div>
+      </div>
+      <p class="mc-question">A designer needs to create a banner for large-format printing at 24 inches wide. Which resolution setting is correct for professional print output?</p>
+      <div class="mc-options" id="mc3-options">
+        <div class="mc-option" onclick="answerMC(3,0,2)">72 pixels/inch</div>
+        <div class="mc-option" onclick="answerMC(3,1,2)">150 pixels/inch</div>
+        <div class="mc-option" onclick="answerMC(3,2,2)">300 pixels/inch</div>
+        <div class="mc-option" onclick="answerMC(3,3,2)">600 pixels/inch</div>
+      </div>
+      <div id="mc3-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 4 — MC 2 ══════════════════════════════ -->
+    <div class="slide slide-mc" data-slide="4">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 2 · Question 2 of 3</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-2.3a</div>
+      </div>
+      <p class="mc-question">You placed an asset using File → Place Linked. Which icon appears on the layer thumbnail in the Layers panel to confirm it is a linked Smart Object?</p>
+      <div class="mc-options" id="mc4-options">
+        <div class="mc-option" onclick="answerMC(4,0,1)">A lock icon</div>
+        <div class="mc-option" onclick="answerMC(4,1,1)">A chain/link badge on the Smart Object thumbnail</div>
+        <div class="mc-option" onclick="answerMC(4,2,1)">A camera icon</div>
+        <div class="mc-option" onclick="answerMC(4,3,1)">A star icon</div>
+      </div>
+      <div id="mc4-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 5 — Domain 3 intro ════════════════════ -->
+    <div class="slide slide-domain" data-slide="5">
+      <div class="domain-num">Domain 3 of 6</div>
+      <h2 class="domain-h">Layers, Masks &amp; Adjustments</h2>
+      <p class="domain-desc">The heaviest Live-in-the-App domain on the ACP Photoshop exam. Covers all layer types, all five mask types, Smart Objects, adjustment layers, and non-destructive Smart Filters.</p>
+      <div class="obj-chips">
+        <div class="obj-chip"><span class="obj-code">Ps-3.1</span><span class="obj-text">Manage layers — groups, lock, merge, flatten, blending, Smart Objects</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-3.2b</span><span class="obj-text">Pixel mask — black hides, white reveals, Select and Mask refinement</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-3.2d</span><span class="obj-text">Vector mask — path-based, resolution-independent, crisp edges</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-3.2e</span><span class="obj-text">Clipping mask — clips upper layer to shape of layer below</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-3.2c</span><span class="obj-text">Frame tool — instant clipping container for placed images</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-3.3</span><span class="obj-text">Adjustment layers, presets, Smart Filters — all non-destructive</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 6 — Task: Pixel mask ══════════════════ -->
+    <div class="slide slide-task" data-slide="6">
+      <div class="task-header">
+        <span class="acp-tag">Ps-3.2b</span>
+        <span class="bloom-tag">Apply</span>
+        <span class="gagne-tag">Gagne 3–7</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <h3 class="task-title">Task: Create a pixel mask</h3>
+      <div class="task-scenario">Remove the background of a product photo <strong>non-destructively</strong> using a pixel mask. The original pixels must remain intact and the mask must be re-editable.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Select the "Product" layer in the Layers panel.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Click the Add Layer Mask button (□●) at the bottom of the Layers panel.</div><div class="step-hint">White mask = reveal all. Black = hide all (Alt+click for black mask).</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Click the white mask thumbnail (right thumbnail on the layer row) to target the mask.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Press B (Brush), press D (reset to black foreground), paint over the background to hide it.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Select → Select and Mask to refine edges around the subject.</div><div class="step-acp">Ps-3.2b · Black conceals, white reveals. Undo mask mistakes by painting white.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;display:flex;gap:.5rem;">
+        <a href="../simulator/d3-layers-masks.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a>
+        <button class="nav-btn" onclick="markTaskDone(6)">Mark complete ✓</button>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 7 — Concept: Mask types comparison ════ -->
+    <div class="slide slide-task" data-slide="7">
+      <div class="task-header">
+        <span class="acp-tag">Ps-3.2a–e</span>
+        <span class="bloom-tag">Understand</span>
+      </div>
+      <h3 class="task-title">Concept: All 5 mask types — when to use each</h3>
+      <div class="steps-list" style="max-height:none;">
+        <div class="step-item"><div class="step-num" style="background:rgba(49,168,255,.15);">1</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Pixel mask</div><div class="step-hint">Painted with Brush — black hides, white reveals, grey = partial. Best for: removing backgrounds, isolating subjects. Paint to fix.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(0,214,143,.15);">2</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Vector mask</div><div class="step-hint">Uses a path — resolution-independent, crisp edges at any size. Best for: logos, geometric shapes, text effects. Edit path to fix.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,154,0,.15);">3</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Clipping mask</div><div class="step-hint">Clips upper layer to shape of layer below. Best for: image inside shape, texture inside text. Alt+click border between layers.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(155,142,240,.15);">4</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Frame tool (K)</div><div class="step-hint">Placeholder frame — drag image in, auto-clips. Best for: layout placeholders, quick image-in-shape. Simplest clipping workflow.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,77,109,.15);">5</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Mask management: disable, unlink, delete</div><div class="step-hint">Shift+click = disable (red X). Click chain icon = unlink. Drag to trash = delete permanently.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 8 — MC: Domain 3 ══════════════════════ -->
+    <div class="slide slide-mc" data-slide="8">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 3 · Question 1 of 2</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-3.1c</div>
+      </div>
+      <p class="mc-question">What is the primary advantage of converting a layer to a Smart Object before applying filters?</p>
+      <div class="mc-options" id="mc8-options">
+        <div class="mc-option" onclick="answerMC(8,0,1)">The file size is reduced</div>
+        <div class="mc-option" onclick="answerMC(8,1,1)">Filters become Smart Filters — non-destructive and re-editable at any time</div>
+        <div class="mc-option" onclick="answerMC(8,2,1)">The layer is automatically backed up to the cloud</div>
+        <div class="mc-option" onclick="answerMC(8,3,1)">It converts raster pixels to vectors</div>
+      </div>
+      <div id="mc8-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 9 — MC: Domain 3 Q2 ══════════════════ -->
+    <div class="slide slide-mc" data-slide="9">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 3 · Question 2 of 2</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-3.3a</div>
+      </div>
+      <p class="mc-question">You added a Levels adjustment layer to correct exposure. How do you limit it to affect only the layer directly below it — not all layers?</p>
+      <div class="mc-options" id="mc9-options">
+        <div class="mc-option" onclick="answerMC(9,0,3)">Delete the adjustment layer and use Image → Adjustments → Levels instead</div>
+        <div class="mc-option" onclick="answerMC(9,1,3)">Lock the adjustment layer</div>
+        <div class="mc-option" onclick="answerMC(9,2,3)">Merge the adjustment layer with the layer below</div>
+        <div class="mc-option" onclick="answerMC(9,3,3)">Alt+click (Option+click) the border between the adjustment layer and the layer below to create a clipping group</div>
+      </div>
+      <div id="mc9-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 10 — Domain 4 intro ═══════════════════ -->
+    <div class="slide slide-domain" data-slide="10">
+      <div class="domain-num">Domain 4 of 6</div>
+      <h2 class="domain-h">Adding Content to a Document</h2>
+      <p class="domain-desc">Raster and vector drawing tools, AI-powered generative tools (new in ACP 2025), typography, and converting text for pixel-level editing.</p>
+      <div class="obj-chips">
+        <div class="obj-chip"><span class="obj-code">Ps-4.1a</span><span class="obj-text">Brush, Smudge, Sharpen, Blur — raster creation tools</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-4.1b</span><span class="obj-text">Eraser, Background Eraser, History Brush — deletion & revision</span></div>
+        <div class="obj-chip" style="border-color:rgba(155,142,240,.3);"><span class="obj-code" style="color:#9B8EF0;">Ps-4.1c ✦</span><span class="obj-text">Generative Fill &amp; Sky Replacement — AI objectives (2025 new)</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-4.2a</span><span class="obj-text">Pen tool, Curvature Pen, vector shapes, anchor points</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-4.3</span><span class="obj-text">Type tools, Character/Paragraph panels, rasterise, convert to Smart Object</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 11 — Task: Generative Fill (AI) ═══════ -->
+    <div class="slide slide-task" data-slide="11">
+      <div class="task-header">
+        <span class="acp-tag">Ps-4.1c</span>
+        <span class="bloom-tag">Apply</span>
+        <span class="gagne-tag" style="background:rgba(155,142,240,.15);color:#9B8EF0;border-color:rgba(155,142,240,.25);">✦ AI — 2025</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <h3 class="task-title">Task: Generative Fill &amp; Sky Replacement</h3>
+      <div class="task-scenario">Replace an overcast sky with a dramatic sunset using Sky Replacement, then remove an unwanted object using Generative Fill with an empty prompt.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Edit → Sky Replacement to open the dialog. AI auto-detects and masks the sky.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Select a sky preset from the Sunsets category → click OK.</div><div class="step-hint">Creates a non-destructive Sky Replacement Group layer.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Select the unwanted object with any selection tool (Lasso, Marquee, or Select Subject).</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Edit → Generative Fill — leave the prompt EMPTY to remove and fill with context.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Click Generate. Use arrows to cycle through 3 AI-generated variations.</div><div class="step-acp">Ps-4.1c · Generative Layer = non-destructive. Original pixels preserved underneath.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;display:flex;gap:.5rem;">
+        <a href="../simulator/d4-content.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a>
+        <button class="nav-btn" onclick="markTaskDone(11)">Mark complete ✓</button>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 12 — Task: Pen tool ═══════════════════ -->
+    <div class="slide slide-task" data-slide="12">
+      <div class="task-header">
+        <span class="acp-tag">Ps-4.2a</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <h3 class="task-title">Task: Vector drawing — Pen tool &amp; shapes</h3>
+      <div class="task-scenario">Create a custom speech bubble using the Pen tool in Shape mode. Add anchor points to refine curves. Finish with a Custom Shape preset.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Press P — Pen tool. Options Bar: set mode to Shape, choose a fill colour.</div><div class="step-hint">Shape mode creates vector layers with fill. Path mode = no fill, guides only.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Click (no drag) = corner anchor. Click + drag = smooth curved anchor.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Hover Pen over path segment → cursor shows + → click to add an anchor point.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Press A (Direct Selection) to drag individual anchor points and reshape the curve.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Press Shift+U to cycle to Custom Shape tool → Options Bar shape picker → select star.</div><div class="step-acp">Ps-4.2a · Custom shapes are resolution-independent vector paths.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;display:flex;gap:.5rem;">
+        <a href="../simulator/d4-content.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a>
+        <button class="nav-btn" onclick="markTaskDone(12)">Mark complete ✓</button>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 13 — Task: Typography ═════════════════ -->
+    <div class="slide slide-task" data-slide="13">
+      <div class="task-header">
+        <span class="acp-tag">Ps-4.3a/b</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <h3 class="task-title">Task: Type tools &amp; character settings</h3>
+      <div class="task-scenario">Design a magazine headline with two typographic levels: a 72pt display headline with tracking 200, and a 16pt subtitle in area type. Use Character and Paragraph panels.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Press T — Type tool. Single click = point type (grows with content).</div><div class="step-hint">Click + drag = area/paragraph type (wraps in box). Use area type for body text.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Type "SUMMER 2025" → commit: Ctrl+Enter (Cmd+Return).</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Window → Character. Set font size to 72 pt.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Set Tracking (AV↔ field) to 200 for wide letter spacing.</div><div class="step-hint">Tracking = all characters. Kerning = between a specific pair.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Window → Paragraph → set Center alignment. Then drag with Type tool to create area type subtitle.</div><div class="step-acp">Ps-4.3b · Character panel = individual glyphs. Paragraph panel = whole paragraph.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;display:flex;gap:.5rem;">
+        <a href="../simulator/d4-content.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a>
+        <button class="nav-btn" onclick="markTaskDone(13)">Mark complete ✓</button>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 14 — MC: Domain 4 Q1 ══════════════════ -->
+    <div class="slide slide-mc" data-slide="14">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 4 · Question 1 of 3</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-4.1c</div>
+      </div>
+      <p class="mc-question">When using Generative Fill to remove an unwanted object, what should you type in the text prompt?</p>
+      <div class="mc-options" id="mc14-options">
+        <div class="mc-option" onclick="answerMC(14,0,3)">Type a detailed description of the background behind the object</div>
+        <div class="mc-option" onclick="answerMC(14,1,3)">Type "remove" and the object name</div>
+        <div class="mc-option" onclick="answerMC(14,2,3)">Type the colour of the surrounding area</div>
+        <div class="mc-option" onclick="answerMC(14,3,3)">Leave the prompt empty — Photoshop fills with context-aware content</div>
+      </div>
+      <div id="mc14-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 15 — MC: Domain 4 Q2 ══════════════════ -->
+    <div class="slide slide-mc" data-slide="15">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 4 · Question 2 of 3</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-4.3a</div>
+      </div>
+      <p class="mc-question">What is the difference between point type and area (paragraph) type in Photoshop?</p>
+      <div class="mc-options" id="mc15-options">
+        <div class="mc-option" onclick="answerMC(15,0,1)">Point type wraps in a box; area type grows with the text</div>
+        <div class="mc-option" onclick="answerMC(15,1,1)">Point type (single click) grows with content; area type (click-drag) wraps inside a defined box</div>
+        <div class="mc-option" onclick="answerMC(15,2,1)">Point type is for headlines only; area type is for body text only</div>
+        <div class="mc-option" onclick="answerMC(15,3,1)">There is no functional difference between point and area type</div>
+      </div>
+      <div id="mc15-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 16 — MC: Domain 4 Q3 ══════════════════ -->
+    <div class="slide slide-mc" data-slide="16">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 4 · Question 3 of 3</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-4.3b</div>
+      </div>
+      <p class="mc-question">In the Character panel, which setting controls the spacing between ALL selected characters uniformly?</p>
+      <div class="mc-options" id="mc16-options">
+        <div class="mc-option" onclick="answerMC(16,0,2)">Kerning</div>
+        <div class="mc-option" onclick="answerMC(16,1,2)">Leading</div>
+        <div class="mc-option" onclick="answerMC(16,2,2)">Tracking</div>
+        <div class="mc-option" onclick="answerMC(16,3,2)">Baseline shift</div>
+      </div>
+      <div id="mc16-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 17 — Domain 5 intro ════════════════════ -->
+    <div class="slide slide-domain" data-slide="17" style="background:linear-gradient(135deg,var(--bg) 0%,#1A0A2E 100%);">
+      <div class="domain-num">Domain 5 of 6</div>
+      <h2 class="domain-h">Modifying Visual Elements</h2>
+      <p class="domain-desc">The highest-complexity domain on the ACP exam — covers every selection method, all retouching tools, transforms, layer styles, and Smart Filters.</p>
+      <div class="obj-chips">
+        <div class="obj-chip"><span class="obj-code">Ps-5.1</span><span class="obj-text">Select Subject, Object Selection, Color Range — modify, feather, save as alpha channel</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-5.2</span><span class="obj-text">Healing, Clone, Content-Aware Fill, AI Remove, Find Distractions, Burn/Dodge/Sponge</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-5.3</span><span class="obj-text">Crop (non-destructive), Canvas Size, Free Transform, Warp, Distort, Perspective</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-5.4</span><span class="obj-text">Smart Filters, layer styles — apply, copy, paste, scale, clear; Materials</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 18 — Task: Selections ═══════════════════ -->
+    <div class="slide slide-task" data-slide="18">
+      <div class="task-header">
+        <span class="acp-tag">Ps-5.1a/b/c</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <h3 class="task-title">Task: Selections — Subject, Color Range &amp; alpha channels</h3>
+      <div class="task-scenario">Isolate a subject using three ACP-tested selection methods, refine and save the selection.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Select → Subject. AI detects the main subject automatically — marching ants appear.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Press W — Object Selection. Draw a box around a specific object; Photoshop snaps to its edges.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Select → Color Range. Click the sky. Set Fuzziness to 40. Click OK.</div><div class="step-hint">Fuzziness 0 = exact colour only. ~40 is typical for sky selections.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Shift+click to add regions; Alt+click to subtract. Select → Modify → Feather → 5px for soft edge.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Select → Save Selection. Names it and stores it as an alpha channel in the Channels panel.</div><div class="step-acp">Ps-5.1c · Load saved selections via Select → Load Selection or by Ctrl+clicking the channel.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;"><a href="../simulator/d5-modifying.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a><button class="nav-btn" onclick="markTaskDone(18)" style="margin-left:.5rem;">Mark complete ✓</button></div>
+    </div>
+
+    <!-- ═══ SLIDE 19 — Task: Retouching & AI Remove ════════ -->
+    <div class="slide slide-task" data-slide="19">
+      <div class="task-header">
+        <span class="acp-tag">Ps-5.2a</span>
+        <span class="bloom-tag">Apply</span>
+        <span class="gagne-tag" style="background:rgba(155,142,240,.15);color:#9B8EF0;">✦ AI 2025</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~9 min</span>
+      </div>
+      <h3 class="task-title">Task: Retouching, Content-Aware Fill &amp; AI Remove</h3>
+      <div class="task-scenario">Remove a skin blemish with Spot Healing, clone a texture with Clone Stamp, fill a gap with Content-Aware Fill, and remove objects using the AI Remove tool.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Press J — Spot Healing Brush. Options Bar: Type = Content-Aware. Click directly on the blemish.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Press S — Clone Stamp. Alt+click a clean area to set source, then paint over the problem.</div><div class="step-hint">Clone = exact copy. Healing = blends with destination texture. Use Clone for precise texture work.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Select the gap → Edit → Content-Aware Fill. Preview appears. Output: New Layer → OK.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">J → Shift+J to cycle to the Remove tool. Paint over an object; release to trigger AI removal.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Edit → Find Distractions. Photoshop scans and marks distracting elements. Click Remove.</div><div class="step-acp">Ps-5.2a · Find Distractions + Remove tool is the fastest professional cleanup workflow (2025).</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;"><a href="../simulator/d5-modifying.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+    </div>
+
+    <!-- ═══ SLIDE 20 — Task: Transform ════════════════════ -->
+    <div class="slide slide-task" data-slide="20">
+      <div class="task-header">
+        <span class="acp-tag">Ps-5.3a/b</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <h3 class="task-title">Task: Crop, Canvas Size &amp; Free Transform</h3>
+      <div class="task-scenario">Prepare an image for Instagram: non-destructive 1:1 crop, canvas resize for a border, Free Transform with Warp.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Press C — Crop tool. Options Bar: ratio = 1:1. UNCHECK "Delete Cropped Pixels" for non-destructive crop.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Drag to frame, press Enter to commit. Cropped area is hidden — not deleted.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Image → Canvas Size. Add 200px to width and height (100px border each side). Click OK.</div><div class="step-hint">Canvas Size adds space around the image. Image Size resizes the image itself.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Select a layer → Ctrl+T (Free Transform). Drag handles to scale. Drag outside to rotate. Press Enter to commit.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Right-click inside Free Transform → Warp. Drag mesh points to reshape. Press Enter to commit.</div><div class="step-acp">Ps-5.3b · Warp options: Arch, Flag, Fish, Custom. Right-click also gives Distort and Perspective.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;"><a href="../simulator/d5-modifying.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+    </div>
+
+    <!-- ═══ SLIDE 21 — Task: Layer styles ═════════════════ -->
+    <div class="slide slide-task" data-slide="21">
+      <div class="task-header">
+        <span class="acp-tag">Ps-5.4a/b/c</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~8 min</span>
+      </div>
+      <h3 class="task-title">Task: Smart Filters &amp; layer styles</h3>
+      <div class="task-scenario">Apply a Smart Filter to a Smart Object, add multiple layer styles, then copy and paste those styles to a second layer.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">Right-click layer → Convert to Smart Object. Then Filter → Blur → Gaussian Blur. Set radius 3px → OK.</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Smart Filter appears below the layer. Double-click its name to reopen and change settings — non-destructive.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Click fx at the Layers panel bottom → Drop Shadow. Enable Bevel &amp; Emboss in the same dialog → OK.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">Right-click the fx badge → Copy Layer Style. Right-click the second layer → Paste Layer Style.</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Right-click fx → Scale Effects → set 80% to proportion the pasted effects to the new layer size.</div><div class="step-acp">Ps-5.4b · Scale Effects scales all style values proportionally — essential after pasting styles between different-sized layers.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;"><a href="../simulator/d5-modifying.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a></div>
+    </div>
+
+    <!-- ═══ SLIDE 22 — MC Domain 5 Q1 ═════════════════════ -->
+    <div class="slide slide-mc" data-slide="22">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 5 · Question 1 of 2</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-5.3a</div>
+      </div>
+      <p class="mc-question">To crop an image so that the cropped pixels can be recovered later, you must:</p>
+      <div class="mc-options" id="mc22-options">
+        <div class="mc-option" onclick="answerMC(22,0,1)">Check "Delete Cropped Pixels" in the Options Bar</div>
+        <div class="mc-option" onclick="answerMC(22,1,1)">Uncheck "Delete Cropped Pixels" in the Options Bar</div>
+        <div class="mc-option" onclick="answerMC(22,2,1)">Convert the layer to a Smart Object before cropping</div>
+        <div class="mc-option" onclick="answerMC(22,3,1)">Use Image → Canvas Size instead of the Crop tool</div>
+      </div>
+      <div id="mc22-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 23 — MC Domain 5 Q2 ═════════════════════ -->
+    <div class="slide slide-mc" data-slide="23">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 5 · Question 2 of 2</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-5.4b</div>
+      </div>
+      <p class="mc-question">You paste a Drop Shadow layer style from a 400px logo onto a 50px icon. The shadow looks too large. What is the fastest fix?</p>
+      <div class="mc-options" id="mc23-options">
+        <div class="mc-option" onclick="answerMC(23,0,2)">Delete the pasted style and manually re-enter the values</div>
+        <div class="mc-option" onclick="answerMC(23,1,2)">Reduce the layer size to match the original</div>
+        <div class="mc-option" onclick="answerMC(23,2,2)">Right-click the fx badge → Scale Effects → reduce the percentage</div>
+        <div class="mc-option" onclick="answerMC(23,3,2)">Clear Layer Style and re-apply from scratch</div>
+      </div>
+      <div id="mc23-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 24 — Domain 6 intro ═════════════════════ -->
+    <div class="slide slide-domain" data-slide="24" style="background:linear-gradient(135deg,var(--bg) 0%,#003A20 100%);">
+      <div class="domain-num">Domain 6 of 6 — Final domain</div>
+      <h2 class="domain-h" style="color:var(--correct);">Publishing Digital Media</h2>
+      <p class="domain-desc">Export and save workflows — the last step before delivering work. Choosing the right format, settings, and save method is consistently tested on the ACP exam.</p>
+      <div class="obj-chips">
+        <div class="obj-chip"><span class="obj-code">Ps-6.1a</span><span class="obj-text">Export layers, artboards as individual files — Layers to Files</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-6.1b</span><span class="obj-text">Export As (format, @2x, colour space), Quick Export, Export Preferences</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-6.2a</span><span class="obj-text">Save — PSD (native), Cloud Document, Save a Copy (flat version)</span></div>
+        <div class="obj-chip"><span class="obj-code">Ps-6.2b</span><span class="obj-text">File formats — PNG (transparency), JPEG (lossy), TIFF (16-bit print), PSD; bit depth; sRGB vs Adobe RGB</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 25 — Task: Export ════════════════════════ -->
+    <div class="slide slide-task" data-slide="25">
+      <div class="task-header">
+        <span class="acp-tag">Ps-6.1a/b</span>
+        <span class="bloom-tag">Apply</span>
+        <span style="font-size:.75rem;color:var(--text3);margin-left:auto;">~7 min</span>
+      </div>
+      <h3 class="task-title">Task: Export artboards &amp; Quick Export</h3>
+      <div class="task-scenario">Export 3 artboards as separate PNG files at 2x resolution, then configure Quick Export to default to JPEG.</div>
+      <div class="steps-list">
+        <div class="step-item current"><div class="step-num">1</div><div class="step-content"><div class="step-instr">File → Export → Export As. Set format: PNG. Check "Use Artboards".</div></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-instr">Click "Add Scale" → set to 2x. Both 1x and 2x PNG files will export — essential for Retina displays.</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-instr">Click Export All → choose destination folder. Files are named using the artboard name.</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-instr">File → Export → Layers to Files → exports each visible layer as its own file (sprites, animation frames).</div></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="step-content"><div class="step-instr">Edit → Preferences → Export. Set Quick Export Format to JPEG. Click OK.</div><div class="step-acp">Ps-6.1b · Quick Export skips the dialog — uses the preset format every time. PNG for transparency; JPEG for photographs.</div></div></div>
+      </div>
+      <div style="margin-top:.875rem;"><a href="../simulator/d6-publishing.html" target="_blank" class="nav-btn primary" style="text-decoration:none;">Open interactive simulator ↗</a><button class="nav-btn" onclick="markTaskDone(25)" style="margin-left:.5rem;">Mark complete ✓</button></div>
+    </div>
+
+    <!-- ═══ SLIDE 26 — Concept: File formats ══════════════ -->
+    <div class="slide slide-task" data-slide="26">
+      <div class="task-header">
+        <span class="acp-tag">Ps-6.2a/b</span>
+        <span class="bloom-tag">Understand</span>
+      </div>
+      <h3 class="task-title">Concept: File formats, bit depth &amp; colour space</h3>
+      <div class="steps-list" style="max-height:none;">
+        <div class="step-item"><div class="step-num" style="background:rgba(49,168,255,.15);">PSD</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Native Photoshop format</div><div class="step-hint">Preserves all layers, masks, Smart Objects, adjustment layers. Always save your master as PSD. File → Save As → Photoshop.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(0,214,143,.15);">PNG</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Lossless + transparency — web standard</div><div class="step-hint">Supports full alpha transparency. Lossless compression. sRGB colour space for web. Use for logos, icons, UI elements.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,154,0,.15);">JPG</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Lossy — no transparency — photographs</div><div class="step-hint">Quality 80–85 = professional web standard. No transparency. Best for full-colour photographs where file size matters.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(155,142,240,.15);color:#9B8EF0;">TIFF</div><div class="step-content"><div class="step-instr" style="font-weight:500;">Lossless + 16-bit + transparency — print master</div><div class="step-hint">Supports transparency, lossless LZW compression, and 16-bit depth. The only format supporting all three. Used for print-ready masters.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,77,109,.15);color:var(--wrong);">RGB</div><div class="step-content"><div class="step-instr" style="font-weight:500;">sRGB for web · Adobe RGB for print</div><div class="step-hint">Convert to sRGB before web publishing. Adobe RGB has wider gamut but must be converted — other profiles display with muted colours in browsers.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 27 — MC Domain 6 ════════════════════════ -->
+    <div class="slide slide-mc" data-slide="27">
+      <div class="mc-header">
+        <div class="mc-q-counter">Knowledge check · Ps Domain 6 · Question 1 of 1</div>
+        <div class="acp-tag" style="display:inline-block;margin-bottom:.6rem;">Ps-6.2a/b</div>
+      </div>
+      <p class="mc-question">A client needs the layered Photoshop file for future editing AND a flat JPEG for their website. How do you produce both without changing the working file?</p>
+      <div class="mc-options" id="mc27-options">
+        <div class="mc-option" onclick="answerMC(27,0,3)">File → Save As → JPEG (this replaces the open PSD)</div>
+        <div class="mc-option" onclick="answerMC(27,1,3)">File → Export → Quick Export as JPEG</div>
+        <div class="mc-option" onclick="answerMC(27,2,3)">Flatten the image first, then File → Save</div>
+        <div class="mc-option" onclick="answerMC(27,3,3)">File → Save a Copy → JPEG (saves a flat copy without changing the active PSD)</div>
+      </div>
+      <div id="mc27-feedback" class="fb-block fb-info" style="display:none;"></div>
+    </div>
+
+    <!-- ═══ SLIDE 28 — Exam reminders ═════════════════════ -->
+    <div class="slide slide-task" data-slide="28">
+      <div class="task-header">
+        <span class="acp-tag">Ps · All domains</span>
+        <span class="bloom-tag" style="background:rgba(255,184,0,.1);color:var(--partial);border-color:rgba(255,184,0,.25);">Evaluate</span>
+      </div>
+      <h3 class="task-title">ACP exam day — key reminders</h3>
+      <div class="steps-list" style="max-height:none;">
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div class="step-content"><div class="step-instr">50 minutes, 2 sections: MC first, then Live-in-the-App. Read every task brief completely before starting any action.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div class="step-content"><div class="step-instr">Non-destructive = correct on almost every task. Adjustment layers, Smart Objects, masks, non-destructive crop.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div class="step-content"><div class="step-instr">300 ppi + CMYK = print. 72 ppi + RGB + sRGB = screen/web. These appear in both sections.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div class="step-content"><div class="step-instr">2025 AI objectives: Generative Fill (empty prompt = remove), Sky Replacement, AI Remove + Find Distractions.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div class="step-content"><div class="step-instr">Layer mask: black hides, white reveals. Clipping mask: top object clips bottom. Vector mask: path-based, crisp edges.</div></div></div>
+        <div class="step-item"><div class="step-num" style="background:rgba(255,184,0,.15);color:var(--partial);">!</div><div class="step-content"><div class="step-instr">Save a Copy = flat duplicate, working PSD stays open. File → Package = not a Ps feature (that's Illustrator/InDesign).</div></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 29 — Final summary ══════════════════════ -->
+    <div class="slide slide-summary" data-slide="29">
+      <div class="summary-icon">✓</div>
+      <h2 class="summary-title">All 6 Domains Complete</h2>
+      <p class="summary-sub">You have covered the complete Photoshop ACP 2025 exam — all domains, all objectives. Practise the interactive simulators, then attempt the certification exam.</p>
+      <div class="summary-grid">
+        <div class="sum-card"><div class="sum-n">21</div><div class="sum-l">Tasks covered</div></div>
+        <div class="sum-card"><div class="sum-n">11</div><div class="sum-l">MC questions</div></div>
+        <div class="sum-card"><div class="sum-n" id="score-display">—</div><div class="sum-l">Your MC score</div></div>
+      </div>
+      <div class="next-steps">
+        <div class="ns-item"><span class="ns-arrow">→</span>Practice all simulators: D2 through D6</div>
+        <div class="ns-item"><span class="ns-arrow">→</span>Download task briefs and answer keys</div>
+        <div class="ns-item"><span class="ns-arrow">→</span>Complete the Kirkpatrick L1 reaction survey</div>
+        <div class="ns-item"><span class="ns-arrow">→</span>Continue with the Illustrator ACP course</div>
+      </div>
+    </div>
+
+  </div><!-- end viewport -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottombar">
+    <button class="nav-btn" id="btn-prev" onclick="goSlide(currentSlide-1)" disabled>← Prev</button>
+    <div class="dot-row" id="dot-row"></div>
+    <button class="nav-btn primary" id="btn-next" onclick="goSlide(currentSlide+1)">Next →</button>
+    <span class="kb-hint">← → keys to navigate</span>
+  </div>
+
+</div><!-- end deck -->
+
+<script>
+const TOTAL = 30;
+let currentSlide = 0;
+const mcState = {};
+let mcCorrect = 0, mcTotal = 0;
+
+const MC_ANSWERS = {
+  3: { correct: 2, explanation: '300 pixels/inch is the professional print standard. 72 ppi is for screen only and produces blurry print results.' },
+  4: { correct: 1, explanation: 'Linked Smart Objects show a chain-link badge on their thumbnail. Place Embedded shows the Smart Object icon without the chain.' },
+  8: { correct: 1, explanation: 'Smart Filters are the key benefit of Smart Objects — they remain fully editable and can be turned on/off or re-adjusted at any time.' },
+  9: { correct: 3, explanation: 'Alt+clicking (Option+clicking on Mac) the border between two layers creates a clipping group — the adjustment only affects the layer below it.' },
+  14: { correct: 3, explanation: 'An empty prompt tells Photoshop to analyse the surrounding context and fill intelligently — effectively removing the object.' },
+  15: { correct: 1, explanation: 'Single click = point type (expands with content). Click-drag = area/paragraph type (text wraps inside the drawn box).' },
+  16: { correct: 2, explanation: 'Tracking uniformly adjusts spacing between ALL selected characters. Kerning only affects the spacing between a specific pair.' },
+  22: { correct: 1, explanation: 'Unchecking "Delete Cropped Pixels" hides the cropped area without permanently removing it. You can recrop at any time to reveal the hidden pixels. Checking it permanently deletes the pixels.' },
+  23: { correct: 2, explanation: 'Right-click fx → Scale Effects scales all layer style values proportionally — essential when pasting styles between layers of different sizes. This is faster and more precise than manually re-entering values.' },
+  27: { correct: 3, explanation: '"Save a Copy" saves a duplicate in any format while leaving the original PSD open and unchanged as the active document. "Save As" changes the active document to the saved file — the PSD is no longer active.' }
+};
+
+function buildDots() {
+  const row = document.getElementById('dot-row');
+  row.innerHTML = '';
+  const show = Math.min(TOTAL, 12);
+  for (let i = 0; i < show; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === currentSlide ? ' active' : '');
+    d.onclick = () => goSlide(i);
+    d.title = 'Slide ' + (i+1);
+    row.appendChild(d);
+  }
+}
+
+function goSlide(n) {
+  if (n < 0 || n >= TOTAL) return;
+  const slides = document.querySelectorAll('.slide');
+  slides[currentSlide].classList.remove('active');
+  slides[currentSlide].classList.add('out-left');
+  setTimeout(() => slides[currentSlide < n ? currentSlide : n+1]?.classList.remove('out-left'), 400);
+  currentSlide = n;
+  slides[currentSlide].classList.add('active');
+  slides[currentSlide].classList.remove('out-left');
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('tb-counter').textContent = (currentSlide+1) + ' / ' + TOTAL;
+  document.getElementById('prog-fill').style.width = ((currentSlide+1)/TOTAL*100) + '%';
+  const slide = document.querySelectorAll('.slide')[currentSlide];
+  const titleMap = {0:'Cover',1:'Domain 2: Project Setup',5:'Domain 3: Layers & Masks',10:'Domain 4: Adding Content',17:'Domains 5 & 6 Preview',18:'Exam Day Reminders',19:'Summary'};
+  document.getElementById('tb-title').textContent = titleMap[currentSlide] || 'Adobe Photoshop — ACP 2025';
+  document.getElementById('btn-prev').disabled = currentSlide === 0;
+  document.getElementById('btn-next').textContent = currentSlide >= TOTAL-1 ? 'Finish ✓' : 'Next →';
+  if (currentSlide === 29) updateScore();
+  buildDots();
+}
+
+function answerMC(slideIdx, chosen, correct) {
+  if (mcState[slideIdx]) return;
+  mcState[slideIdx] = { answered: true, correct: chosen === correct };
+  mcTotal++;
+  if (chosen === correct) mcCorrect++;
+
+  const opts = document.querySelectorAll('#mc'+slideIdx+'-options .mc-option');
+  opts.forEach((el, i) => {
+    el.style.cursor = 'default';
+    el.style.pointerEvents = 'none';
+    if (i === correct) el.classList.add('correct');
+    if (i === chosen && chosen !== correct) el.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('mc'+slideIdx+'-feedback');
+  const info = MC_ANSWERS[slideIdx];
+  if (fb && info) {
+    fb.style.display = 'block';
+    fb.className = 'fb-block ' + (chosen === correct ? 'fb-correct' : 'fb-wrong');
+    fb.innerHTML = '<strong>' + (chosen === correct ? '✓ Correct' : '✗ Incorrect') + '</strong> — ' + info.explanation;
+  }
+}
+
+function markTaskDone(slideIdx) {
+  const btn = document.querySelector(`[data-slide="${slideIdx}"] .nav-btn:last-child`);
+  if (btn) { btn.textContent = '✓ Done'; btn.style.background='rgba(0,214,143,.15)'; btn.style.color='var(--correct)'; btn.style.borderColor='rgba(0,214,143,.3)'; }
+}
+
+function updateScore() {
+  const el = document.getElementById('score-display');
+  if (el && mcTotal > 0) el.textContent = Math.round(mcCorrect/mcTotal*100) + '%';
+  else if (el) el.textContent = 'N/A';
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goSlide(currentSlide + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goSlide(currentSlide - 1);
+});
+
+// SCORM API stub (for LMS integration)
+const SCORM = {
+  init: () => {
+    try { if (window.API) window.API.LMSInitialize(''); } catch(e) {}
+    try { if (window.API_1484_11) window.API_1484_11.Initialize(''); } catch(e) {}
+  },
+  complete: () => {
+    try { if (window.API) { window.API.LMSSetValue('cmi.core.lesson_status','completed'); window.API.LMSCommit(''); } } catch(e) {}
+    try { if (window.API_1484_11) { window.API_1484_11.SetValue('cmi.completion_status','completed'); window.API_1484_11.Commit(''); } } catch(e) {}
+  }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  SCORM.init();
+  buildDots();
+  updateUI();
+});
+
+// Mark complete when reaching last slide
+const observer = new MutationObserver(() => {
+  if (currentSlide >= TOTAL - 1) SCORM.complete();
+});
+</script>
+</body>
+</html>

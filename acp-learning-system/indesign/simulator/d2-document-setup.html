@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Id · Domain 2: Document Setup | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--id:#00C896;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#002A1A 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,200,150,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--id);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--id);color:#000;border-color:var(--id);}
+
+/* InDesign UI chrome */
+.adobe-sim{background:#303030;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3A3A3A;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#00C896;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 240px;min-height:360px;}
+.adobe-tools{background:#303030;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(0,200,150,.2);color:#00C896;}
+.tool-btn.highlight{border:1.5px solid #00C896;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#5A5A5A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.id-spread{position:relative;display:flex;gap:4px;}
+.id-page{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.id-page .bleed{position:absolute;border:0.5px dashed rgba(255,0,0,.4);pointer-events:none;}
+.id-page .margin{position:absolute;border:0.5px solid rgba(0,100,200,.35);pointer-events:none;}
+.id-page .slug{position:absolute;border:0.5px dashed rgba(0,180,0,.3);pointer-events:none;}
+.page-label{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:8px;color:#CCC;font-family:var(--font-mono);white-space:nowrap;}
+.adobe-panels{background:#303030;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;overflow-y:auto;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;cursor:pointer;flex-shrink:0;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;min-width:55px;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#00C896;box-shadow:0 0 0 2px rgba(0,200,150,.15);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:#00C896;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#00C896;color:#00C896;}
+.swatch-row{display:flex;gap:3px;flex-wrap:wrap;padding:3px 0;}
+.swatch{width:16px;height:16px;border-radius:2px;cursor:pointer;border:0.5px solid rgba(255,255,255,.1);}
+.swatch.selected{outline:2px solid #00C896;outline-offset:1px;}
+.links-row{display:flex;align-items:center;gap:5px;padding:3px 5px;border-radius:3px;cursor:pointer;font-size:9px;color:#CCC;margin-bottom:2px;}
+.links-row:hover{background:#3A3A3A;}
+.links-status{font-size:8px;width:12px;text-align:center;}
+
+/* Dialog */
+.dialog-box{background:#3A3A3A;border-radius:6px;width:100%;max-width:350px;border:0.5px solid #555;box-shadow:0 16px 50px rgba(0,0,0,.8);}
+.dialog-title{background:#333;padding:10px 14px;font-size:11px;font-weight:600;color:#EEE;border-bottom:1px solid #1A1A1A;border-radius:6px 6px 0 0;}
+.dialog-body{padding:12px 14px;}
+.dialog-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.dialog-label{font-size:10px;color:#AAA;min-width:70px;}
+.dialog-input{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:10px;padding:4px 7px;border-radius:3px;flex:1;font-family:var(--font-mono);}
+.dialog-input.highlight{border-color:#00C896;box-shadow:0 0 0 2px rgba(0,200,150,.15);}
+.dialog-select{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:10px;padding:4px 6px;border-radius:3px;flex:1;cursor:pointer;}
+.dialog-select.highlight{border-color:#00C896;}
+.dialog-check-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:10px;color:#CCC;cursor:pointer;}
+.dialog-footer{padding:8px 14px;background:#2B2B2B;border-top:1px solid #1A1A1A;border-radius:0 0 6px 6px;display:flex;justify-content:flex-end;gap:6px;}
+.dialog-btn{padding:5px 16px;border-radius:3px;font-size:10px;font-weight:500;cursor:pointer;border:none;}
+.dialog-btn-ok{background:#00C896;color:#000;}
+.dialog-btn-cancel{background:#555;color:#CCC;}
+
+/* Step/feedback/score */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link id active">InDesign</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-id">InDesign</span>
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id · Domain 2</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Document Setup &amp; Interface</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">4 objectives · 7 tasks · Guided &amp; Independent modes · ACP 2025 v20.x</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 2 tasks</div>
+
+  <div class="task-item active" onclick="loadTask('id-2-1a')" id="nav-id21a">
+    <div class="task-icon" id="icon-id21a">2.1</div>
+    <div class="task-info"><div class="task-obj">Id-2.1</div><div class="task-name">New document — bleed, slug, margins, facing pages</div></div>
+    <div class="task-score" id="sc-id21a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-2-2a')" id="nav-id22a">
+    <div class="task-icon" id="icon-id22a">2.2</div>
+    <div class="task-info"><div class="task-obj">Id-2.2</div><div class="task-name">Workspace, panels, Smart Guides &amp; grid</div></div>
+    <div class="task-score" id="sc-id22a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-2-3a')" id="nav-id23a">
+    <div class="task-icon" id="icon-id23a">2.3</div>
+    <div class="task-info"><div class="task-obj">Id-2.3</div><div class="task-name">Place assets — linking, CC Libraries, Links panel</div></div>
+    <div class="task-score" id="sc-id23a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-2-4a')" id="nav-id24a">
+    <div class="task-icon" id="icon-id24a">2.4</div>
+    <div class="task-info"><div class="task-obj">Id-2.4</div><div class="task-name">Swatches — CMYK, tints, gradients, spot colour</div></div>
+    <div class="task-score" id="sc-id24a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-2-mc')" id="nav-id2mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 1–2</div><div class="task-name">Knowledge check</div></div>
+    <div class="task-score" id="sc-id2mc">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Id overview</div></div>
+  </a>
+  <a href="d3-master-pages.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Domain 3 →</div></div>
+  </a>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS = {
+
+/* ── 2.1 New document ─────────────────────────────── */
+'id-2-1a': {
+  id:'id-2-1a', tool:'indesign', domain:2,
+  objective:'2.1', objectiveText:'Create a new document with bleed, slug, margins, columns, and facing pages',
+  bloomsLevel:'Apply', estimatedMinutes:9, uiType:'new-doc',
+  scenario:'Create a new A4 magazine spread: facing pages, 3mm bleed on all sides, 6mm slug at top, 12mm margins, 2 columns with 5mm gutter. Intent: Print.',
+  steps:[
+    {id:1, instruction:'Open the New Document dialog. File → New → Document.',
+     expectedAction:'menu-click', expectedTarget:'file-new-doc',
+     hint1:'Go to the File menu.',hint2:'File → New → Document.',hint3:'File → New → Document (Ctrl+N / Cmd+N).',
+     correctFeedback:'New Document dialog open. InDesign shows preset tabs — Print, Web, Mobile.',
+     incorrectFeedback:'Go to File → New → Document.',
+     acpContext:'ACP Id-2.1: The New Document dialog in InDesign has a Preview checkbox — always enable it to see changes in real time before clicking Create.',gagneEvent:3},
+    {id:2, instruction:'Set Intent to Print, Width to 210mm, Height to 297mm (A4). Set Pages to 4 and check Facing Pages.',
+     expectedAction:'click', expectedTarget:'facing-pages-cb',
+     hint1:'Find the Facing Pages checkbox.',hint2:'Check Facing Pages — this creates left/right page spreads like a book or magazine.',hint3:'Intent: Print → Width: 210mm → Height: 297mm → Pages: 4 → check Facing Pages.',
+     correctFeedback:'Facing pages enabled. Pages pair into spreads — a left page and a right page displayed together.',
+     incorrectFeedback:'Check the Facing Pages checkbox in the New Document dialog.',
+     acpContext:'ACP Id-2.1: Facing Pages creates a mirrored margin structure — inside and outside margins instead of left and right. Essential for any publication designed to be bound.',gagneEvent:6},
+    {id:3, instruction:'Set Margins: Top 12mm, Bottom 12mm, Inside 12mm, Outside 12mm. Set Columns to 2, Gutter to 5mm.',
+     expectedAction:'input', expectedTarget:'margin-top', expectedValue:'12', matchType:'exact',
+     hint1:'Find the Margins section in the dialog.',hint2:'Set all four margin fields to 12mm. Then set Columns to 2 and Gutter to 5mm.',hint3:'Margins: all 12mm → Columns: 2 → Gutter: 5mm.',
+     correctFeedback:'Margins and columns set. Column guides appear inside the margin guides on the artboard.',
+     incorrectFeedback:'Set all margin values to 12mm in the New Document dialog.',
+     acpContext:'ACP Id-2.1: Margins define the live area — the safe zone for primary content. Column guides subdivide the live area. Gutter is the gap between columns.',gagneEvent:6},
+    {id:4, instruction:'Set Bleed to 3mm on all sides. Click the chain icon to link all four bleed fields.',
+     expectedAction:'input', expectedTarget:'bleed-top', expectedValue:'3', matchType:'exact',
+     hint1:'Find the Bleed section — usually under More Options.',hint2:'Set Top bleed to 3mm. Click the chain/link icon to apply the same value to all sides.',hint3:'Bleed → Top: 3mm → click the chain icon to link all → all become 3mm.',
+     correctFeedback:'3mm bleed set on all sides. The red bleed guides appear 3mm outside the page edge on the artboard.',
+     incorrectFeedback:'Set the top bleed to 3mm and click the chain icon to link all four bleed values.',
+     acpContext:'ACP Id-2.1: Bleed (typically 3mm / 0.125in) extends artwork beyond the trim edge. After printing and cutting, no white borders appear even with minor cutting variation.',gagneEvent:6},
+    {id:5, instruction:'Set Slug Top to 6mm. The slug holds printer marks and instructions outside the bleed area.',
+     expectedAction:'input', expectedTarget:'slug-top', expectedValue:'6', matchType:'exact',
+     hint1:'Find the Slug fields — adjacent to the Bleed fields.',hint2:'Set Slug Top to 6mm. Leave other slug values at 0.',hint3:'Slug → Top: 6mm → other sides: 0mm.',
+     correctFeedback:'Top slug set to 6mm. The slug area sits outside the bleed and holds registration marks, colour bars, and printer notes.',
+     incorrectFeedback:'Set the Slug Top value to 6mm.',
+     acpContext:'ACP Id-2.1: The slug is outside the bleed. Content here does not print on the final trimmed piece — it is used for file information, registration marks, and printer instructions.',gagneEvent:7},
+    {id:6, instruction:'Click Create (or OK) to generate the document.',
+     expectedAction:'click', expectedTarget:'new-doc-create',
+     hint1:'Click the Create or OK button.',hint2:'Click Create at the bottom right of the dialog.',hint3:'Click Create — the document opens with all guides visible.',
+     correctFeedback:'Document created. You can see margin guides (purple), bleed guides (red), and slug guides (blue/green) on the artboard.',
+     incorrectFeedback:'Click Create to generate the document.',
+     acpContext:'ACP Id-2.1: To change any of these settings after creation: File → Document Setup. To change margins/columns per page: Layout → Margins and Columns.',gagneEvent:7}
+  ]
+},
+
+/* ── 2.2 Workspace, Smart Guides ─────────────────── */
+'id-2-2a': {
+  id:'id-2-2a', tool:'indesign', domain:2,
+  objective:'2.2', objectiveText:'Configure the workspace, panels, Smart Guides, and Document Grid',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'workspace',
+  scenario:'Switch to the Typography workspace, enable Smart Guides, turn on the Document Grid with 10mm spacing, and create a guide at 100mm from the top.',
+  steps:[
+    {id:1, instruction:'Switch workspace. Window → Workspace → Typography.',
+     expectedAction:'menu-click', expectedTarget:'workspace-typography',
+     hint1:'Go to the Window menu.',hint2:'Window → Workspace → Typography.',hint3:'Window → Workspace → select Typography.',
+     correctFeedback:'Typography workspace active. Type-related panels (Character, Paragraph, Glyphs, Story) are now docked and visible.',
+     incorrectFeedback:'Go to Window → Workspace → Typography.',
+     acpContext:'ACP Id-2.2: InDesign workspaces save panel layouts per task type. Switching workspaces opens the relevant panels automatically. Save custom workspaces via Window → Workspace → New Workspace.',gagneEvent:4},
+    {id:2, instruction:'Enable Smart Guides. View → Grids & Guides → Smart Guides (or Ctrl+U / Cmd+U).',
+     expectedAction:'menu-click', expectedTarget:'smart-guides',
+     hint1:'Go to View menu.',hint2:'View → Grids & Guides → Smart Guides.',hint3:'View → Grids & Guides → Smart Guides (Ctrl+U).',
+     correctFeedback:'Smart Guides enabled. Objects now display alignment cues, distance measurements, and rotation angles as you move or resize them.',
+     incorrectFeedback:'Go to View → Grids & Guides → Smart Guides.',
+     acpContext:'ACP Id-2.2: Smart Guides are more powerful in InDesign than in Illustrator — they show gap measurements between objects and align to object centres and edges simultaneously.',gagneEvent:5},
+    {id:3, instruction:'Show the Document Grid. View → Grids & Guides → Show Document Grid (Ctrl+" / Cmd+").',
+     expectedAction:'menu-click', expectedTarget:'show-grid',
+     hint1:'Go to View → Grids & Guides.',hint2:'View → Grids & Guides → Show Document Grid.',hint3:'View → Grids & Guides → Show Document Grid (Ctrl+").',
+     correctFeedback:'Document Grid visible. Set the grid spacing in Preferences → Grids.',
+     incorrectFeedback:'Go to View → Grids & Guides → Show Document Grid.',
+     acpContext:'ACP Id-2.2: The Document Grid is set in Edit → Preferences → Grids (Windows) / InDesign → Preferences → Grids (Mac). Grid spacing applies to the entire application, not just the current document.',gagneEvent:5},
+    {id:4, instruction:'Create a guide at exactly 100mm from the top. Drag from the top ruler, then double-click to set the exact position.',
+     expectedAction:'click', expectedTarget:'drag-guide',
+     hint1:'Click and drag from the top ruler to create a horizontal guide.',hint2:'Drag from the top ruler, then double-click the guide to open the Edit Guide dialog.',hint3:'Drag from ruler → release → double-click the guide → Position: 100mm → click OK.',
+     correctFeedback:'Guide placed at 100mm. Double-clicking opens the Edit Guide dialog for precise positioning.',
+     incorrectFeedback:'Drag from the top ruler to create a guide, then double-click it to set the position to 100mm.',
+     acpContext:'ACP Id-2.2: Create guides by dragging from rulers, or via Layout → Create Guides (creates a grid of guides). View → Lock Guides prevents accidental movement.',gagneEvent:6},
+    {id:5, instruction:'Open Preflight panel to confirm the document has no errors. Window → Output → Preflight.',
+     expectedAction:'menu-click', expectedTarget:'window-preflight',
+     hint1:'Go to Window → Output.',hint2:'Window → Output → Preflight.',hint3:'Window → Output → Preflight opens the live preflight panel.',
+     correctFeedback:'Preflight panel open. The green dot means no errors detected. A red dot indicates problems — click to see details.',
+     incorrectFeedback:'Go to Window → Output → Preflight.',
+     acpContext:'ACP Id-2.2: Preflight runs live in the background — the status dot in the status bar (bottom-left) shows errors in real time. Domain 6 covers Preflight in depth.',gagneEvent:7}
+  ]
+},
+
+/* ── 2.3 Place assets ─────────────────────────────── */
+'id-2-3a': {
+  id:'id-2-3a', tool:'indesign', domain:2,
+  objective:'2.3', objectiveText:'Place assets using linking, CC Libraries, and manage via Links panel',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'place-assets',
+  scenario:'Place a photograph into an image frame, place a logo file, then use the Links panel to verify link status and update a modified linked file.',
+  steps:[
+    {id:1, instruction:'Place an image. File → Place (Ctrl+D / Cmd+D). Select a photograph and click Open.',
+     expectedAction:'menu-click', expectedTarget:'file-place',
+     hint1:'Go to the File menu.',hint2:'File → Place (Ctrl+D).',hint3:'File → Place → select the image → click Open → the cursor loads with the image.',
+     correctFeedback:'Place cursor loaded. Click on the page to place at default size, or click-drag to define the frame size.',
+     incorrectFeedback:'Go to File → Place.',
+     acpContext:'ACP Id-2.3: In InDesign, placed assets are always linked by default (unlike Illustrator where you choose). The Links panel tracks all placed files.',gagneEvent:4},
+    {id:2, instruction:'Click on the canvas to place the image. The image appears inside an automatically created frame.',
+     expectedAction:'click', expectedTarget:'canvas-place',
+     hint1:'Click anywhere on the page with the loaded place cursor.',hint2:'Click on the page — the image places inside a frame the same size as the image.',hint3:'Click on the page with the place cursor → the image is placed in a frame.',
+     correctFeedback:'Image placed. In InDesign, all placed content lives inside a frame. The frame and the content within it are separate objects.',
+     incorrectFeedback:'Click on the canvas to place the image.',
+     acpContext:'ACP Id-2.3: InDesign uses a frame-based model — every piece of content (text, image, graphic) lives inside a frame. The frame is the container; the content can be repositioned within it.',gagneEvent:6},
+    {id:3, instruction:'Open the Links panel. Window → Links. Verify the placed photograph shows a linked status (chain icon).',
+     expectedAction:'menu-click', expectedTarget:'window-links',
+     hint1:'Go to Window → Links.',hint2:'Window → Links opens the panel.',hint3:'Window → Links — the panel shows all placed files with their status.',
+     correctFeedback:'Links panel open. All placed files are listed. A chain icon = linked. A warning triangle = modified. A red ? = missing.',
+     incorrectFeedback:'Go to Window → Links.',
+     acpContext:'ACP Id-2.3: Link status icons — chain (linked and current), yellow triangle (source file modified since placing), red ? (file cannot be found). Always resolve warnings before packaging or exporting.',gagneEvent:5},
+    {id:4, instruction:'Relink a missing file. In the Links panel, click the missing link (red ?) and click the Relink button (chain with arrow).',
+     expectedAction:'click', expectedTarget:'relink-btn',
+     hint1:'Find the Relink button in the Links panel.',hint2:'Select the missing link row → click the Relink button (chain icon with an arrow) → navigate to the file.',hint3:'Links panel → click missing file row → Relink button → browse to correct file → click Open.',
+     correctFeedback:'File relinked. The red ? is replaced by the chain icon indicating the link is now current.',
+     incorrectFeedback:'Click the missing link in the Links panel and click the Relink button.',
+     acpContext:'ACP Id-2.3: If many files are missing (e.g. after moving the folder), use Links panel menu → Relink All. The Link Info section at the bottom shows the full path of the selected link.',gagneEvent:7},
+    {id:5, instruction:'Edit Original. Select a linked image in the Links panel, then click Edit Original (pencil icon) to open the source file in its native application.',
+     expectedAction:'click', expectedTarget:'edit-original',
+     hint1:'Find the Edit Original button in the Links panel.',hint2:'Select a link row → click the Edit Original button (pencil icon at panel bottom).',hint3:'Links panel → select a link → click pencil/Edit Original icon → the file opens in its source application.',
+     correctFeedback:'Edit Original opens the file in Photoshop, Illustrator, or whatever application created it. Save there and the link updates in InDesign.',
+     incorrectFeedback:'Select a link in the Links panel and click the Edit Original pencil icon.',
+     acpContext:'ACP Id-2.3: Edit Original is the correct workflow for modifying placed content. Never re-place the same file — use Edit Original to keep the link intact and avoid duplicate files.',gagneEvent:7}
+  ]
+},
+
+/* ── 2.4 Swatches ────────────────────────────────── */
+'id-2-4a': {
+  id:'id-2-4a', tool:'indesign', domain:2,
+  objective:'2.4', objectiveText:'Create and manage swatches — CMYK, tints, gradients, and spot colour',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'swatches',
+  scenario:'Build a publication colour palette: add a CMYK process colour, create a tint swatch at 40%, add a Pantone spot colour, and create a two-stop gradient swatch.',
+  steps:[
+    {id:1, instruction:'Open the Swatches panel. Window → Color → Swatches (or F5).',
+     expectedAction:'menu-click', expectedTarget:'window-swatches',
+     hint1:'Go to Window → Color.',hint2:'Window → Color → Swatches (F5).',hint3:'Window → Color → Swatches — the panel shows all document colours.',
+     correctFeedback:'Swatches panel open. Default swatches include None, Paper, Black, and Registration.',
+     incorrectFeedback:'Go to Window → Color → Swatches.',
+     acpContext:'ACP Id-2.4: The Swatches panel in InDesign includes: [None] (transparent), [Paper] (substrate colour for soft-proofing), [Black] (100K), [Registration] (marks that print on all plates).',gagneEvent:3},
+    {id:2, instruction:'Add a new CMYK process swatch. Click the New Swatch button (+) at the panel bottom. Set C:0 M:75 Y:100 K:0. Name it "Brand Orange".',
+     expectedAction:'click', expectedTarget:'new-swatch-btn',
+     hint1:'Find the + button at the Swatches panel bottom.',hint2:'Click + → Swatch Options dialog → set Color Type: Process, Color Mode: CMYK → enter values.',hint3:'+ button → Color Type: Process → CMYK → C:0 M:75 Y:100 K:0 → name: Brand Orange → OK.',
+     correctFeedback:'Brand Orange CMYK swatch added.',
+     incorrectFeedback:'Click the New Swatch (+) button in the Swatches panel.',
+     acpContext:'ACP Id-2.4: Process colours mix from CMYK inks. Global vs non-global: InDesign process swatches are global by default — editing updates all objects using that swatch.',gagneEvent:6},
+    {id:3, instruction:'Create a tint swatch at 40%. Select Brand Orange in the panel, then choose "New Tint Swatch" from the panel menu (≡).',
+     expectedAction:'click', expectedTarget:'new-tint-swatch',
+     hint1:'Select the Brand Orange swatch, then open the panel menu.',hint2:'Click Brand Orange → panel menu (≡) → New Tint Swatch.',hint3:'Select Brand Orange → panel menu ≡ → New Tint Swatch → set tint to 40% → OK.',
+     correctFeedback:'40% tint swatch created. It appears with "40%" after the parent swatch name. Tints share the parent colour — edit Brand Orange and the tint updates automatically.',
+     incorrectFeedback:'Select Brand Orange and choose New Tint Swatch from the Swatches panel menu.',
+     acpContext:'ACP Id-2.4: Tint swatches are the correct way to use lighter versions of a brand colour — not by reducing opacity. Tints print as a screened percentage of the parent ink.',gagneEvent:7},
+    {id:4, instruction:'Add a Pantone spot colour. New Swatch → Color Type: Spot → Color Mode: PANTONE+ Solid Coated → choose a colour → OK.',
+     expectedAction:'click', expectedTarget:'spot-colour-btn',
+     hint1:'Click + for a new swatch.',hint2:'New Swatch → Color Type: Spot Color → Color Mode: PANTONE+ Solid Coated → pick a Pantone → OK.',hint3:'New swatch → Color Type: Spot → Color Mode: PANTONE+ Solid Coated → select a Pantone → OK.',
+     correctFeedback:'Spot colour added. A small white dot in the swatch corner identifies it as a spot colour.',
+     incorrectFeedback:'Create a new swatch with Color Type: Spot Color and choose from PANTONE+ Solid Coated.',
+     acpContext:'ACP Id-2.4: Spot colours require a separate printing plate and add cost but guarantee exact colour reproduction. Essential for logos and brand elements where colour consistency is critical.',gagneEvent:6},
+    {id:5, instruction:'Create a gradient swatch. Panel menu (≡) → New Gradient Swatch. Set Type: Linear. Set stop 1 to Brand Orange, stop 2 to Paper (white). Name it "Brand Fade".',
+     expectedAction:'click', expectedTarget:'new-gradient-swatch',
+     hint1:'Open the Swatches panel menu.',hint2:'Panel menu ≡ → New Gradient Swatch → set stops and name.',hint3:'Panel ≡ → New Gradient Swatch → Type: Linear → stop 1: Brand Orange → stop 2: Paper → name: Brand Fade → OK.',
+     correctFeedback:'Gradient swatch created. Apply it to any frame fill or stroke. Edit it from the Swatches panel to update all instances.',
+     incorrectFeedback:'Choose New Gradient Swatch from the Swatches panel menu.',
+     acpContext:'ACP Id-2.4: InDesign gradient swatches work differently from Illustrator — you build them in the New Gradient Swatch dialog and they are stored as named swatches. The Gradient panel only applies gradient direction.',gagneEvent:7}
+  ]
+},
+
+/* ── MC Domain 1–2 ────────────────────────────────── */
+'id-2-mc': {
+  id:'id-2-mc', tool:'indesign', domain:2,
+  objective:'1.1–2.4', objectiveText:'Domain 1–2 knowledge check',
+  bloomsLevel:'Understand', estimatedMinutes:8, uiType:'mc',
+  questions:[
+    {q:'In a print document, "bleed" refers to:',options:['The gutter between columns','Artwork that extends beyond the trim edge to prevent white borders after cutting','The inside margin of a facing-pages spread','The slug area outside the bleed'],correct:1,explanation:'Bleed (typically 3mm / 0.125in) extends artwork beyond where the paper will be cut. Cutting tolerances mean a tiny white border would appear without bleed on any background element touching the page edge.',acpObj:'Id-1.3'},
+    {q:'What is the purpose of the "slug" area in an InDesign document?',options:['It defines the live text area','It holds printer marks, job info, and instructions outside the bleed — it does not print on the final piece','It is the space between columns','It sets the binding margin'],correct:1,explanation:'The slug sits outside the bleed. It holds content intended only for the print production workflow: registration marks, colour bars, job numbers, and printer instructions. It does not appear on the trimmed output.',acpObj:'Id-2.1'},
+    {q:'You place a Photoshop file into InDesign. The Links panel shows a yellow triangle next to it. What does this mean?',options:['The file is missing — it cannot be found','The file has been modified since it was placed — update the link to refresh the placed version','The file is embedded in the document','The file has a colour profile mismatch'],correct:1,explanation:'A yellow triangle means the source file has been modified since it was placed. The placed version is outdated. Click Update Link (or select and press the Update button) to refresh it with the latest version.',acpObj:'Id-2.3'},
+    {q:'You need a lighter version of your brand orange for body copy backgrounds. What is the correct InDesign approach?',options:['Reduce the frame opacity to 40%','Select the swatch and create a New Tint Swatch at 40%','Create a new separate CMYK colour with lighter values','Use the Transparency panel to reduce opacity'],correct:1,explanation:'Tint swatches print as a screened percentage of the parent ink. Reducing opacity produces a similar visual effect but uses transparency rather than ink percentage — these behave differently in print production workflows.',acpObj:'Id-2.4'},
+    {q:'In a facing-pages InDesign document, the "inside" margin refers to:',options:['The top margin','The margin closest to the binding spine — it is the same on both left and right pages','The margin furthest from the binding','The column gutter'],correct:1,explanation:'Facing pages use "inside" and "outside" instead of "left" and "right". The inside margin is adjacent to the spine on both pages of a spread — typically wider than the outside margin to allow for binding.',acpObj:'Id-2.1'},
+    {q:'What is the difference between [Black] and [Registration] in the InDesign Swatches panel?',options:['They are identical','[Black] is 100% K and prints only on the black plate. [Registration] prints on ALL colour plates simultaneously — used only for crop marks and registration targets','[Registration] is a lighter black','[Black] prints on all plates'],correct:1,explanation:'[Registration] is a special swatch that prints at 100% on every plate (C, M, Y, K and any spot plates). It should ONLY be used for registration marks. Using it for design elements produces very dark overprinted colour.',acpObj:'Id-2.4'}
+  ]
+}
+};
+
+/* ═══ STATE ══════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[],mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array((task.steps||[]).length).fill(null);mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${t.objective}</span>
+      <span class="badge badge-id">InDesign</span>
+      <span class="badge badge-live">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERS ══════════════════════════════════════ */
+function renderUI(t){
+  if(t.uiType==='mc'){document.getElementById('adobe-sim').innerHTML='';return;}
+  const map={
+    'new-doc':newDocUI,'workspace':workspaceUI,
+    'place-assets':placeAssetsUI,'swatches':swatchesUI
+  };
+  document.getElementById('adobe-sim').innerHTML=map[t.uiType]?map[t.uiType]():'';
+}
+
+function idShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Id</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function newDocUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-new-doc')">File</span><span class="menu-item">Layout</span><span class="menu-item">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div><div class="tool-btn">▭</div><div class="tool-btn" style="font-weight:700;font-size:12px;">T</div>`,
+    `<div class="adobe-canvas" style="align-items:center;justify-content:center;">
+      <div class="dialog-box">
+        <div class="dialog-title">New Document</div>
+        <div class="dialog-body">
+          <div class="dialog-row"><span class="dialog-label">Intent</span>
+            <select class="dialog-select"><option>Print</option><option>Web</option><option>Mobile</option></select></div>
+          <div class="dialog-row"><span class="dialog-label">Width</span>
+            <input class="dialog-input" value="210 mm" style="width:80px;"></div>
+          <div class="dialog-row"><span class="dialog-label">Height</span>
+            <input class="dialog-input" value="297 mm" style="width:80px;"></div>
+          <div class="dialog-row"><span class="dialog-label">Pages</span>
+            <input class="dialog-input" value="4" style="width:50px;">
+            <label style="display:flex;align-items:center;gap:4px;font-size:10px;color:#CCC;cursor:pointer;margin-left:8px;">
+              <input type="checkbox" id="cb-facing" onclick="doAction('facing-pages-cb')" style="accent-color:#00C896;"> Facing Pages
+            </label></div>
+          <div style="font-size:10px;color:#888;margin:5px 0 3px;">Margins</div>
+          <div class="dialog-row">
+            <span class="dialog-label">Top</span>
+            <input class="dialog-input highlight" id="inp-margin-top" style="width:60px;" oninput="doInput('margin-top',this.value)" placeholder="12mm">
+            <span style="font-size:10px;color:#888;margin:0 4px;">Bottom</span>
+            <input class="dialog-input" style="width:60px;" placeholder="12mm">
+          </div>
+          <div class="dialog-row">
+            <span class="dialog-label">Inside</span>
+            <input class="dialog-input" style="width:60px;" placeholder="12mm">
+            <span style="font-size:10px;color:#888;margin:0 4px;">Outside</span>
+            <input class="dialog-input" style="width:60px;" placeholder="12mm">
+          </div>
+          <div style="font-size:10px;color:#888;margin:5px 0 3px;">Bleed &amp; Slug</div>
+          <div class="dialog-row">
+            <span class="dialog-label">Bleed</span>
+            <input class="dialog-input highlight" id="inp-bleed" style="width:60px;" oninput="doInput('bleed-top',this.value)" placeholder="3mm">
+            <span style="font-size:10px;color:#888;margin:0 4px;">🔗</span>
+          </div>
+          <div class="dialog-row">
+            <span class="dialog-label">Slug Top</span>
+            <input class="dialog-input" id="inp-slug" style="width:60px;" oninput="doInput('slug-top',this.value)" placeholder="6mm">
+          </div>
+          <div style="font-size:10px;color:#888;margin:5px 0 3px;">Columns</div>
+          <div class="dialog-row">
+            <span class="dialog-label">Number</span>
+            <input class="dialog-input" value="2" style="width:50px;">
+            <span style="font-size:10px;color:#888;margin:0 6px;">Gutter</span>
+            <input class="dialog-input" value="5mm" style="width:60px;">
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="dialog-btn dialog-btn-cancel">Cancel</button>
+          <button class="dialog-btn dialog-btn-ok" onclick="doAction('new-doc-create')">Create</button>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Document presets</div>
+     <div class="panel-body">
+       <div style="font-size:10px;color:#888;margin-bottom:4px;">Saved</div>
+       <div style="font-size:10px;color:#CCC;padding:2px 0;">A4 Print</div>
+       <div style="font-size:10px;color:#CCC;padding:2px 0;">US Letter</div>
+       <div id="doc-created" style="display:none;font-size:10px;color:#00C896;padding:2px 0;">New doc created ✓</div>
+     </div>`
+  );
+}
+
+function workspaceUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('workspace-typography')">Window</span>
+     <span class="menu-item" onclick="doMenu('smart-guides')">View</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn">▭</div><div class="tool-btn" style="font-weight:700;font-size:12px;">T</div>`,
+    `<div class="adobe-canvas" style="position:relative;flex-direction:column;gap:2px;">
+      <div id="grid-overlay" style="display:none;position:absolute;inset:0;background-image:linear-gradient(rgba(0,100,200,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(0,100,200,.12) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;z-index:1;"></div>
+      <div id="smart-guide-badge" style="display:none;position:absolute;top:6px;left:6px;font-size:8px;color:#00C896;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:3px;z-index:2;">Smart Guides ON</div>
+      <div style="position:relative;">
+        <div style="position:absolute;top:0;left:44px;right:0;height:14px;background:#3A3A3A;border-bottom:1px solid #1A1A1A;cursor:crosshair;font-size:8px;color:#888;display:flex;align-items:center;padding-left:4px;z-index:3;" onclick="doAction('drag-guide')">← Click here to drag guide from ruler</div>
+        <div class="id-spread" style="padding:20px 10px 8px;">
+          <div class="id-page" style="width:85px;height:115px;position:relative;">
+            <div class="margin" style="inset:8px;"></div>
+            <div class="bleed" style="inset:-3px;"></div>
+            <div id="guide-line" style="display:none;position:absolute;left:0;right:0;top:35px;height:1px;background:rgba(0,100,200,.6);"></div>
+            <div style="position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:7px;color:#AAA;">Page 1</div>
+          </div>
+          <div class="id-page" style="width:85px;height:115px;position:relative;">
+            <div class="margin" style="inset:8px;"></div>
+            <div class="bleed" style="inset:-3px;"></div>
+            <div style="position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:7px;color:#AAA;">Page 2</div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Workspace</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('workspace-typography')">Window → Workspace → Typography</div>
+       <div class="adj-btn" onclick="doMenu('smart-guides')">View → Grids &amp; Guides → Smart Guides</div>
+       <div class="adj-btn" onclick="doMenu('show-grid')">View → Grids &amp; Guides → Show Grid</div>
+       <div class="adj-btn" onclick="doAction('drag-guide')">Drag from ruler → create guide</div>
+       <div class="adj-btn" onclick="doMenu('window-preflight')">Window → Output → Preflight</div>
+     </div>
+     <div class="panel-hdr">Preflight</div>
+     <div class="panel-body" id="preflight-panel" style="display:none;">
+       <div style="display:flex;align-items:center;gap:5px;">
+         <div id="preflight-dot" style="width:8px;height:8px;border-radius:50%;background:#00C896;flex-shrink:0;"></div>
+         <span style="font-size:10px;color:#CCC;">No errors found</span>
+       </div>
+     </div>`
+  );
+}
+
+function placeAssetsUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-place')">File</span>
+     <span class="menu-item" onclick="doMenu('window-links')">Window</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn">▭</div>`,
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:155px;position:relative;padding:8px;">
+        <div id="placed-photo" style="display:none;width:85px;height:65px;background:linear-gradient(135deg,#B8C8D8,#8AA0B0);border:0.5px solid #AAA;position:absolute;left:8px;top:8px;display:none;align-items:center;justify-content:center;font-size:8px;color:#FFF;">photo.psd</div>
+        <div id="place-cursor-hint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#AAA;">Place cursor — click to place</div>
+        <div id="frame-indicator" style="display:none;position:absolute;left:8px;top:8px;width:85px;height:65px;border:0.5px dashed #00C896;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Links</div>
+     <div class="panel-body" id="links-panel">
+       <div style="font-size:9px;color:#888;">Window → Links to open</div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-place')">File → Place (Ctrl+D)</div>
+       <div class="adj-btn" onclick="doAction('canvas-place')">Click canvas to place</div>
+       <div class="adj-btn" onclick="doMenu('window-links')">Window → Links</div>
+       <div class="adj-btn" onclick="doAction('relink-btn')">Links panel → Relink</div>
+       <div class="adj-btn" onclick="doAction('edit-original')">Links panel → Edit Original</div>
+     </div>`
+  );
+}
+
+function swatchesUI(){
+  const colours=['#FF9A00','#CC7A00','#FFCC66','#1A1A2E','#31A8FF','#00C896','#FF4D6D','#FFF','#000'];
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-swatches')">Window</span>
+     <span class="menu-item">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn">▭</div>`,
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:155px;display:flex;align-items:center;justify-content:center;">
+        <div id="swatch-target" style="width:100px;height:70px;background:#FF9A00;border-radius:4px;transition:all .4s;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Swatches <span style="cursor:pointer;color:#666;font-size:8px;" onclick="doMenu('window-swatches')">(F5)</span></div>
+     <div class="panel-body">
+       <div class="swatch-row">
+         ${colours.map((c,i)=>`<div class="swatch" style="background:${c};" onclick="doAction('swatch-click-'+i)"></div>`).join('')}
+       </div>
+       <div style="margin-top:5px;display:flex;gap:3px;">
+         <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('new-swatch-btn')">+ New</div>
+         <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('new-tint-swatch')">Tint</div>
+         <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('spot-colour-btn')">Spot</div>
+         <div class="adj-btn" style="margin:0;flex:1;" onclick="doAction('new-gradient-swatch')">Grad</div>
+       </div>
+       <div id="swatch-added" style="display:none;font-size:9px;color:#00C896;padding:3px 0;">Brand Orange ✓</div>
+       <div id="tint-added" style="display:none;font-size:9px;color:#00C896;padding:2px 0;">Brand Orange 40% ✓</div>
+       <div id="spot-added" style="display:none;font-size:9px;color:#9B8EF0;padding:2px 0;">Pantone spot ✓</div>
+       <div id="gradient-added" style="display:none;font-size:9px;color:#00C896;padding:2px 0;">Brand Fade gradient ✓</div>
+     </div>
+     <div class="panel-hdr">Swatch options</div>
+     <div class="panel-body" id="swatch-opts" style="display:none;">
+       <div class="prop-row"><span class="prop-label">Type</span>
+         <select class="prop-select highlight">
+           <option>Process</option><option>Spot</option></select></div>
+       <div class="prop-row"><span class="prop-label">Mode</span>
+         <select class="prop-select"><option>CMYK</option><option>RGB</option></select></div>
+       <button onclick="doAction('swatch-ok')" style="width:100%;margin-top:4px;padding:4px;background:#00C896;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+     </div>`
+  );
+}
+
+/* ═══ ACTION HANDLERS ════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+
+function applyEffect(target){
+  const fx={
+    'file-new-doc':()=>{},
+    'facing-pages-cb':()=>{document.getElementById('cb-facing')&&(document.getElementById('cb-facing').checked=true);},
+    'margin-top':()=>{},
+    'bleed-top':()=>{},
+    'slug-top':()=>{},
+    'new-doc-create':()=>{document.getElementById('doc-created')&&(document.getElementById('doc-created').style.display='block');},
+    'workspace-typography':()=>{},
+    'smart-guides':()=>{const el=document.getElementById('smart-guide-badge');if(el)el.style.display='block';},
+    'show-grid':()=>{const el=document.getElementById('grid-overlay');if(el)el.style.display='block';},
+    'drag-guide':()=>{const el=document.getElementById('guide-line');if(el)el.style.display='block';},
+    'window-preflight':()=>{const p=document.getElementById('preflight-panel');if(p)p.style.display='block';},
+    'file-place':()=>{const el=document.getElementById('place-cursor-hint');if(el)el.textContent='Place cursor loaded — click to place';},
+    'canvas-place':()=>{
+      const ph=document.getElementById('placed-photo');if(ph)ph.style.display='flex';
+      const fi=document.getElementById('frame-indicator');if(fi)fi.style.display='block';
+      const hint=document.getElementById('place-cursor-hint');if(hint)hint.style.display='none';
+    },
+    'window-links':()=>{
+      const lp=document.getElementById('links-panel');
+      if(lp)lp.innerHTML='<div class="links-row"><span class="links-status" style="color:#00C896;">🔗</span><span>photo.psd</span></div><div class="links-row"><span class="links-status" style="color:#FF9A00;">⚠</span><span>logo.ai (modified)</span></div><div class="links-row"><span class="links-status" style="color:#FF4D6D;">?</span><span>texture.png (missing)</span></div>';
+    },
+    'relink-btn':()=>{
+      const lp=document.getElementById('links-panel');
+      if(lp){const rows=lp.querySelectorAll('.links-row');rows.forEach(r=>{const s=r.querySelector('.links-status');if(s&&s.textContent.includes('?')){s.textContent='🔗';s.style.color='#00C896';r.querySelector('span:last-child').textContent='texture.png';}});}
+    },
+    'edit-original':()=>{},
+    'window-swatches':()=>{},
+    'new-swatch-btn':()=>{document.getElementById('swatch-opts')&&(document.getElementById('swatch-opts').style.display='block');document.getElementById('swatch-added')&&(document.getElementById('swatch-added').style.display='block');},
+    'swatch-ok':()=>{document.getElementById('swatch-opts')&&(document.getElementById('swatch-opts').style.display='none');},
+    'new-tint-swatch':()=>{document.getElementById('tint-added')&&(document.getElementById('tint-added').style.display='block');const el=document.getElementById('swatch-target');if(el)el.style.opacity='.4';},
+    'spot-colour-btn':()=>{document.getElementById('spot-added')&&(document.getElementById('spot-added').style.display='block');},
+    'new-gradient-swatch':()=>{document.getElementById('gradient-added')&&(document.getElementById('gradient-added').style.display='block');const el=document.getElementById('swatch-target');if(el)el.style.background='linear-gradient(135deg,#FF9A00,#FFF)';}
+  };
+  if(fx[target])fx[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask||currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">Domain 1–2 knowledge check · ${qs.length} questions</div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`<div onclick="selectMC(${qi},${oi},${q.correct})" id="mc-opt-${qi}-${oi}" style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;">${opt}</div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;line-height:1.5;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()">Submit answers</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{el.style.borderColor='var(--color-border-tertiary)';el.style.background='var(--surface)';el.style.color='var(--text-secondary)';});
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(0,200,150,.4)';sel.style.background='rgba(0,200,150,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}el.style.cursor='default';el.style.pointerEvents='none';});
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation+` <span style="font-family:var(--font-mono);font-size:.7rem;opacity:.7;">${q.acpObj}</span>`;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const id=currentTask.id.replace(/-/g,'');const sc=document.getElementById('sc-'+id);if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+id);if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#00C896'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button><a href="d3-master-pages.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Domain 3 →</a></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('id-2-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

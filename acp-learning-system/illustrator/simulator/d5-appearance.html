@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ai · Domain 5: Appearance, Masks & Alignment | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--ai:#FF9A00;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#1A2A00 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,214,143,.35);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--correct);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--correct);color:#000;border-color:var(--correct);}
+.adobe-sim{background:#323232;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3D3D3D;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#FF9A00;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 232px;min-height:360px;}
+.adobe-tools{background:#323232;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(0,214,143,.2);color:#00D68F;}
+.tool-btn.highlight{border:1.5px solid #FF9A00;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#6A6A6A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.artboard{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.adobe-panels{background:#323232;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;cursor:pointer;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#00D68F;}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.prop-select.highlight{border-color:#00D68F;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#00D68F;color:#00D68F;}
+.align-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:4px;}
+.align-btn{padding:5px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:12px;cursor:pointer;text-align:center;transition:all .15s;}
+.align-btn:hover{background:#4A4A4A;}
+.align-btn.highlight{border-color:#00D68F;}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ai active">Illustrator</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-ai">Illustrator</span>
+      <span class="acp-tag" style="color:var(--correct);border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.08);">Ai · Domain 5 — Final</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Modifying Object Appearance &amp; Position</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">4 objectives · 7 tasks · Completes the Illustrator ACP course</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 5 tasks</div>
+  <div class="task-item active" onclick="loadTask('ai-5-1a')" id="nav-ai51a">
+    <div class="task-icon" id="icon-ai51a">5.1</div>
+    <div class="task-info"><div class="task-obj">Ai-5.1a/b</div><div class="task-name">Selections, Isolation Mode &amp; transform</div></div>
+    <div class="task-score" id="sc-ai51a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-5-2a')" id="nav-ai52a">
+    <div class="task-icon" id="icon-ai52a">5.2</div>
+    <div class="task-info"><div class="task-obj">Ai-5.2a/b</div><div class="task-name">Appearance panel, Recolor &amp; effects</div></div>
+    <div class="task-score" id="sc-ai52a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-5-2b')" id="nav-ai52b">
+    <div class="task-icon" id="icon-ai52b" style="color:#9B8EF0;font-size:.62rem;">AI</div>
+    <div class="task-info"><div class="task-obj">Ai-5.2c</div><div class="task-name">Generative Shape Fill (AI — 2025)</div></div>
+    <div class="task-score" id="sc-ai52b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-5-3a')" id="nav-ai53a">
+    <div class="task-icon" id="icon-ai53a">5.3</div>
+    <div class="task-info"><div class="task-obj">Ai-5.3a/b</div><div class="task-name">Clipping masks &amp; opacity masks</div></div>
+    <div class="task-score" id="sc-ai53a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-5-4a')" id="nav-ai54a">
+    <div class="task-icon" id="icon-ai54a">5.4</div>
+    <div class="task-info"><div class="task-obj">Ai-5.4a/b</div><div class="task-name">Align &amp; distribute objects</div></div>
+    <div class="task-score" id="sc-ai54a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-5-mc')" id="nav-ai5mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 5</div><div class="task-name">Final knowledge check</div></div>
+    <div class="task-score" id="sc-ai5mc">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d4-objects-paths.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#FF9A00;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 4</div></div>
+  </a>
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:var(--correct);">✓</div>
+    <div class="task-info"><div class="task-name" style="color:var(--correct);">Ai complete →</div></div>
+  </a>
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS={
+
+'ai-5-1a':{
+  id:'ai-5-1a',tool:'illustrator',domain:5,
+  objective:'5.1a/b',objectiveText:'Use selection tools, Isolation Mode, and transform/warp/Repeat',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'selections',
+  scenario:'Select objects at various levels (group, subgroup, individual), edit a nested object using Isolation Mode, then apply a Repeat transform to create a radial pattern.',
+  steps:[
+    {id:1,instruction:'Use Group Selection tool. Click a group on the canvas to select the whole group. Then click again to select a sub-object within it.',
+     expectedAction:'tool-select',expectedTarget:'group-selection',
+     hint1:'The Group Selection tool is grouped with the Direct Selection tool.',hint2:'Press A then look for the Group Selection tool (arrow with +) in the toolbar.',hint3:'Click-hold the Direct Selection tool → Group Selection tool (arrow with +).',
+     correctFeedback:'Group Selection tool active. First click selects the group; subsequent clicks select nested sub-groups and individual objects.',
+     incorrectFeedback:'Find the Group Selection tool (arrow with +) in the Direct Selection tool flyout.',
+     acpContext:'ACP Ai-5.1a: Group Selection selects nested groups without entering Isolation Mode. Click once = group, click again = subgroup, click again = individual object.',gagneEvent:4},
+    {id:2,instruction:'Enter Isolation Mode. Double-click the group on the canvas to isolate it for editing.',
+     expectedAction:'click',expectedTarget:'isolation-mode-enter',
+     hint1:'Double-click a grouped object on the canvas.',hint2:'Double-click the group — a grey overlay appears outside the group and a breadcrumb bar shows "Isolation Mode".',hint3:'Double-click the group → grey overlay appears → objects outside the group are locked.',
+     correctFeedback:'Isolation Mode active. Only the isolated group\'s contents are editable. Objects outside appear greyed out.',
+     incorrectFeedback:'Double-click the group to enter Isolation Mode.',
+     acpContext:'ACP Ai-5.1b: Isolation Mode lets you edit grouped/compound objects without ungrouping. Press Esc to exit. The breadcrumb bar at top shows the isolation hierarchy.',gagneEvent:6},
+    {id:3,instruction:'Edit an object inside the group. Click an individual element within the isolated group to select it, then move or resize it.',
+     expectedAction:'click',expectedTarget:'edit-in-isolation',
+     hint1:'Click directly on an object inside the isolated group.',hint2:'With Isolation Mode active, click any object in the group to select it independently.',hint3:'Click an object in the isolation — it selects without affecting others in the group.',
+     correctFeedback:'Individual object edited while in Isolation Mode. Other group members are unaffected.',
+     incorrectFeedback:'Click an object inside the isolated group to select and edit it.',
+     acpContext:'ACP Ai-5.1b: In Isolation Mode, objects inside the group behave as if they are top-level objects — all selection and transform tools work normally.',gagneEvent:6},
+    {id:4,instruction:'Exit Isolation Mode. Press Esc or click outside the group.',
+     expectedAction:'click',expectedTarget:'exit-isolation',
+     hint1:'Press Esc or click outside the group boundary.',hint2:'Press Esc — the grey overlay disappears and you return to normal editing mode.',hint3:'Press Esc once or twice, or click outside the artboard/group area.',
+     correctFeedback:'Exited Isolation Mode. All objects are editable again.',
+     incorrectFeedback:'Press Esc to exit Isolation Mode.',
+     acpContext:'ACP Ai-5.1b: If doubly nested (group within group), each press of Esc exits one level of isolation.',gagneEvent:7},
+    {id:5,instruction:'Apply Radial Repeat. Select an object, then go to Object → Repeat → Radial.',
+     expectedAction:'menu-click',expectedTarget:'object-repeat-radial',
+     hint1:'Select an object and go to Object → Repeat.',hint2:'Object → Repeat → Radial creates copies arranged in a circle.',hint3:'Select object → Object → Repeat → Radial → adjust instance count in Options Bar.',
+     correctFeedback:'Radial Repeat applied. Copies of the object are arranged in a circle — adjust the count in the Options Bar.',
+     incorrectFeedback:'Select the object and go to Object → Repeat → Radial.',
+     acpContext:'ACP Ai-5.1b: Repeat types: Radial (circular), Grid, Mirror. All are live — edit the original and all repeats update. Expand with Object → Expand to convert to individual objects.',gagneEvent:7}
+  ]
+},
+
+'ai-5-2a':{
+  id:'ai-5-2a',tool:'illustrator',domain:5,
+  objective:'5.2a/b',objectiveText:'Use the Appearance panel, Recolor Artwork, and apply effects',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'appearance',
+  scenario:'Apply multiple fills and strokes to a single object using the Appearance panel. Then recolour a complete illustration using Recolor Artwork, and apply a 3D effect.',
+  steps:[
+    {id:1,instruction:'Open the Appearance panel. Go to Window → Appearance (or Shift+F6).',
+     expectedAction:'menu-click',expectedTarget:'window-appearance',
+     hint1:'Go to Window menu.',hint2:'Window → Appearance (Shift+F6).',hint3:'Window → Appearance.',
+     correctFeedback:'Appearance panel open. It shows the current object\'s fill, stroke, and any applied effects.',
+     incorrectFeedback:'Go to Window → Appearance.',
+     acpContext:'ACP Ai-5.2a: The Appearance panel is the master control for object appearance. You can add multiple fills and strokes, reorder them, and apply effects non-destructively.',gagneEvent:3},
+    {id:2,instruction:'Add a second fill. In the Appearance panel, click the + button to add a new fill row. Set it to a different colour.',
+     expectedAction:'click',expectedTarget:'add-fill-appearance',
+     hint1:'Look for a + or Add New Fill button in the Appearance panel.',hint2:'In the Appearance panel, click the "Add New Fill" icon (or the + at the panel bottom).',hint3:'Appearance panel bottom → + New Fill → a second fill row appears → click it to set its colour.',
+     correctFeedback:'Second fill added. Drag fill rows to reorder them — the top fill is drawn in front.',
+     incorrectFeedback:'Click the Add New Fill button in the Appearance panel.',
+     acpContext:'ACP Ai-5.2a: Multiple fills are stacked — offset lower fills via Effect → Distort & Transform → Transform to create interesting effects (like a long shadow).',gagneEvent:6},
+    {id:3,instruction:'Add a second stroke with an offset. Click Add New Stroke. Set stroke width to 8pt and colour to a contrasting colour.',
+     expectedAction:'click',expectedTarget:'add-stroke-appearance',
+     hint1:'In the Appearance panel, add a new stroke.',hint2:'Click Add New Stroke (or +) → set stroke width to 8pt.',hint3:'Appearance panel → + New Stroke → set width: 8pt → set colour.',
+     correctFeedback:'Second stroke added. Different stroke widths and colours can create outline effects.',
+     incorrectFeedback:'Add a new stroke in the Appearance panel and set it to 8pt.',
+     acpContext:'ACP Ai-5.2a: Stacked strokes in the Appearance panel are all applied to the same path. Align strokes to Inside/Outside/Center in the Stroke panel.',gagneEvent:6},
+    {id:4,instruction:'Recolor the illustration. Select all objects, then go to Edit → Recolor Artwork (or the Recolor button in the Options Bar).',
+     expectedAction:'menu-click',expectedTarget:'recolor-artwork',
+     hint1:'Select all objects, then go to Edit menu.',hint2:'Edit → Recolor Artwork (or the colour wheel icon in the Options Bar).',hint3:'Select all → Edit → Recolor Artwork → the colour harmony dialog opens.',
+     correctFeedback:'Recolor Artwork dialog open. Drag colours on the colour wheel to reassign all colours harmoniously.',
+     incorrectFeedback:'Select all and go to Edit → Recolor Artwork.',
+     acpContext:'ACP Ai-5.2b: Recolor Artwork maps all document colours to a new palette simultaneously — the fastest way to test colour themes on a complete illustration.',gagneEvent:7},
+    {id:5,instruction:'Apply a 3D effect. Select an object, then go to Effect → 3D and Materials → Extrude & Bevel.',
+     expectedAction:'menu-click',expectedTarget:'effect-3d-extrude',
+     hint1:'Go to Effect → 3D and Materials.',hint2:'Effect → 3D and Materials → Extrude & Bevel.',hint3:'Select object → Effect → 3D and Materials → Extrude & Bevel → adjust settings in the 3D panel.',
+     correctFeedback:'3D Extrude effect applied. The 3D panel opens for real-time adjustments. The effect appears in the Appearance panel as an editable item.',
+     incorrectFeedback:'Go to Effect → 3D and Materials → Extrude & Bevel.',
+     acpContext:'ACP Ai-5.2b: Illustrator 3D effects (Extrude, Inflate, Rotate) are live — edit via the Appearance panel. They produce vector-based 3D, not raster.',gagneEvent:7}
+  ]
+},
+
+'ai-5-2b':{
+  id:'ai-5-2b',tool:'illustrator',domain:5,
+  objective:'5.2c',objectiveText:'Use Generative Shape Fill (AI — 2025)',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'gen-shape-fill',
+  scenario:'Apply Generative Shape Fill to a vector shape to fill it with AI-generated texture or pattern content, then adjust the generated result.',
+  steps:[
+    {id:1,instruction:'Select a vector shape on the artboard (the blue rectangle).',
+     expectedAction:'click',expectedTarget:'select-shape-for-gen',
+     hint1:'Click the blue rectangle on the artboard.',hint2:'Click to select the blue rectangle — selection handles appear.',hint3:'Click the blue rectangle to select it.',
+     correctFeedback:'Shape selected. Ready to apply Generative Shape Fill.',
+     incorrectFeedback:'Click the blue rectangle to select it.',
+     acpContext:'ACP Ai-5.2c: Generative Shape Fill works on any closed vector shape. The AI uses the shape as a boundary and generates content that fills it.',gagneEvent:3},
+    {id:2,instruction:'Open Generative Shape Fill. Go to Edit → Generative Shape Fill, or click the sparkle icon in the Options Bar.',
+     expectedAction:'menu-click',expectedTarget:'edit-gen-shape-fill',
+     hint1:'Go to the Edit menu.',hint2:'Edit → Generative Shape Fill.',hint3:'Edit → Generative Shape Fill — the prompt panel appears.',
+     correctFeedback:'Generative Shape Fill panel open. Enter a text prompt describing the fill content.',
+     incorrectFeedback:'Go to Edit → Generative Shape Fill.',
+     acpContext:'ACP Ai-5.2c: Generative Shape Fill uses Adobe Firefly to generate content that fills the exact shape boundaries. The result remains vector-compatible.',gagneEvent:4},
+    {id:3,instruction:'Enter a prompt: "abstract geometric texture, orange and dark blue". Click Generate.',
+     expectedAction:'input',expectedTarget:'gen-fill-prompt',expectedValue:'geometric',matchType:'contains',
+     hint1:'Type a description in the prompt field.',hint2:'Describe the desired fill content — include style and colours.',hint3:'Type "abstract geometric texture, orange and dark blue" → click Generate.',
+     correctFeedback:'Prompt submitted. Illustrator generates variations to fill the shape.',
+     incorrectFeedback:'Type a descriptive prompt including "geometric" and click Generate.',
+     acpContext:'ACP Ai-5.2c: Be specific in prompts — include subject, style (geometric, watercolour, minimal), and colours. The fill adapts to the exact shape boundary.',gagneEvent:6},
+    {id:4,instruction:'Select one of the generated fill variations from the panel.',
+     expectedAction:'click',expectedTarget:'select-gen-fill-variation',
+     hint1:'Variation thumbnails appear in the panel.',hint2:'Click any variation thumbnail to apply it to the shape.',hint3:'Click a variation → it is applied to the shape.',
+     correctFeedback:'Variation applied. The shape is filled with AI-generated content within its boundaries.',
+     incorrectFeedback:'Click a variation thumbnail to apply it.',
+     acpContext:'ACP Ai-5.2c: Applied fills appear in the Appearance panel as a fill attribute. They can be edited, regenerated, or removed like any other fill.',gagneEvent:7},
+    {id:5,instruction:'Confirm the fill appears in the Appearance panel as an editable fill attribute.',
+     expectedAction:'menu-click',expectedTarget:'confirm-appearance-gen',
+     hint1:'Check the Appearance panel.',hint2:'Open Window → Appearance — the generated fill appears as a fill row.',hint3:'Window → Appearance → verify the generated fill is listed as a fill attribute.',
+     correctFeedback:'Generated fill confirmed in the Appearance panel. It is editable and removable like any standard fill.',
+     incorrectFeedback:'Check Window → Appearance to confirm the generated fill is listed.',
+     acpContext:'ACP Ai-5.2c: Generative Shape Fill integrates into Illustrator\'s non-destructive workflow — it appears in the Appearance panel and can be edited at any time.',gagneEvent:8}
+  ]
+},
+
+'ai-5-3a':{
+  id:'ai-5-3a',tool:'illustrator',domain:5,
+  objective:'5.3a/b',objectiveText:'Create clipping masks and opacity masks',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'masks',
+  scenario:'Create a clipping mask to constrain a background pattern to a logo shape, then create an opacity mask on a photograph to create a soft fade-to-transparent edge.',
+  steps:[
+    {id:1,instruction:'Create a clipping mask. Place the clipping shape (the star) on top of the content to be clipped. Select both, then Object → Clipping Mask → Make.',
+     expectedAction:'menu-click',expectedTarget:'clipping-mask-make',
+     hint1:'The clipping shape must be on top. Select both objects, then Object → Clipping Mask → Make.',hint2:'Object → Clipping Mask → Make (Ctrl+7 / Cmd+7).',hint3:'Select star (on top) and pattern (below) → Object → Clipping Mask → Make.',
+     correctFeedback:'Clipping mask created. The pattern is visible only within the star shape.',
+     incorrectFeedback:'Select both objects and go to Object → Clipping Mask → Make.',
+     acpContext:'ACP Ai-5.3a: In Illustrator, the TOP object defines the clip shape. The clipping path loses its fill/stroke. Use Object → Clipping Mask → Release (Alt+Ctrl+7) to remove.',gagneEvent:5},
+    {id:2,instruction:'Verify the clipping mask. The star path should now have no fill/stroke — only the content inside shows.',
+     expectedAction:'click',expectedTarget:'verify-clip-mask',
+     hint1:'Look at the masked object — the star outline disappears and only the pattern inside shows.',hint2:'Click the masked object to select the clip group. The star path has no visible fill or stroke.',hint3:'Click the clipped object — the star outline is invisible but constrains the pattern.',
+     correctFeedback:'Clipping mask confirmed. The pattern shows only within the star boundaries.',
+     incorrectFeedback:'Click the clipped object to verify the star path has no fill or stroke.',
+     acpContext:'ACP Ai-5.3a: To edit a clipping mask: double-click to enter Isolation Mode, or use Object → Clipping Mask → Edit Mask.',gagneEvent:7},
+    {id:3,instruction:'Create an opacity mask. Select the photo. Open the Transparency panel (Shift+Ctrl/Cmd+F10). Draw a gradient shape above the photo, select both, then click "Make Opacity Mask" in the Transparency panel menu.',
+     expectedAction:'menu-click',expectedTarget:'window-transparency',
+     hint1:'Open the Transparency panel first.',hint2:'Window → Transparency (Shift+Ctrl+F10) — find the "Make Opacity Mask" option in the panel menu.',hint3:'Window → Transparency → with photo and gradient selected → panel menu → Make Opacity Mask.',
+     correctFeedback:'Transparency panel open. Create and select a gradient shape above the photo, then Make Opacity Mask.',
+     incorrectFeedback:'Go to Window → Transparency.',
+     acpContext:'ACP Ai-5.3b: Unlike clipping masks, opacity masks use grayscale values — white = fully opaque, black = fully transparent, grey = semi-transparent. Perfect for soft fade effects.',gagneEvent:5},
+    {id:4,instruction:'Apply the opacity mask. With the photo and gradient shape both selected, click the Transparency panel menu (≡) → Make Opacity Mask.',
+     expectedAction:'click',expectedTarget:'make-opacity-mask',
+     hint1:'Look for the panel menu icon in the Transparency panel.',hint2:'Transparency panel → ≡ menu → Make Opacity Mask.',hint3:'Panel menu (≡) → Make Opacity Mask → the gradient controls the photo\'s transparency.',
+     correctFeedback:'Opacity mask applied. The photo fades where the gradient goes from white to black.',
+     incorrectFeedback:'Click the Transparency panel menu and choose Make Opacity Mask.',
+     acpContext:'ACP Ai-5.3b: The opacity mask thumbnail appears in the Transparency panel next to the object thumbnail. Click the mask thumbnail to edit the mask independently.',gagneEvent:7},
+    {id:5,instruction:'Edit the opacity mask. In the Transparency panel, click the mask thumbnail (not the object thumbnail) to activate mask editing.',
+     expectedAction:'click',expectedTarget:'edit-opacity-mask',
+     hint1:'Look at the Transparency panel — there are now two thumbnails side by side.',hint2:'Click the right thumbnail (mask) in the Transparency panel to activate mask editing mode.',hint3:'Transparency panel → click the mask thumbnail (right one) → a border appears around it → edit the gradient.',
+     correctFeedback:'Mask editing active. A border around the mask thumbnail confirms you are editing the mask, not the object.',
+     incorrectFeedback:'Click the mask thumbnail in the Transparency panel to edit the mask.',
+     acpContext:'ACP Ai-5.3b: When editing the mask, you see the mask contents in greyscale. Click the object thumbnail to return to editing the object. Similar workflow to Photoshop pixel masks.',gagneEvent:8}
+  ]
+},
+
+'ai-5-4a':{
+  id:'ai-5-4a',tool:'illustrator',domain:5,
+  objective:'5.4a/b',objectiveText:'Align and distribute objects',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'align',
+  scenario:'Align a group of 5 icons to the artboard and distribute them with equal spacing. Then align a single element to a key object, and align objects along a path.',
+  steps:[
+    {id:1,instruction:'Open the Align panel. Go to Window → Align (or Shift+F7).',
+     expectedAction:'menu-click',expectedTarget:'window-align',
+     hint1:'Go to Window menu.',hint2:'Window → Align (Shift+F7).',hint3:'Window → Align opens the panel with alignment and distribution controls.',
+     correctFeedback:'Align panel open. Use "Align to" dropdown to choose whether to align to selection, key object, or artboard.',
+     incorrectFeedback:'Go to Window → Align.',
+     acpContext:'ACP Ai-5.4a: The Align panel has Align Objects (6 alignment buttons), Distribute Objects (spacing buttons), and "Align to" (Selection, Key Object, Artboard). Always check "Align to" first.',gagneEvent:3},
+    {id:2,instruction:'Set "Align To" to "Align to Artboard". Find the dropdown at the bottom of the Align panel.',
+     expectedAction:'select',expectedTarget:'align-to',expectedValue:'artboard',matchType:'contains',
+     hint1:'Look for an "Align to" dropdown in the Align panel.',hint2:'At the bottom of the Align panel, find "Align to" → select "Align to Artboard".',hint3:'Align panel → "Align to" dropdown → Align to Artboard.',
+     correctFeedback:'Align to Artboard set. Alignment operations will now position objects relative to the artboard edges, not the selection bounding box.',
+     incorrectFeedback:'Set the "Align to" dropdown to Align to Artboard.',
+     acpContext:'ACP Ai-5.4a: Align to Selection = relative to the bounding box of selected objects. Align to Key Object = relative to one specified object. Align to Artboard = relative to artboard edges.',gagneEvent:6},
+    {id:3,instruction:'Select all 5 icons and click Horizontal Distribute (the even horizontal spacing button) to distribute them evenly.',
+     expectedAction:'click',expectedTarget:'distribute-horizontal',
+     hint1:'Select all icons, then find the horizontal distribute button.',hint2:'Select all → in the Align panel, find "Distribute Objects" row → click the Horizontal Distribute button.',hint3:'Select all → Align panel → Distribute Objects → Horizontal Distribute Spacing.',
+     correctFeedback:'Objects distributed horizontally with equal spacing between them.',
+     incorrectFeedback:'Select all objects and click the Horizontal Distribute button in the Align panel.',
+     acpContext:'ACP Ai-5.4a: Distribute Spacing (the last two buttons) spaces objects evenly by their edges. Distribute Objects spaces them by their centres. Use the former for equal gaps between objects.',gagneEvent:6},
+    {id:4,instruction:'Align to a Key Object. Click one icon to make it the key object (it gets a blue border), then align the others to it.',
+     expectedAction:'click',expectedTarget:'key-object-set',
+     hint1:'With multiple objects selected, click one to designate it as the key object.',hint2:'Select all → click one object again (without Shift) — it gets a thick blue border = key object.',hint3:'Select all objects → click one object to designate it as key object (blue border) → Align panel → Align to Key Object.',
+     correctFeedback:'Key object set. The selected object has a blue border. All alignment operations now use this object as the fixed reference point.',
+     incorrectFeedback:'With objects selected, click one to make it the key object (blue border appears).',
+     acpContext:'ACP Ai-5.4b: Key Object prevents that specific object from moving. All other selected objects align to it. Click it again to deselect as key object.',gagneEvent:7},
+    {id:5,instruction:'Align objects to an artboard edge. Set "Align to" to "Artboard", then click Align Right Edge to align all selected objects to the right edge of the artboard.',
+     expectedAction:'click',expectedTarget:'align-right-edge',
+     hint1:'Set Align to: Artboard in the dropdown, then click the Align Right Edge button.',hint2:'Align panel → Align to: Artboard → click the Align Right Edge icon (right-aligned rectangles).',hint3:'Align to: Artboard → click Align Right Edge → all objects move to the right artboard edge.',
+     correctFeedback:'Objects aligned to the right artboard edge.',
+     incorrectFeedback:'Set Align to: Artboard, then click the Align Right Edge button.',
+     acpContext:'ACP Ai-5.4b: Aligning to the artboard is essential for consistent layout — centering elements exactly, aligning to bleed edges, etc.',gagneEvent:7}
+  ]
+},
+
+'ai-5-mc':{
+  id:'ai-5-mc',tool:'illustrator',domain:5,
+  objective:'5.1–5.4',objectiveText:'Domain 5 final knowledge check',
+  bloomsLevel:'Understand',estimatedMinutes:8,uiType:'mc',
+  questions:[
+    {q:'What is the correct way to create a clipping mask in Illustrator?',options:['Draw the clipping shape below the content','Draw the clipping shape on top of the content, select both, then Object → Clipping Mask → Make','Right-click the content and select Clip','Use Effect → Stylize → Clipping Mask'],correct:1,explanation:'In Illustrator, the clipping path (mask shape) must be on top. Select both objects, then Object → Clipping Mask → Make (Ctrl+7). The top path defines the clip boundary; it loses its fill and stroke.',acpObj:'Ai-5.3a'},
+    {q:'In the Transparency panel, how does an opacity mask differ from a clipping mask?',options:['There is no difference — they produce identical results','An opacity mask uses black-and-white values for transparency — white = opaque, black = transparent; a clipping mask uses a shape boundary','An opacity mask is faster to apply','Clipping masks cannot be used on photographs'],correct:1,explanation:'Opacity masks use grayscale values to control transparency — white areas = fully opaque, black areas = fully transparent, grey = semi-transparent. Clipping masks use a shape boundary to clip content (visible or invisible).',acpObj:'Ai-5.3b'},
+    {q:'You select 6 icons and want equal spacing between them. Which Align panel option should you use?',options:['Align to: Artboard, then Align Centre Horizontal','Align to: Selection, then Distribute Spacing Horizontal','Key Object, then Align Right','Align to: Artboard, then Align Left Edge'],correct:1,explanation:'"Distribute Spacing" (not Distribute Objects) creates equal gaps between objects regardless of their widths. Align to: Selection keeps the outermost objects fixed and moves only the ones in between.',acpObj:'Ai-5.4a'},
+    {q:'How do you designate a "Key Object" when aligning in Illustrator?',options:['Go to Object → Key Object → Set','Check the Key Object box in the Align panel','With multiple objects selected, click one object again — it gains a blue border indicating it is the key object','Press K while using the Selection tool'],correct:2,explanation:'With multiple objects selected, click once more on the object you want as the reference — it gets a thick blue border indicating it is the key object. Other selected objects will align to it without it moving.',acpObj:'Ai-5.4b'},
+    {q:'What is Isolation Mode in Illustrator used for?',options:['To lock all objects on a layer','To edit grouped or compound objects without ungrouping them','To view the document at full resolution','To isolate a single layer for exporting'],correct:1,explanation:'Double-clicking a group enters Isolation Mode — a grey overlay appears on the rest of the artwork and only the group\'s contents are editable. Press Esc to exit. No ungrouping is required.',acpObj:'Ai-5.1b'},
+    {q:'What does the Appearance panel allow that selecting an object and using the Color panel does not?',options:['Applying multiple fills and strokes to a single object, and stacking live effects','Setting the exact CMYK values of the fill','Changing the blending mode','Aligning the object to the artboard'],correct:0,explanation:'The Appearance panel allows stacking multiple fills, multiple strokes, and applying live effects — all non-destructively on a single object. The Color panel only sets a single fill or stroke colour at a time.',acpObj:'Ai-5.2a'},
+    {q:'You want to create copies of an icon arranged in a circle. Which Illustrator feature does this?',options:['Object → Transform → Transform Each','Edit → Copy / Paste in Place repeatedly','Object → Repeat → Radial','Effect → Distort & Transform → Transform'],correct:2,explanation:'Object → Repeat → Radial creates copies arranged radially around a centre point. The repeat is live — edit the original and all copies update. Object → Expand converts the repeat to individual objects.',acpObj:'Ai-5.1b'}
+  ]
+}
+};
+
+/* ═══ ENGINE ══════════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[],mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array((task.steps||[]).length).fill(null);mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:var(--correct);border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.08);">Ai-${t.objective}</span>
+      <span class="badge badge-ai">Illustrator</span>
+      <span class="badge" style="background:rgba(0,214,143,.12);color:var(--correct);">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI RENDERS ══════════════════════════════════════════ */
+function renderUI(t){
+  if(t.uiType==='mc'){document.getElementById('adobe-sim').innerHTML='';return;}
+  const map={'selections':selectionsUI,'appearance':appearanceUI,'gen-shape-fill':genShapeFillUI,'masks':masksUI,'align':alignUI};
+  document.getElementById('adobe-sim').innerHTML=map[t.uiType]?map[t.uiType]():'';
+}
+
+function aiShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ai</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function selectionsUI(){
+  return aiShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('object-repeat-radial')">Object</span>`,
+    `<div class="tool-btn active">↖</div>
+     <div class="tool-btn highlight" id="tb-gs" onclick="doTool('group-selection')" title="Group Select">↖+</div>
+     <div class="tool-btn" style="font-size:11px;">↗</div>`,
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:210px;height:150px;position:relative;display:flex;align-items:center;justify-content:center;">
+        <div id="isolation-overlay" style="display:none;position:absolute;inset:0;background:rgba(180,180,180,.5);pointer-events:none;z-index:10;"></div>
+        <div id="group-main" style="cursor:pointer;position:relative;" ondblclick="doAction('isolation-mode-enter')" onclick="doAction('edit-in-isolation')">
+          <svg width="150" height="100" viewBox="0 0 150 100">
+            <rect x="10" y="10" width="60" height="60" rx="6" fill="#FF9A00" opacity=".8"/>
+            <circle cx="105" cy="40" r="30" fill="#31A8FF" opacity=".8"/>
+            <rect x="30" y="55" width="100" height="20" rx="4" fill="#00D68F" opacity=".7"/>
+          </svg>
+        </div>
+        <div id="isolation-bar" style="display:none;position:absolute;top:0;left:0;right:0;height:18px;background:#1A1A2E;display:none;align-items:center;padding-left:6px;">
+          <span style="font-size:8px;color:#FF9A00;">Isolation Mode</span>
+        </div>
+        <div id="radial-result" style="display:none;position:absolute;bottom:4px;right:4px;font-size:8px;color:#00D68F;">Radial repeat applied</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Selection tools</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doTool('group-selection')">↖+: Group Selection</div>
+       <div class="adj-btn" onclick="doAction('isolation-mode-enter')">Double-click: Isolation Mode</div>
+       <div class="adj-btn" onclick="doAction('edit-in-isolation')">Click in isolation: edit</div>
+       <div class="adj-btn" onclick="doAction('exit-isolation')">Esc: Exit Isolation</div>
+       <div class="adj-btn" onclick="doMenu('object-repeat-radial')">Object → Repeat → Radial</div>
+     </div>`
+  );
+}
+
+function appearanceUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-appearance')">Window</span>
+     <span class="menu-item" onclick="doMenu('recolor-artwork')">Edit</span>
+     <span class="menu-item" onclick="doMenu('effect-3d-extrude')">Effect</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:150px;display:flex;align-items:center;justify-content:center;">
+        <div id="appear-obj" style="width:100px;height:70px;background:#FF9A00;border-radius:8px;transition:all .4s;position:relative;cursor:pointer;" onclick="doAction('add-fill-appearance')">
+          <div id="second-fill" style="display:none;position:absolute;inset:4px;background:rgba(255,77,109,.6);border-radius:5px;"></div>
+          <div id="second-stroke" style="display:none;position:absolute;inset:-4px;border:4px solid #1A1A2E;border-radius:11px;"></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Appearance</div>
+     <div class="panel-body" id="appear-panel">
+       <div style="font-size:9px;color:#888;margin-bottom:4px;">Selected object</div>
+       <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;padding:3px 5px;background:#3A3A3A;border-radius:3px;">
+         <div style="width:12px;height:12px;background:#FF9A00;border-radius:2px;"></div>
+         <span style="font-size:10px;color:#CCC;flex:1;">Fill</span>
+         <span class="adj-btn" style="margin:0;padding:2px 5px;font-size:9px;" onclick="doAction('add-fill-appearance')">+</span>
+       </div>
+       <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;padding:3px 5px;background:#3A3A3A;border-radius:3px;">
+         <div style="width:12px;height:12px;border:2px solid #AAA;border-radius:2px;"></div>
+         <span style="font-size:10px;color:#CCC;flex:1;">Stroke</span>
+         <span class="adj-btn" style="margin:0;padding:2px 5px;font-size:9px;" onclick="doAction('add-stroke-appearance')">+</span>
+       </div>
+       <div id="extra-fills" style="font-size:10px;color:#888;padding:2px 5px;"></div>
+     </div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('window-appearance')">Window → Appearance</div>
+       <div class="adj-btn" onclick="doMenu('recolor-artwork')">Edit → Recolor Artwork</div>
+       <div class="adj-btn" onclick="doMenu('effect-3d-extrude')">Effect → 3D → Extrude</div>
+     </div>`
+  );
+}
+
+function genShapeFillUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('edit-gen-shape-fill')">Edit</span>
+     <span class="menu-item" onclick="doMenu('confirm-appearance-gen')">Window</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:.5rem;padding:.5rem;">
+      <div class="artboard" style="width:180px;height:120px;display:flex;align-items:center;justify-content:center;position:relative;">
+        <div id="gen-shape" style="width:120px;height:80px;background:#31A8FF;border-radius:6px;cursor:pointer;transition:all .5s;position:relative;overflow:hidden;" onclick="doAction('select-shape-for-gen')">
+          <div id="gen-fill-result" style="display:none;position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,154,0,.4) 0,rgba(255,154,0,.4) 4px,rgba(26,26,46,.4) 4px,rgba(26,26,46,.4) 12px),repeating-linear-gradient(-45deg,rgba(0,214,143,.3) 0,rgba(0,214,143,.3) 4px,transparent 4px,transparent 12px);"></div>
+          <div id="sel-indicator" style="display:none;position:absolute;inset:0;border:2px solid #FF9A00;border-radius:6px;"></div>
+        </div>
+      </div>
+      <div id="gen-fill-panel" style="display:none;background:#1A0F3D;border:0.5px solid rgba(155,142,240,.3);border-radius:6px;padding:6px 10px;width:100%;max-width:200px;">
+        <div style="font-size:9px;color:#9B8EF0;margin-bottom:3px;">Generative Shape Fill</div>
+        <input id="gen-fill-input" style="width:100%;background:transparent;border:none;color:#E0D8FF;font-size:9px;outline:none;border-bottom:0.5px solid rgba(155,142,240,.3);padding-bottom:3px;" placeholder="Describe fill…" oninput="doInput('gen-fill-prompt',this.value.toLowerCase())">
+        <div style="display:flex;gap:4px;margin-top:5px;">
+          <button onclick="doAction('select-gen-fill-variation')" style="flex:1;padding:3px;background:#7B68EE;color:#FFF;border:none;border-radius:3px;font-size:9px;cursor:pointer;">Generate</button>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr" style="background:rgba(155,142,240,.1);">Generative Shape Fill ✦</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" style="border-color:rgba(155,142,240,.4);color:#9B8EF0;" onclick="doMenu('edit-gen-shape-fill')">Edit → Generative Shape Fill</div>
+       <div class="adj-btn" onclick="doAction('select-gen-fill-variation')">Select variation</div>
+       <div class="adj-btn" onclick="doMenu('confirm-appearance-gen')">Window → Appearance (verify)</div>
+     </div>`
+  );
+}
+
+function masksUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('clipping-mask-make')">Object</span>
+     <span class="menu-item" onclick="doMenu('window-transparency')">Window</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;">
+      <div style="position:relative;">
+        <div class="artboard" style="width:95px;height:95px;position:relative;display:flex;align-items:center;justify-content:center;">
+          <div id="clip-pattern" style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,#FF9A00 0,#FF9A00 5px,#1A1A2E 5px,#1A1A2E 10px);"></div>
+          <div id="clip-star" style="position:absolute;font-size:55px;opacity:.8;pointer-events:none;cursor:default;">★</div>
+          <div id="clip-result" style="display:none;position:absolute;inset:0;display:none;align-items:center;justify-content:center;">
+            <div style="clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:repeating-linear-gradient(45deg,#FF9A00 0,#FF9A00 5px,#1A1A2E 5px,#1A1A2E 10px);width:80px;height:80px;"></div>
+          </div>
+        </div>
+        <div style="font-size:8px;color:#AAA;text-align:center;margin-top:2px;">Clipping mask</div>
+      </div>
+      <div style="position:relative;">
+        <div class="artboard" style="width:95px;height:95px;position:relative;">
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 95 95' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23B8C8D8' width='95' height='95'/%3E%3Ccircle cx='47' cy='40' r='28' fill='%23D4B896'/%3E%3C/svg%3E" style="width:100%;height:100%;" id="photo-mask">
+          <div id="opacity-fade" style="display:none;position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,0) 40%,rgba(255,255,255,1) 100%);mix-blend-mode:normal;"></div>
+        </div>
+        <div style="font-size:8px;color:#AAA;text-align:center;margin-top:2px;">Opacity mask</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Masks</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('clipping-mask-make')">Object → Clipping Mask → Make (Ctrl+7)</div>
+       <div class="adj-btn" onclick="doAction('verify-clip-mask')">Verify clip mask</div>
+       <div class="adj-btn" onclick="doMenu('window-transparency')">Window → Transparency</div>
+       <div class="adj-btn" onclick="doAction('make-opacity-mask')">Panel ≡ → Make Opacity Mask</div>
+       <div class="adj-btn" onclick="doAction('edit-opacity-mask')">Click mask thumbnail to edit</div>
+     </div>
+     <div class="panel-hdr">Transparency</div>
+     <div class="panel-body" id="transparency-panel" style="display:none;">
+       <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px;">
+         <div style="width:30px;height:24px;background:#D4B896;border:0.5px solid #555;border-radius:2px;cursor:pointer;" id="trans-obj-thumb"></div>
+         <div style="width:30px;height:24px;background:linear-gradient(90deg,#FFF,#000);border:0.5px solid #555;border-radius:2px;cursor:pointer;display:none;" id="trans-mask-thumb" onclick="doAction('edit-opacity-mask')"></div>
+       </div>
+       <div class="prop-row"><span class="prop-label">Blend Mode</span>
+         <select class="prop-select"><option>Normal</option><option>Multiply</option><option>Screen</option></select></div>
+       <div class="prop-row"><span class="prop-label">Opacity</span><input class="prop-input" style="width:45px;" value="100">%</div>
+     </div>`
+  );
+}
+
+function alignUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('window-align')">Window</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:210px;height:150px;position:relative;overflow:hidden;" id="align-artboard">
+        ${[0,1,2,3,4].map(i=>`<div class="align-obj" id="align-obj-${i}" style="width:30px;height:30px;background:#FF9A00;border-radius:4px;position:absolute;top:${30+i*15}px;left:${10+i*45}px;transition:all .5s;cursor:pointer;" onclick="doAction('key-object-set')"></div>`).join('')}
+        <div id="key-obj-indicator" style="display:none;position:absolute;top:30px;left:10px;width:30px;height:30px;outline:2px solid #31A8FF;outline-offset:2px;border-radius:4px;pointer-events:none;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Align</div>
+     <div class="panel-body">
+       <div class="prop-row"><span class="prop-label">Align to</span>
+         <select class="prop-select highlight" id="sel-align-to" onchange="doSelect('align-to',this.value.toLowerCase())">
+           <option value="selection">Selection</option>
+           <option value="key object">Key Object</option>
+           <option value="artboard">Artboard</option>
+         </select></div>
+       <div style="font-size:9px;color:#888;margin:4px 0;">Align Objects</div>
+       <div class="align-grid">
+         <div class="align-btn" onclick="doAction('align-left')" title="Left">⊏</div>
+         <div class="align-btn" onclick="doAction('align-center-h')" title="Center H">⊞</div>
+         <div class="align-btn highlight" onclick="doAction('align-right-edge')" title="Right">⊐</div>
+         <div class="align-btn" title="Top">⊓</div>
+         <div class="align-btn" title="Center V">⊡</div>
+         <div class="align-btn" title="Bottom">⊔</div>
+       </div>
+       <div style="font-size:9px;color:#888;margin:4px 0;">Distribute</div>
+       <div class="align-grid">
+         <div class="align-btn highlight" onclick="doAction('distribute-horizontal')" title="Horiz Dist">⟺</div>
+         <div class="align-btn" title="Vert Dist">⟻</div>
+         <div class="align-btn" onclick="doAction('key-object-set')" title="Key Object" style="font-size:9px;color:#31A8FF;">K</div>
+       </div>
+       <div class="adj-btn highlight" onclick="doMenu('window-align')" style="margin-top:4px;">Window → Align (Shift+F7)</div>
+     </div>`
+  );
+}
+
+/* ═══ HANDLERS & EFFECTS ══════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+function applyEffect(target){
+  const fx={
+    'group-selection':()=>{document.getElementById('tb-gs')?.classList.add('active');},
+    'isolation-mode-enter':()=>{
+      const ov=document.getElementById('isolation-overlay');if(ov)ov.style.display='block';
+      const bar=document.getElementById('isolation-bar');if(bar)bar.style.display='flex';
+    },
+    'edit-in-isolation':()=>{},
+    'exit-isolation':()=>{
+      const ov=document.getElementById('isolation-overlay');if(ov)ov.style.display='none';
+      const bar=document.getElementById('isolation-bar');if(bar)bar.style.display='none';
+    },
+    'object-repeat-radial':()=>{document.getElementById('radial-result')&&(document.getElementById('radial-result').style.display='block');},
+    'window-appearance':()=>{},
+    'add-fill-appearance':()=>{
+      const ef=document.getElementById('extra-fills');if(ef)ef.innerHTML='<div style="display:flex;align-items:center;gap:5px;padding:3px 5px;background:#2B2B2B;border-radius:3px;"><div style="width:12px;height:12px;background:#FF4D6D;border-radius:2px;"></div><span style="font-size:10px;color:#CCC;">Fill 2</span></div>';
+      const sf=document.getElementById('second-fill');if(sf)sf.style.display='block';
+    },
+    'add-stroke-appearance':()=>{const ss=document.getElementById('second-stroke');if(ss)ss.style.display='block';},
+    'recolor-artwork':()=>{const o=document.getElementById('appear-obj');if(o)o.style.background='linear-gradient(135deg,#9B8EF0,#31A8FF)';},
+    'effect-3d-extrude':()=>{const o=document.getElementById('appear-obj');if(o)o.style.transform='perspective(200px) rotateY(-15deg) rotateX(10deg)';},
+    'select-shape-for-gen':()=>{const el=document.getElementById('sel-indicator');if(el)el.style.display='block';},
+    'edit-gen-shape-fill':()=>{const p=document.getElementById('gen-fill-panel');if(p)p.style.display='block';},
+    'select-gen-fill-variation':()=>{const r=document.getElementById('gen-fill-result');if(r)r.style.display='block';},
+    'confirm-appearance-gen':()=>{},
+    'gen-fill-prompt':()=>{},
+    'clipping-mask-make':()=>{const r=document.getElementById('clip-result');if(r)r.style.display='flex';const s=document.getElementById('clip-star');if(s)s.style.opacity='0';document.getElementById('clip-pattern')&&(document.getElementById('clip-pattern').style.opacity='0');},
+    'verify-clip-mask':()=>{},
+    'window-transparency':()=>{const p=document.getElementById('transparency-panel');if(p)p.style.display='block';},
+    'make-opacity-mask':()=>{const f=document.getElementById('opacity-fade');if(f)f.style.display='block';const t=document.getElementById('trans-mask-thumb');if(t)t.style.display='block';},
+    'edit-opacity-mask':()=>{const t=document.getElementById('trans-mask-thumb');if(t)t.style.outline='2px solid #FF9A00';},
+    'window-align':()=>{},
+    'align-to':()=>{},
+    'distribute-horizontal':()=>{
+      document.querySelectorAll('.align-obj').forEach((el,i)=>{el.style.left=(10+i*38)+'px';el.style.top='60px';});
+    },
+    'key-object-set':()=>{document.getElementById('key-obj-indicator')&&(document.getElementById('key-obj-indicator').style.display='block');},
+    'align-right-edge':()=>{document.querySelectorAll('.align-obj').forEach(el=>{el.style.left='170px';});}
+  };
+  if(fx[target])fx[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask||currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">
+      Domain 5 final knowledge check · ${qs.length} questions <span style="color:var(--correct);">· Illustrator complete</span>
+    </div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`<div onclick="selectMC(${qi},${oi},${q.correct})" id="mc-opt-${qi}-${oi}" style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;">${opt}</div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;line-height:1.5;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()">Submit &amp; complete Illustrator</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{el.style.borderColor='var(--color-border-tertiary)';el.style.background='var(--surface)';el.style.color='var(--text-secondary)';});
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(0,214,143,.4)';sel.style.background='rgba(0,214,143,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}el.style.cursor='default';el.style.pointerEvents='none';});
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const sc=document.getElementById('sc-'+currentTask.id.replace(/-/g,''));if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+currentTask.id.replace(/-/g,''));if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#FF9A00'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:var(--correct);">Ai-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button><a href="../../indesign/index.html" class="btn btn-primary btn-sm" style="text-decoration:none;background:var(--correct);border-color:var(--correct);color:#000;">Next: InDesign →</a></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('ai-5-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

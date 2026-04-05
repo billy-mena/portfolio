@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ps · Domain 3: Layers, Masks & Adjustments | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#0F1B3D 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.domain-hero h1{font-size:1.6rem;margin-bottom:.3rem;}
+.domain-meta{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;}
+.sim-layout{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(49,168,255,.35);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;flex-shrink:0;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--accent);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
+
+/* Adobe UI */
+.adobe-sim{background:#2B2B2B;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3C3C3C;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#31A8FF;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover,.menu-item.open{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 230px;min-height:380px;}
+.adobe-tools{background:#2B2B2B;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:14px;color:#AAA;border:none;background:transparent;transition:background .12s;position:relative;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(49,168,255,.2);color:#31A8FF;}
+.tool-btn.highlight{border:1.5px solid #31A8FF;animation:pulse-ring 1.2s infinite;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#505050;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.canvas-doc{background:#FFF;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+
+/* Layers panel */
+.adobe-panels{background:#2B2B2B;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;cursor:pointer;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;align-items:center;transition:background .1s;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.panel-body.collapsed{display:none;}
+.layer-row{display:flex;align-items:center;gap:5px;padding:4px 5px;border-radius:3px;cursor:pointer;margin-bottom:1px;border:1px solid transparent;position:relative;}
+.layer-row:hover{background:#3A3A3A;}
+.layer-row.selected{background:rgba(49,168,255,.18);border-color:rgba(49,168,255,.3);}
+.layer-row.highlight-layer{border-color:#31A8FF;animation:pulse-ring 1.5s infinite;}
+.layer-eye{font-size:11px;cursor:pointer;color:#777;width:14px;text-align:center;flex-shrink:0;}
+.layer-eye.visible{color:#CCC;}
+.layer-thumb{width:26px;height:20px;border-radius:2px;border:1px solid #555;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.mask-thumb{width:20px;height:20px;border-radius:2px;border:1px solid #555;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.layer-name{flex:1;color:#CCC;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.layer-badge{font-size:8px;padding:1px 4px;border-radius:2px;flex-shrink:0;}
+.lb-type{background:#444;color:#AAA;}
+.lb-adj{background:rgba(49,168,255,.2);color:#7AB8F5;}
+.lb-smart{background:rgba(255,154,0,.2);color:#FFBB66;}
+.lb-mask{background:rgba(0,214,143,.15);color:#66D9A5;}
+.layers-footer{display:flex;gap:4px;padding:5px 8px;border-top:1px solid #1A1A1A;justify-content:flex-end;}
+.layer-btn{width:20px;height:20px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:#AAA;transition:background .1s;}
+.layer-btn:hover{background:#4A4A4A;color:#CCC;}
+.layer-btn.highlight{border-color:#31A8FF;color:#31A8FF;}
+.fx-icon{font-size:9px;color:#7AB8F5;margin-left:auto;}
+
+/* Adjustment layers chooser */
+.adj-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:6px;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#31A8FF;color:#31A8FF;}
+
+/* Properties / adjustments panel */
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-slider{width:80px;accent-color:#31A8FF;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;width:55px;text-align:right;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#31A8FF;box-shadow:0 0 0 2px rgba(49,168,255,.2);}
+
+/* Mask panel visuals */
+.mask-preview{width:100%;height:50px;border-radius:4px;margin-bottom:6px;border:0.5px solid #444;overflow:hidden;position:relative;}
+.mask-gradient-demo{width:100%;height:100%;background:linear-gradient(90deg,#000 0%,#FFF 100%);}
+
+/* Smart filter badge on canvas layer */
+.smart-filter-badge{position:absolute;bottom:2px;right:2px;background:rgba(255,154,0,.8);color:#000;font-size:8px;padding:1px 4px;border-radius:2px;font-weight:600;}
+
+/* Step panel */
+.step-panel{border-radius:var(--border-radius-lg);}
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;color:var(--text-primary);line-height:1.6;margin-bottom:.5rem;}
+.hint-area{margin-top:.4rem;}
+.feedback-area{margin-top:.6rem;}
+.step-actions{margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;}
+
+/* Score */
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+
+/* MC */
+.mc-option{display:flex;align-items:flex-start;gap:.55rem;padding:.45rem .7rem;border-radius:var(--radius-md);cursor:pointer;background:var(--surface);border:0.5px solid var(--border);font-size:.83rem;color:var(--text-secondary);transition:var(--transition);margin-bottom:.3rem;}
+.mc-option:hover{border-color:rgba(49,168,255,.3);}
+.mc-option.selected{border-color:rgba(49,168,255,.4);background:rgba(49,168,255,.07);}
+.mc-option.correct{border-color:rgba(0,214,143,.4);background:rgba(0,214,143,.07);}
+.mc-option.wrong{border-color:rgba(255,77,109,.4);background:rgba(255,77,109,.07);}
+
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ps active">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div class="domain-meta">
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="acp-tag">Ps · Domain 3</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1>Layers, Masks &amp; Adjustments</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-top:.3rem;">3 objectives · 7 tasks · Guided &amp; Independent modes · ACP 2025 exam-aligned</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<!-- Sidebar -->
+<aside class="task-list">
+  <div class="task-list-title">Domain 3 tasks</div>
+
+  <div class="task-item active" onclick="loadTask('ps-3-1a')" id="nav-ps31a">
+    <div class="task-icon" id="icon-ps31a">3.1</div>
+    <div class="task-info"><div class="task-obj">Ps-3.1a</div><div class="task-name">Manage &amp; organise layers</div></div>
+    <div class="task-score" id="sc-ps31a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-3-1b')" id="nav-ps31b">
+    <div class="task-icon" id="icon-ps31b">3.1</div>
+    <div class="task-info"><div class="task-obj">Ps-3.1b/c</div><div class="task-name">Opacity, blending &amp; Smart Objects</div></div>
+    <div class="task-score" id="sc-ps31b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-3-2a')" id="nav-ps32a">
+    <div class="task-icon" id="icon-ps32a">3.2</div>
+    <div class="task-info"><div class="task-obj">Ps-3.2b</div><div class="task-name">Create a pixel mask</div></div>
+    <div class="task-score" id="sc-ps32a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-3-2b')" id="nav-ps32b">
+    <div class="task-icon" id="icon-ps32b">3.2</div>
+    <div class="task-info"><div class="task-obj">Ps-3.2d/e</div><div class="task-name">Vector &amp; clipping masks</div></div>
+    <div class="task-score" id="sc-ps32b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-3-2c')" id="nav-ps32c">
+    <div class="task-icon" id="icon-ps32c">3.2</div>
+    <div class="task-info"><div class="task-obj">Ps-3.2a/c</div><div class="task-name">Manage masks &amp; frame tool</div></div>
+    <div class="task-score" id="sc-ps32c">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-3-3a')" id="nav-ps33a">
+    <div class="task-icon" id="icon-ps33a">3.3</div>
+    <div class="task-info"><div class="task-obj">Ps-3.3a</div><div class="task-name">Adjustment layers</div></div>
+    <div class="task-score" id="sc-ps33a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ps-3-3b')" id="nav-ps33b">
+    <div class="task-icon" id="icon-ps33b">3.3</div>
+    <div class="task-info"><div class="task-obj">Ps-3.3b</div><div class="task-name">Adjustment presets &amp; Smart Filters</div></div>
+    <div class="task-score" id="sc-ps33b">—</div>
+  </div>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d2-document-setup.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 2</div></div>
+  </a>
+  <a href="d4-content.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#31A8FF;">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Domain 4 →</div></div>
+  </a>
+
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<!-- Main -->
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card step-panel">
+    <div id="step-panel"></div>
+    <div id="feedback-area" class="feedback-area"></div>
+    <div id="hint-area" class="hint-area"></div>
+    <div id="step-actions" class="step-actions"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   TASK CONFIGS — ACP 2025 Domain 3 (Ps-3.1, 3.2, 3.3)
+═══════════════════════════════════════════════════════ */
+const TASKS = {
+
+/* ── Ps-3.1a ─────────────────────────────────────────────────────── */
+'ps-3-1a': {
+  id:'ps-3-1a', tool:'photoshop', domain:3,
+  objective:'3.1a', objectiveText:'Manage, identify, and organise layers',
+  bloomsLevel:'Apply', estimatedMinutes:8,
+  scenario:'You have a multi-layer poster document. Organise it by: renaming "Layer 3" to "Headline", grouping the two image layers into a group named "Photos", locking the Background layer, and identifying the layer type of each layer by its icon.',
+  uiType:'layers-organise',
+  steps:[
+    {id:1, instruction:'Double-click the name "Layer 3" in the Layers panel to rename it.',
+     expectedAction:'dblclick', expectedTarget:'layer3-name',
+     hint1:'Double-clicking a layer name in the Layers panel makes it editable.',
+     hint2:'In the Layers panel, find "Layer 3". Double-click the text label (not the thumbnail).',
+     hint3:'Double-click the text "Layer 3" — a text cursor appears. Type the new name.',
+     correctFeedback:'Layer name is now editable. Type "Headline" and press Enter.',
+     incorrectFeedback:'Double-click the layer name text "Layer 3" in the Layers panel.',
+     acpContext:'ACP Ps-3.1a: Always name layers descriptively. Unnamed layers ("Layer 1", "Layer 2") make complex documents unmanageable.',
+     gagneEvent:6},
+    {id:2, instruction:'Type "Headline" and press Enter to confirm the new name.',
+     expectedAction:'input', expectedTarget:'layer-rename', expectedValue:'headline', matchType:'contains',
+     hint1:'The layer name field is active. Type the new name.',
+     hint2:'Type "Headline" in the active name field.',
+     hint3:'Type: Headline — then press Enter or click away to confirm.',
+     correctFeedback:'"Headline" layer named. Clear names are essential for team collaboration.',
+     incorrectFeedback:'Type "Headline" in the name field and press Enter.',
+     acpContext:'ACP Ps-3.1a: Descriptive layer names are a professional workflow standard and are tested in the ACP exam.',
+     gagneEvent:6},
+    {id:3, instruction:'Select both image layers (Shift+click the second one), then group them: Layer → Group Layers (Ctrl/Cmd+G).',
+     expectedAction:'menu-click', expectedTarget:'layer-group',
+     hint1:'Hold Shift and click both image layers to select them both.',
+     hint2:'With both layers selected, go to Layer menu → Group Layers.',
+     hint3:'Select "Photo 1" then Shift-click "Photo 2". Then Layer → Group Layers, or press Ctrl+G (Cmd+G on Mac).',
+     correctFeedback:'Group created. Rename it "Photos" by double-clicking the group name.',
+     incorrectFeedback:'Select both image layers (Shift+click), then use Layer → Group Layers.',
+     acpContext:'ACP Ps-3.1a: Groups (folders) organise related layers. Collapsed groups reduce Layers panel clutter significantly.',
+     gagneEvent:6},
+    {id:4, instruction:'Double-click the group name "Group 1" and rename it "Photos".',
+     expectedAction:'input', expectedTarget:'group-rename', expectedValue:'photos', matchType:'contains',
+     hint1:'Double-click "Group 1" text in the Layers panel to rename it.',
+     hint2:'The group appears as a folder icon with "Group 1" label. Double-click the label text.',
+     hint3:'Double-click "Group 1" text → type Photos → press Enter.',
+     correctFeedback:'"Photos" group named correctly.',
+     incorrectFeedback:'Double-click the group name to rename it "Photos".',
+     acpContext:'ACP Ps-3.1a: Named groups make document structure readable for any collaborator opening the file.',
+     gagneEvent:7},
+    {id:5, instruction:'Lock the Background layer by clicking the lock icon (🔒) at the right of the Background layer row.',
+     expectedAction:'click', expectedTarget:'bg-lock',
+     hint1:'Each layer row has a lock icon on the far right. Click it on the Background layer.',
+     hint2:'Find the Background layer at the bottom of the Layers panel. Click the small padlock icon on its row.',
+     hint3:'Click the lock icon (🔒) on the Background layer row — it turns solid to indicate the layer is fully locked.',
+     correctFeedback:'Background layer locked. Locked layers cannot be accidentally moved or edited.',
+     incorrectFeedback:'Click the lock icon on the Background layer row to lock it.',
+     acpContext:'ACP Ps-3.1a: Locking the background prevents accidental edits. A double-lock icon means all properties are locked.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-3.1b ─────────────────────────────────────────────────────── */
+'ps-3-1b': {
+  id:'ps-3-1b', tool:'photoshop', domain:3,
+  objective:'3.1b/c', objectiveText:'Adjust layer appearance and manage Smart Objects',
+  bloomsLevel:'Apply', estimatedMinutes:8,
+  scenario:'A client wants a soft watermark effect on the logo. Set the logo layer opacity to 40%, change its blending mode to Multiply, then convert it to a Smart Object so filters remain editable.',
+  uiType:'layer-appearance',
+  steps:[
+    {id:1, instruction:'Select the "Logo" layer in the Layers panel by clicking on it.',
+     expectedAction:'click', expectedTarget:'logo-layer',
+     hint1:'Click on the layer row in the Layers panel to select it.',
+     hint2:'Find the "Logo" layer in the Layers panel and click its row to select it.',
+     hint3:'Click the "Logo" layer row — it highlights blue to confirm selection.',
+     correctFeedback:'"Logo" layer selected. Now adjust its opacity.',
+     incorrectFeedback:'Click the "Logo" layer row in the Layers panel.',
+     acpContext:'ACP Ps-3.1b: You must select a layer before opacity or blending changes apply to it.',
+     gagneEvent:3},
+    {id:2, instruction:'Change the Opacity to 40%. Find the Opacity field at the top of the Layers panel and type 40.',
+     expectedAction:'input', expectedTarget:'opacity-value', expectedValue:'40', matchType:'exact',
+     hint1:'The Opacity control is at the top of the Layers panel, to the right.',
+     hint2:'Click the Opacity % number at the top-right of the Layers panel. It becomes editable. Type 40.',
+     hint3:'Click the "100%" opacity field in the Layers panel header, type 40, press Enter.',
+     correctFeedback:'Opacity set to 40%. The layer is now semi-transparent.',
+     incorrectFeedback:'Enter 40 in the Opacity field at the top of the Layers panel.',
+     acpContext:'ACP Ps-3.1b: Opacity controls overall layer transparency. Fill opacity (below Opacity) affects pixels only — not layer styles.',
+     gagneEvent:6},
+    {id:3, instruction:'Change the Blending Mode to Multiply. Click the blending mode dropdown (currently "Normal") at the top-left of the Layers panel.',
+     expectedAction:'select', expectedTarget:'blend-mode', expectedValue:'multiply', matchType:'exact',
+     hint1:'The blending mode dropdown is at the top-left of the Layers panel — it says "Normal" by default.',
+     hint2:'Click the "Normal" dropdown in the Layers panel header. A list of blending modes appears. Select Multiply.',
+     hint3:'Click the dropdown that reads "Normal" at the top of the Layers panel → scroll to "Multiply" in the list.',
+     correctFeedback:'Multiply blending mode applied. This darkens the layer by multiplying colour values with layers below.',
+     incorrectFeedback:'Click the "Normal" blending mode dropdown at the top of the Layers panel and select Multiply.',
+     acpContext:'ACP Ps-3.1b: Multiply ignores white (shows as transparent) and darkens everything else — ideal for logos and watermarks.',
+     gagneEvent:6},
+    {id:4, instruction:'Convert the Logo layer to a Smart Object. Right-click the layer and select "Convert to Smart Object".',
+     expectedAction:'click', expectedTarget:'convert-smart-object',
+     hint1:'Right-click (or Ctrl+click on Mac) on the Logo layer in the Layers panel.',
+     hint2:'Right-click the Logo layer row → a context menu appears → choose "Convert to Smart Object".',
+     hint3:'Right-click the layer row → select "Convert to Smart Object". The thumbnail gains a Smart Object badge.',
+     correctFeedback:'Smart Object created. Filters applied to this layer will now be non-destructive and editable.',
+     incorrectFeedback:'Right-click the Logo layer in the Layers panel and choose "Convert to Smart Object".',
+     acpContext:'ACP Ps-3.1c: Smart Objects preserve the original content. Smart Filters (filters on Smart Objects) can be edited or removed at any time.',
+     gagneEvent:7},
+    {id:5, instruction:'Confirm the conversion by checking that the layer thumbnail now shows the Smart Object badge (a small icon overlay).',
+     expectedAction:'click', expectedTarget:'smart-object-badge',
+     hint1:'After conversion, look at the layer thumbnail in the Layers panel.',
+     hint2:'The Smart Object thumbnail has a small icon in its lower-right corner. Click the thumbnail to confirm.',
+     hint3:'Click the Smart Object layer thumbnail to confirm the badge is visible.',
+     correctFeedback:'Smart Object confirmed. The layer now has full non-destructive editing capability.',
+     incorrectFeedback:'Click the Smart Object thumbnail to confirm the Smart Object icon is visible.',
+     acpContext:'ACP Ps-3.1c: Smart Object badge = non-destructive. Convert to Layers reverses it. Double-clicking opens the original in a new document.',
+     gagneEvent:8}
+  ]
+},
+
+/* ── Ps-3.2a ─────────────────────────────────────────────────────── */
+'ps-3-2a': {
+  id:'ps-3-2a', tool:'photoshop', domain:3,
+  objective:'3.2b', objectiveText:'Create a pixel mask',
+  bloomsLevel:'Apply', estimatedMinutes:9,
+  scenario:'Remove the background of a product photo non-destructively using a pixel mask. The original pixels must remain intact so the mask can be adjusted later.',
+  uiType:'pixel-mask',
+  steps:[
+    {id:1, instruction:'Select the "Product" layer in the Layers panel.',
+     expectedAction:'click', expectedTarget:'product-layer',
+     hint1:'Click the layer row in the Layers panel.',
+     hint2:'Find the "Product" layer and click it to select it.',
+     hint3:'Click the "Product" layer row — it highlights to confirm selection.',
+     correctFeedback:'"Product" layer selected. Add a mask to this layer.',
+     incorrectFeedback:'Click the "Product" layer in the Layers panel.',
+     acpContext:'ACP Ps-3.2: Masks are always applied to the currently selected layer.',
+     gagneEvent:3},
+    {id:2, instruction:'Add a pixel mask. Click the "Add Layer Mask" button at the bottom of the Layers panel (rectangle with a circle).',
+     expectedAction:'click', expectedTarget:'add-mask-btn',
+     hint1:'Look at the icons at the bottom of the Layers panel.',
+     hint2:'The Add Layer Mask button looks like a rectangle with a circle cut out. It\'s in the row of icons at the panel bottom.',
+     hint3:'Click the rectangle-with-circle icon at the bottom of the Layers panel — it adds a white pixel mask.',
+     correctFeedback:'White pixel mask added. A white mask reveals everything. Paint black on the mask to hide areas.',
+     incorrectFeedback:'Click the Add Layer Mask icon (rectangle with circle) at the bottom of the Layers panel.',
+     acpContext:'ACP Ps-3.2b: White mask = reveal all. Black mask = hide all (Alt+click the mask icon). Shades of grey = partial transparency.',
+     gagneEvent:5},
+    {id:3, instruction:'Click the mask thumbnail (the white rectangle next to the layer thumbnail) to target the mask — not the layer.',
+     expectedAction:'click', expectedTarget:'mask-thumbnail',
+     hint1:'After adding the mask, two thumbnails appear on the layer row. Click the right one (the mask).',
+     hint2:'The layer row now has two thumbnails: the image and the mask. Click the white mask thumbnail.',
+     hint3:'Click the white rectangle thumbnail on the right side of the layer row — a border appears around it showing it\'s active.',
+     correctFeedback:'Mask targeted. A border around the mask thumbnail confirms it\'s active — paint here to edit the mask, not the image.',
+     incorrectFeedback:'Click the white mask thumbnail (the right thumbnail on the layer row).',
+     acpContext:'ACP Ps-3.2a: Always check which thumbnail is active — painting on the image thumbnail changes pixels; painting on the mask changes visibility.',
+     gagneEvent:5},
+    {id:4, instruction:'Select the Brush tool (B) and set the foreground colour to Black. Paint over the background area to hide it.',
+     expectedAction:'tool-select', expectedTarget:'brush-tool',
+     hint1:'Press B to select the Brush tool, or find it in the toolbar.',
+     hint2:'Press B. Then press D to reset colours (Black foreground), and paint over the background on the canvas.',
+     hint3:'Press B (Brush tool). Press D to set foreground to black. Paint on the canvas — the area becomes hidden (transparent chequerboard).',
+     correctFeedback:'Brush tool active with black foreground. Painting on the mask hides the background.',
+     incorrectFeedback:'Press B to select the Brush tool. Set foreground colour to black (press D to reset defaults).',
+     acpContext:'ACP Ps-3.2b: Black conceals, white reveals on a mask. To correct a mistake, paint white to restore the hidden area.',
+     gagneEvent:6},
+    {id:5, instruction:'Use Select and Mask (Select menu → Select and Mask) to refine the mask edge around the subject.',
+     expectedAction:'menu-click', expectedTarget:'select-and-mask',
+     hint1:'Go to the Select menu.',
+     hint2:'Select → Select and Mask opens a dedicated workspace for refining mask edges.',
+     hint3:'Click Select in the menu bar → Select and Mask. Use the Refine Edge brush to improve the edge.',
+     correctFeedback:'Select and Mask opened. This workspace lets you refine edges around hair, fur, and complex borders.',
+     incorrectFeedback:'Go to Select → Select and Mask.',
+     acpContext:'ACP Ps-3.2b: Select and Mask is the professional method for precise background removal — especially for hair and fur.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-3.2b ─────────────────────────────────────────────────────── */
+'ps-3-2b': {
+  id:'ps-3-2b', tool:'photoshop', domain:3,
+  objective:'3.2d/e', objectiveText:'Create vector mask and clipping mask',
+  bloomsLevel:'Apply', estimatedMinutes:9,
+  scenario:'Place a product image inside a custom shape using a clipping mask. Then add a vector mask to a text layer so its visibility is controlled by a path rather than painted pixels.',
+  uiType:'clipping-vector-mask',
+  steps:[
+    {id:1, instruction:'Select the "Photo" layer. Go to Layer → Create Clipping Mask (Alt+Ctrl+G / Alt+Cmd+G).',
+     expectedAction:'menu-click', expectedTarget:'create-clipping-mask',
+     hint1:'Select the Photo layer, then use the Layer menu.',
+     hint2:'With the Photo layer selected, go to Layer → Create Clipping Mask.',
+     hint3:'Layer → Create Clipping Mask (keyboard: Alt+Ctrl+G on Windows, Alt+Cmd+G on Mac).',
+     correctFeedback:'Clipping mask applied. The Photo layer is now clipped to the shape layer below it.',
+     incorrectFeedback:'Select the Photo layer, then go to Layer → Create Clipping Mask.',
+     acpContext:'ACP Ps-3.2e: A clipping mask clips the upper layer to the shape of the layer directly below. The bottom layer\'s shape becomes the mask.',
+     gagneEvent:5},
+    {id:2, instruction:'Confirm the clipping mask by checking that the Photo layer thumbnail is indented with a downward arrow in the Layers panel.',
+     expectedAction:'click', expectedTarget:'clipping-indicator',
+     hint1:'Look at the Layers panel after applying the clipping mask.',
+     hint2:'A clipped layer shows a small downward arrow to its left and its thumbnail is indented.',
+     hint3:'Click the Photo layer row to confirm — it should show a downward arrow (↓) indicating it is clipped.',
+     correctFeedback:'Clipping mask confirmed. The image shows only within the shape boundary below it.',
+     incorrectFeedback:'Check the Layers panel — the clipped layer should show an indent and downward arrow.',
+     acpContext:'ACP Ps-3.2e: "Paste Into" (Edit → Paste Special → Paste Into) is an alternative that creates a clipping mask automatically.',
+     gagneEvent:8},
+    {id:3, instruction:'Now select the "Headline" text layer. Add a vector mask: Layer → Vector Mask → Reveal All.',
+     expectedAction:'menu-click', expectedTarget:'vector-mask-reveal',
+     hint1:'Select the Headline text layer, then use the Layer menu.',
+     hint2:'Layer → Vector Mask → Reveal All adds a blank vector mask.',
+     hint3:'Select Headline layer → Layer → Vector Mask → Reveal All.',
+     correctFeedback:'Vector mask added to the text layer. Draw a path on the mask to define visibility.',
+     incorrectFeedback:'Select the Headline layer, then Layer → Vector Mask → Reveal All.',
+     acpContext:'ACP Ps-3.2d: Vector masks use paths (resolution-independent) instead of pixels. They produce crisp edges at any zoom level.',
+     gagneEvent:6},
+    {id:4, instruction:'Use the Rectangle Tool (U) in Path mode to draw a shape on the vector mask — this will constrain the text visibility.',
+     expectedAction:'tool-select', expectedTarget:'rectangle-path-mode',
+     hint1:'Select the Rectangle tool from the toolbar (press U).',
+     hint2:'Press U for the Rectangle tool. In the Options Bar, make sure the mode is set to "Path" (not Shape or Pixels).',
+     hint3:'Press U → in Options Bar select "Path" mode → draw a rectangle on the canvas over the text area.',
+     correctFeedback:'Rectangle drawn in Path mode. The vector mask now constrains the text to this path shape.',
+     incorrectFeedback:'Press U for Rectangle Tool. Set Options Bar mode to "Path", then draw a rectangle.',
+     acpContext:'ACP Ps-3.2d: Vector mask paths can be edited with the Direct Selection tool (A) at any time without quality loss.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-3.2c ─────────────────────────────────────────────────────── */
+'ps-3-2c': {
+  id:'ps-3-2c', tool:'photoshop', domain:3,
+  objective:'3.2a/c', objectiveText:'Manage masks and use the Frame tool',
+  bloomsLevel:'Apply', estimatedMinutes:7,
+  scenario:'A layout has a pixel mask that\'s too harsh. Disable the mask to compare before/after, unlink it from the layer to move them independently, then use the Frame tool to place an image inside a pre-defined shape.',
+  uiType:'mask-management',
+  steps:[
+    {id:1, instruction:'Disable the pixel mask temporarily. Shift+click the mask thumbnail in the Layers panel.',
+     expectedAction:'shift-click', expectedTarget:'mask-thumbnail-disable',
+     hint1:'Hold Shift and click the mask thumbnail.',
+     hint2:'Shift+click the white mask thumbnail on the layer row — a red X appears over it.',
+     hint3:'Hold Shift, then click the mask thumbnail. A red X appears indicating the mask is disabled.',
+     correctFeedback:'Mask disabled — a red X appears on the mask thumbnail. The layer now shows all pixels. Shift+click again to re-enable.',
+     incorrectFeedback:'Hold Shift and click the mask thumbnail to disable it.',
+     acpContext:'ACP Ps-3.2a: Disabling (not deleting) a mask lets you compare the masked vs unmasked state before committing.',
+     gagneEvent:4},
+    {id:2, instruction:'Re-enable the mask: Shift+click the mask thumbnail again to remove the red X.',
+     expectedAction:'shift-click', expectedTarget:'mask-thumbnail-enable',
+     hint1:'Shift+click the mask thumbnail again.',
+     hint2:'Shift+click the mask thumbnail with the red X — the X disappears and the mask is active again.',
+     hint3:'Hold Shift → click the masked thumbnail again → the red X disappears.',
+     correctFeedback:'Mask re-enabled. The mask is active again.',
+     incorrectFeedback:'Shift+click the mask thumbnail again to re-enable it.',
+     acpContext:'ACP Ps-3.2a: Enable/Disable is non-destructive. Delete (drag to trash) permanently removes the mask.',
+     gagneEvent:6},
+    {id:3, instruction:'Unlink the mask from the layer. Click the chain-link icon (🔗) between the layer and mask thumbnails.',
+     expectedAction:'click', expectedTarget:'mask-link',
+     hint1:'Between the layer thumbnail and the mask thumbnail is a small chain icon.',
+     hint2:'Click the chain-link icon between the two thumbnails on the layer row.',
+     hint3:'Click the small link icon (🔗) between the image and mask thumbnails — it disappears when unlinked.',
+     correctFeedback:'Mask unlinked. You can now move the layer independently of the mask — useful for repositioning content without changing the mask.',
+     incorrectFeedback:'Click the chain icon between the layer thumbnail and mask thumbnail.',
+     acpContext:'ACP Ps-3.2a: Unlinked masks stay in position when you move the layer content — useful for creative cropping.',
+     gagneEvent:6},
+    {id:4, instruction:'Select the Frame tool (K) from the toolbar. Draw an ellipse frame on the canvas.',
+     expectedAction:'tool-select', expectedTarget:'frame-tool',
+     hint1:'The Frame tool is in the toolbar. Its shortcut is K.',
+     hint2:'Press K or find the Frame tool in the toolbar (it looks like an X inside a rectangle).',
+     hint3:'Press K → select "Elliptical Frame" in Options Bar → draw an ellipse on the canvas.',
+     correctFeedback:'Ellipse frame drawn. It appears as an empty placeholder frame ready to receive an image.',
+     incorrectFeedback:'Press K for the Frame tool, then draw an elliptical frame on the canvas.',
+     acpContext:'ACP Ps-3.2c: The Frame tool creates placeholder frames. Drag any image onto a frame to automatically fit it inside — like a clipping mask but simpler.',
+     gagneEvent:6},
+    {id:5, instruction:'Place an image into the frame. Go to File → Place Embedded and select an image file.',
+     expectedAction:'menu-click', expectedTarget:'file-place-into-frame',
+     hint1:'With the frame selected, use File → Place Embedded.',
+     hint2:'File → Place Embedded — select an image. It automatically fills the selected frame.',
+     hint3:'File → Place Embedded → select the image → it drops into the frame and is clipped to its shape.',
+     correctFeedback:'Image placed into the frame. The frame acts as an instant clipping container.',
+     incorrectFeedback:'With the frame selected, go to File → Place Embedded.',
+     acpContext:'ACP Ps-3.2c: Frame tool workflow: draw frame → place image → use Frame Fitting options to adjust how the image fills the frame.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-3.3a ─────────────────────────────────────────────────────── */
+'ps-3-3a': {
+  id:'ps-3-3a', tool:'photoshop', domain:3,
+  objective:'3.3a', objectiveText:'Make adjustments and use adjustment layers',
+  bloomsLevel:'Apply', estimatedMinutes:9,
+  scenario:'Correct an underexposed, desaturated photo using non-destructive adjustment layers. Add a Levels adjustment to fix exposure, a Hue/Saturation adjustment to boost colour, and limit both to affect only the background layer.',
+  uiType:'adjustment-layers',
+  steps:[
+    {id:1, instruction:'Open the Adjustments panel: Window → Adjustments.',
+     expectedAction:'menu-click', expectedTarget:'window-adjustments',
+     hint1:'Go to the Window menu.',
+     hint2:'Window → Adjustments opens the panel with all adjustment layer presets.',
+     hint3:'Click Window in menu bar → Adjustments.',
+     correctFeedback:'Adjustments panel open. Click any adjustment icon to add it as a non-destructive layer.',
+     incorrectFeedback:'Click Window → Adjustments.',
+     acpContext:'ACP Ps-3.3a: Adjustment layers affect all layers below them. They are non-destructive — the original pixels never change.',
+     gagneEvent:4},
+    {id:2, instruction:'Click the Levels adjustment icon in the Adjustments panel to add a Levels adjustment layer.',
+     expectedAction:'click', expectedTarget:'adj-levels',
+     hint1:'In the Adjustments panel, find the Levels icon.',
+     hint2:'The Levels icon shows a histogram shape. Click it to add a Levels adjustment layer.',
+     hint3:'Click the Levels icon (histogram graphic) in the Adjustments panel.',
+     correctFeedback:'Levels adjustment layer added. The Properties panel shows input/output level sliders.',
+     incorrectFeedback:'Click the Levels icon in the Adjustments panel.',
+     acpContext:'ACP Ps-3.3a: Levels corrects tonal range. Drag the black/white Input sliders inward to expand contrast. Drag the midtone slider to adjust brightness.',
+     gagneEvent:6},
+    {id:3, instruction:'In the Properties panel, drag the white Input Levels slider (right triangle under the histogram) left to 210 to brighten the image.',
+     expectedAction:'input', expectedTarget:'levels-white-input', expectedValue:'210', matchType:'exact',
+     hint1:'The Properties panel shows a histogram with three triangles below it.',
+     hint2:'The right (white) triangle controls the brightest point. Drag it left to set it at 210, or click the input field and type 210.',
+     hint3:'Click the right input field under the histogram (shows 255) and type 210, then press Tab.',
+     correctFeedback:'White input set to 210. Highlights are brightened — the image is now correctly exposed.',
+     incorrectFeedback:'Set the white input level to 210 in the Properties panel.',
+     acpContext:'ACP Ps-3.3a: Setting white input to 210 tells Photoshop that 210 = pure white, brightening the overall image.',
+     gagneEvent:6},
+    {id:4, instruction:'Add a Hue/Saturation adjustment layer. Click its icon in the Adjustments panel.',
+     expectedAction:'click', expectedTarget:'adj-hue-sat',
+     hint1:'Go back to the Adjustments panel.',
+     hint2:'Find the Hue/Saturation icon (shows three coloured bars). Click it.',
+     hint3:'Click the Hue/Saturation icon in the Adjustments panel — it looks like three coloured horizontal bars.',
+     correctFeedback:'Hue/Saturation adjustment layer added above the Levels layer.',
+     incorrectFeedback:'Click the Hue/Saturation icon in the Adjustments panel.',
+     acpContext:'ACP Ps-3.3a: Multiple adjustment layers stack — each one modifies the result of all layers below it.',
+     gagneEvent:6},
+    {id:5, instruction:'In the Properties panel, increase Saturation to +35.',
+     expectedAction:'input', expectedTarget:'saturation-value', expectedValue:'35', matchType:'exact',
+     hint1:'The Properties panel shows Hue, Saturation, and Lightness sliders.',
+     hint2:'Find the Saturation slider. Drag right or click the input and type 35.',
+     hint3:'Click the Saturation input field (shows 0) and type 35, then press Enter.',
+     correctFeedback:'Saturation increased to +35. Colours are now more vivid.',
+     incorrectFeedback:'Set Saturation to 35 in the Properties panel.',
+     acpContext:'ACP Ps-3.3a: Saturation range: -100 (greyscale) to +100 (maximum). +25 to +40 is typical for a natural colour boost.',
+     gagneEvent:7},
+    {id:6, instruction:'Clip both adjustment layers to the Background layer only. Alt+click the border between the top adjustment layer and the layer below it.',
+     expectedAction:'alt-click', expectedTarget:'clip-adj-to-layer',
+     hint1:'Hold Alt/Option and click between the adjustment layer and the layer below.',
+     hint2:'Move your cursor to the border between the Hue/Saturation layer and the Levels layer. Hold Alt/Option — the cursor changes to a clip icon. Click.',
+     hint3:'Alt+click (Windows) or Option+click (Mac) between the two layers in the Layers panel to clip them together.',
+     correctFeedback:'Adjustment layers clipped. They now only affect the layer directly below, not everything in the document.',
+     incorrectFeedback:'Alt+click (Option+click on Mac) on the border between the adjustment layer and the layer below it.',
+     acpContext:'ACP Ps-3.3a: Clipping an adjustment layer limits its effect to one layer — a critical technique for precise retouching.',
+     gagneEvent:7}
+  ]
+},
+
+/* ── Ps-3.3b ─────────────────────────────────────────────────────── */
+'ps-3-3b': {
+  id:'ps-3-3b', tool:'photoshop', domain:3,
+  objective:'3.3b', objectiveText:'Use adjustment layer presets and Smart Filters',
+  bloomsLevel:'Apply', estimatedMinutes:7,
+  scenario:'Apply a saved black-and-white preset to a photo using an adjustment layer, then apply a Gaussian Blur Smart Filter to a Smart Object layer so the blur remains editable.',
+  uiType:'smart-filters',
+  steps:[
+    {id:1, instruction:'Select the photo layer. Convert it to a Smart Object (right-click → Convert to Smart Object).',
+     expectedAction:'click', expectedTarget:'convert-to-so',
+     hint1:'Right-click the layer row in the Layers panel.',
+     hint2:'Right-click the photo layer → Convert to Smart Object.',
+     hint3:'Right-click the "Photo" layer row → select "Convert to Smart Object" from the context menu.',
+     correctFeedback:'Smart Object created. Filters applied to this layer will be Smart Filters — fully editable.',
+     incorrectFeedback:'Right-click the photo layer and select "Convert to Smart Object".',
+     acpContext:'ACP Ps-3.3a: Filters applied to regular layers are destructive. Convert to Smart Object first to make all filters non-destructive.',
+     gagneEvent:5},
+    {id:2, instruction:'Apply Gaussian Blur: Filter → Blur → Gaussian Blur. Set Radius to 4.0 pixels and click OK.',
+     expectedAction:'menu-click', expectedTarget:'filter-gaussian-blur',
+     hint1:'Go to the Filter menu.',
+     hint2:'Filter → Blur → Gaussian Blur.',
+     hint3:'Filter → Blur → Gaussian Blur → set Radius to 4.0 → click OK.',
+     correctFeedback:'Gaussian Blur applied as a Smart Filter. It appears beneath the layer in the Layers panel.',
+     incorrectFeedback:'Go to Filter → Blur → Gaussian Blur.',
+     acpContext:'ACP Ps-3.3a: Smart Filters appear as a sub-layer. Double-click to reopen and change settings. Click the eye to hide/show. Drag to reorder.',
+     gagneEvent:6},
+    {id:3, instruction:'Confirm the Smart Filter by double-clicking its name in the Layers panel to reopen its settings.',
+     expectedAction:'dblclick', expectedTarget:'smart-filter-name',
+     hint1:'After applying, the Smart Filter appears below the layer. Double-click its name.',
+     hint2:'Below the Smart Object layer, "Gaussian Blur" appears. Double-click the text "Gaussian Blur".',
+     hint3:'Double-click "Gaussian Blur" under the layer in the Layers panel — the blur dialog reopens.',
+     correctFeedback:'Smart Filter dialog reopened. You can change the radius and click OK — this is non-destructive editing.',
+     incorrectFeedback:'Double-click the "Gaussian Blur" Smart Filter name under the layer.',
+     acpContext:'ACP Ps-3.3a: This is the core advantage of Smart Filters — re-editable at any point without degrading image quality.',
+     gagneEvent:8},
+    {id:4, instruction:'Now add a Black & White adjustment layer. Click its icon in the Adjustments panel.',
+     expectedAction:'click', expectedTarget:'adj-bw',
+     hint1:'Open the Adjustments panel (Window → Adjustments).',
+     hint2:'Find the Black & White icon (a greyscale square) in the Adjustments panel.',
+     hint3:'Window → Adjustments → click the Black & White icon.',
+     correctFeedback:'Black & White adjustment layer added. The image is now greyscale.',
+     incorrectFeedback:'Click the Black & White icon in the Adjustments panel.',
+     acpContext:'ACP Ps-3.3b: Black & White adjustment layers convert colour images to greyscale with full control over how each colour channel maps to grey.',
+     gagneEvent:6},
+    {id:5, instruction:'Apply a preset. In the Properties panel, open the Preset dropdown and select "High Contrast Red Filter".',
+     expectedAction:'select', expectedTarget:'bw-preset', expectedValue:'high contrast red filter', matchType:'contains',
+     hint1:'The Properties panel shows sliders for each colour channel and a Preset dropdown at the top.',
+     hint2:'Click the Preset dropdown at the top of the Properties panel for the Black & White layer.',
+     hint3:'In the Properties panel for the B&W layer, click the Preset dropdown → select "High Contrast Red Filter".',
+     correctFeedback:'Preset applied. Presets save time for common tonal adjustments.',
+     incorrectFeedback:'Open the Preset dropdown in the Properties panel and select "High Contrast Red Filter".',
+     acpContext:'ACP Ps-3.3b: B&W presets simulate the effect of colour filters on film. Red filter darkens sky blues and lightens reds.',
+     gagneEvent:7}
+  ]
+}
+};
+
+/* ═══════════════════════════════════════════════════════
+   STATE & CORE FUNCTIONS
+═══════════════════════════════════════════════════════ */
+let currentTask = null;
+let currentMode = 'guided';
+let currentStep = 0;
+let stepResults = [];
+let currentHintLevel = 0;
+
+function loadTask(id) {
+  const task = TASKS[id];
+  if (!task) return;
+  currentTask = task;
+  currentStep = 0;
+  stepResults = new Array(task.steps.length).fill(null);
+  currentHintLevel = 0;
+
+  document.querySelectorAll('.task-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el => {
+    if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+id+"'"))
+      el.classList.add('active');
+  });
+
+  renderHeader(task);
+  renderAdobeUI(task);
+  renderStep(task, 0);
+  document.getElementById('score-report').style.display = 'none';
+}
+
+function renderHeader(task) {
+  document.getElementById('task-header').innerHTML = `
+    <div class="task-meta">
+      <span class="acp-tag">Ps-${task.objective}</span>
+      <span class="badge badge-ps">Photoshop</span>
+      <span class="badge badge-live">${task.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${task.estimatedMinutes} min</span>
+    </div>
+    <h2>${task.objectiveText}</h2>
+    <div class="task-scenario">${task.scenario}</div>
+  `;
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  currentStep = 0;
+  stepResults = new Array((currentTask?.steps||[]).length).fill(null);
+  currentHintLevel = 0;
+  document.getElementById('btn-guided').classList.toggle('active', mode === 'guided');
+  document.getElementById('btn-independent').classList.toggle('active', mode === 'independent');
+  document.getElementById('score-report').style.display = 'none';
+  if (currentTask) { renderAdobeUI(currentTask); renderStep(currentTask, 0); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ADOBE UI RENDERING
+═══════════════════════════════════════════════════════ */
+function renderAdobeUI(task) {
+  const container = document.getElementById('adobe-sim');
+  const renders = {
+    'layers-organise': layersOrganiseUI,
+    'layer-appearance': layerAppearanceUI,
+    'pixel-mask': pixelMaskUI,
+    'clipping-vector-mask': clippingVectorUI,
+    'mask-management': maskManagementUI,
+    'adjustment-layers': adjustmentLayersUI,
+    'smart-filters': smartFiltersUI
+  };
+  const fn = renders[task.uiType];
+  container.innerHTML = fn ? fn(task) : '';
+}
+
+function layersOrganiseUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="handleMenu('layer-group')">Layer</span>
+      <span class="menu-item">Edit</span><span class="menu-item">Select</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active" title="Move (V)">↖</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" title="Type (T)" style="font-weight:700;">T</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:220px;height:160px;background:#E8E4F0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+          <div id="headline-text" style="font-size:16px;font-weight:700;color:#2D1B69;font-family:Georgia,serif;">Event Poster</div>
+          <div style="width:100px;height:60px;background:#C4B5D4;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#7B5EA7;">Photo 1</div>
+          <div style="width:100px;height:30px;background:#B8A8CC;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#7B5EA7;">Photo 2</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers <span style="font-size:9px;margin-left:4px;color:#777;">Normal · 100%</span></div>
+        <div class="panel-body" id="layers-panel">
+          <div class="layer-row" id="lr-layer3" onclick="handleLayer('layer3-name')" ondblclick="handleDblClick('layer3-name')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#2D1B69;"><span style="font-size:8px;color:#FFF;font-weight:700;">T</span></div>
+            <span class="layer-name" id="layer3-label">Layer 3</span>
+            <span class="layer-badge lb-type">T</span>
+          </div>
+          <div class="layer-row" onclick="handleLayer('photo1-layer')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#C4B5D4;"></div>
+            <span class="layer-name">Photo 1</span>
+            <span class="layer-badge lb-type">px</span>
+          </div>
+          <div class="layer-row" onclick="handleLayer('photo2-layer')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#B8A8CC;"></div>
+            <span class="layer-name">Photo 2</span>
+            <span class="layer-badge lb-type">px</span>
+          </div>
+          <div class="layer-row" id="lr-bg" onclick="handleLayer('bg-layer')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#E8E4F0;"></div>
+            <span class="layer-name">Background</span>
+            <span class="layer-badge lb-type" id="bg-lock-badge">—</span>
+          </div>
+        </div>
+        <div class="layers-footer">
+          <div class="layer-btn" title="New Group" onclick="handleAction('layer-group')">📁</div>
+          <div class="layer-btn" title="Add Mask">☐</div>
+          <div class="layer-btn" title="Adjustments">◑</div>
+          <div class="layer-btn" title="New Layer">+</div>
+          <div class="layer-btn" title="Delete Layer">🗑</div>
+        </div>
+        <div style="padding:5px 8px;">
+          <input id="inp-rename" class="prop-input" style="width:100%;display:none;" placeholder="New name..." oninput="handleInput('layer-rename',this.value.toLowerCase())">
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function layerAppearanceUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span><span class="menu-item">Edit</span>
+      <span class="menu-item">Layer</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn" style="font-size:10px;font-weight:700;">T</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:220px;height:160px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;position:relative;">
+          <div style="font-size:28px;position:absolute;">🌿</div>
+          <div id="logo-layer-vis" style="position:absolute;top:10px;left:10px;background:#1A1A2E;color:#FFF;font-size:14px;font-weight:700;padding:4px 10px;border-radius:4px;opacity:1;mix-blend-mode:normal;transition:all .3s;">BRAND</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+            <select class="prop-input" id="sel-blend" style="width:90px;font-size:10px;" onchange="handleSelect('blend-mode',this.value)">
+              <option value="normal">Normal</option>
+              <option value="multiply">Multiply</option>
+              <option value="screen">Screen</option>
+              <option value="overlay">Overlay</option>
+              <option value="soft-light">Soft Light</option>
+            </select>
+            <span style="font-size:10px;color:#999;">Opacity:</span>
+            <input class="prop-input" id="inp-opacity" value="100" style="width:40px;" oninput="handleInput('opacity-value',this.value)">
+            <span style="font-size:10px;color:#999;">%</span>
+          </div>
+          <div class="layer-row selected" id="logo-layer-row" onclick="handleLayer('logo-layer')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#1A1A2E;display:flex;align-items:center;justify-content:center;font-size:7px;color:#FFF;font-weight:700;">LOGO</div>
+            <span class="layer-name">Logo</span>
+            <span class="layer-badge lb-smart" id="so-badge" style="display:none;">SO</span>
+          </div>
+          <div class="layer-row" style="opacity:.6;">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#F5F0E8;"></div>
+            <span class="layer-name">Background</span>
+          </div>
+          <div style="margin-top:6px;border-top:0.5px solid #444;padding-top:6px;">
+            <div class="adj-btn" style="width:100%;margin-bottom:4px;" onclick="handleAction('convert-smart-object')">Right-click → Convert to Smart Object</div>
+            <div class="adj-btn" style="width:100%;font-size:9px;opacity:.6;" onclick="handleAction('smart-object-badge')">Click to confirm SO badge ↑</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function pixelMaskUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="handleMenu('select-and-mask')">Select</span>
+      <span class="menu-item">Layer</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" id="tb-brush" onclick="handleToolClick('brush-tool')" title="Brush (B)">✏</div>
+        <div class="tool-btn" onclick="handleToolClick('eraser')" title="Eraser (E)">◻</div>
+        <div class="tool-sep"></div>
+        <div style="position:relative;width:32px;height:32px;margin:2px auto;">
+          <div style="width:20px;height:20px;position:absolute;top:0;left:0;background:#000;border:1px solid #888;border-radius:2px;z-index:1;"></div>
+          <div style="width:20px;height:20px;position:absolute;bottom:0;right:0;background:#FFF;border:1px solid #555;border-radius:2px;"></div>
+        </div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:220px;height:160px;background:repeating-conic-gradient(#AAA 0% 25%,#DDD 0% 50%) 0 0/12px 12px;position:relative;">
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 200 150' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='200' height='150' fill='%23C8D8E8'/%3E%3Cellipse cx='100' cy='80' rx='55' ry='65' fill='%23DDCCB8'/%3E%3Ccircle cx='100' cy='60' r='25' fill='%23C8A882'/%3E%3C/svg%3E" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;" id="mask-canvas-img">
+          <div id="mask-paint-area" style="position:absolute;inset:0;cursor:crosshair;" onclick="handleMaskPaint()"></div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div class="layer-row selected" id="product-layer-row" onclick="handleLayer('product-layer')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#C8A882;"></div>
+            <span id="mask-thumb-el" style="display:none;"><div class="mask-thumb" style="background:#FFF;" onclick="handleAction('mask-thumbnail')">M</div></span>
+            <span id="mask-link-el" style="font-size:10px;color:#777;display:none;" onclick="handleAction('mask-link')">🔗</span>
+            <span class="layer-name">Product</span>
+            <span class="layer-badge lb-mask" id="mask-badge" style="display:none;">mask</span>
+          </div>
+          <div class="layer-row">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#C8D8E8;"></div>
+            <span class="layer-name">Background</span>
+          </div>
+          <div class="layers-footer">
+            <div class="layer-btn" title="Add Mask" id="add-mask-btn-el" onclick="handleAction('add-mask-btn')" style="font-size:9px;">☐●</div>
+            <div class="layer-btn" title="New Layer">+</div>
+            <div class="layer-btn" title="Delete">🗑</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function clippingVectorUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="handleMenu('create-clipping-mask')">Layer</span>
+      <span class="menu-item">Select</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" id="tb-rect-path" onclick="handleToolClick('rectangle-path-mode')" title="Rectangle (U)">▭</div>
+        <div class="tool-btn" onclick="handleToolClick('pen')" title="Pen (P)">🖊</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:220px;height:160px;background:#F8F0E8;position:relative;display:flex;align-items:center;justify-content:center;">
+          <div style="width:100px;height:100px;background:#E8D4B8;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;" id="clip-shape">
+            <div id="clip-photo" style="width:120%;height:120%;background:linear-gradient(135deg,#B8D4E8,#88B4D4);display:flex;align-items:center;justify-content:center;font-size:9px;color:#FFF;">Photo clipped</div>
+          </div>
+          <div id="headline-text2" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:700;color:#4A2800;font-family:Georgia,serif;white-space:nowrap;">Summer Collection</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div class="layer-row" id="photo-clip-row" onclick="handleLayer('clipping-indicator')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:linear-gradient(135deg,#B8D4E8,#88B4D4);"></div>
+            <span class="layer-name" id="photo-clip-label">Photo (select me first)</span>
+            <span class="layer-badge" id="clip-badge" style="display:none;background:rgba(49,168,255,.2);color:#7AB8F5;">clip</span>
+          </div>
+          <div class="layer-row">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#E8D4B8;border-radius:50%;"></div>
+            <span class="layer-name">Circle shape</span>
+          </div>
+          <div class="layer-row selected" id="headline-row" onclick="handleLayer('headline-layer')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#4A2800;display:flex;align-items:center;justify-content:center;"><span style="font-size:7px;color:#FFF;font-weight:700;">T</span></div>
+            <span class="layer-name">Headline</span>
+            <span class="mask-thumb" id="vmask-thumb" style="display:none;background:#FFF;font-size:9px;" onclick="handleAction('vector-mask-icon')">V</span>
+          </div>
+          <div class="layers-footer">
+            <div class="layer-btn" onclick="handleMenu('create-clipping-mask')" title="Clip" style="font-size:9px;">↓</div>
+            <div class="layer-btn" onclick="handleMenu('vector-mask-reveal')" title="Vector Mask" style="font-size:9px;">V☐</div>
+            <div class="layer-btn">+</div>
+          </div>
+        </div>
+        <div class="panel-hdr">Options bar (path mode)</div>
+        <div class="panel-body">
+          <div style="display:flex;gap:4px;">
+            <div class="adj-btn" id="mode-shape" style="font-size:9px;">Shape</div>
+            <div class="adj-btn highlight" id="mode-path" onclick="handleAction('rectangle-path-mode')" style="font-size:9px;">Path ✓</div>
+            <div class="adj-btn" id="mode-pixels" style="font-size:9px;">Pixels</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function maskManagementUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="handleMenu('file-place-into-frame')">File</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn" id="tb-frame" onclick="handleToolClick('frame-tool')" title="Frame (K)">⬜×</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" style="width:220px;height:160px;background:#E8F0E4;position:relative;overflow:visible;">
+          <div style="position:absolute;top:20px;left:20px;width:80px;height:110px;background:#C8D4C8;border-radius:4px;overflow:hidden;" id="masked-layer-vis">
+            <img src="data:image/svg+xml,%3Csvg viewBox='0 0 80 110' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23A8C4A8' width='80' height='110'/%3E%3Cellipse cx='40' cy='45' rx='22' ry='30' fill='%23D4B896'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+          </div>
+          <div id="frame-placeholder" style="position:absolute;top:20px;right:20px;width:80px;height:80px;border:2px dashed #888;border-radius:40px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#999;">Frame (K)</div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body">
+          <div class="layer-row selected" id="masked-layer-row">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#C8D4C8;"></div>
+            <div class="mask-thumb" id="mm-mask-thumb" onclick="handleShiftClick('mask-thumbnail-disable')" style="background:#FFF;font-size:9px;cursor:pointer;">M</div>
+            <span id="mm-link" style="font-size:10px;color:#888;cursor:pointer;" onclick="handleAction('mask-link')">🔗</span>
+            <span class="layer-name">Portrait</span>
+          </div>
+          <div class="layer-row">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#E8F0E4;"></div>
+            <span class="layer-name">Background</span>
+          </div>
+        </div>
+        <div class="panel-hdr">Properties — Mask</div>
+        <div class="panel-body">
+          <div class="prop-row"><span class="prop-label">Density</span><input type="range" min="0" max="100" value="100" class="prop-slider"></div>
+          <div class="prop-row"><span class="prop-label">Feather</span><input type="range" min="0" max="100" value="0" class="prop-slider"></div>
+          <div class="adj-btn" style="width:100%;margin-top:4px;font-size:9px;" onclick="handleMenu('select-and-mask')">Select and Mask…</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function adjustmentLayersUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="handleMenu('window-adjustments')">Window</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div>
+        <div class="tool-sep"></div>
+        <div class="tool-btn">✏</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" id="adj-canvas" style="width:220px;height:160px;background:#8B7355;position:relative;filter:brightness(0.6) saturate(0.4);transition:filter .5s;">
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 160' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%238B7355' width='220' height='160'/%3E%3Ccircle cx='110' cy='80' r='50' fill='%23C4956A'/%3E%3Cellipse cx='110' cy='145' rx='80' ry='30' fill='%23506040'/%3E%3C/svg%3E" style="width:100%;height:100%;">
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Adjustments</div>
+        <div class="adj-grid">
+          <div class="adj-btn highlight" onclick="handleAction('adj-levels')">Levels</div>
+          <div class="adj-btn" onclick="handleAction('adj-curves')">Curves</div>
+          <div class="adj-btn highlight" id="adj-huesat-btn" onclick="handleAction('adj-hue-sat')">Hue/Sat</div>
+          <div class="adj-btn" onclick="handleAction('adj-bw')">B&W</div>
+          <div class="adj-btn">Color Bal</div>
+          <div class="adj-btn">Vibrance</div>
+        </div>
+        <div class="panel-hdr">Properties</div>
+        <div class="panel-body" id="adj-props-panel">
+          <div style="font-size:10px;color:#888;">Add an adjustment layer to see controls</div>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body" id="adj-layers-panel">
+          <div class="layer-row">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#C4956A;"></div>
+            <span class="layer-name">Background photo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function smartFiltersUI() {
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar">
+      <span class="adobe-app-icon">Ps</span>
+      <span class="menu-item">File</span>
+      <span class="menu-item" onclick="handleMenu('filter-gaussian-blur')">Filter</span>
+      <span class="menu-item" onclick="handleMenu('window-adjustments')">Window</span>
+    </div>
+    <div class="adobe-body">
+      <div class="adobe-tools">
+        <div class="tool-btn active">↖</div><div class="tool-sep"></div>
+        <div class="tool-btn">✏</div>
+      </div>
+      <div class="adobe-canvas">
+        <div class="canvas-doc" id="sf-canvas" style="width:220px;height:160px;background:#5B7FA0;position:relative;transition:filter .4s;">
+          <img src="data:image/svg+xml,%3Csvg viewBox='0 0 220 160' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%235B7FA0' width='220' height='160'/%3E%3Crect x='40' y='40' width='140' height='90' rx='8' fill='%23E8D4B8'/%3E%3Ccircle cx='110' cy='72' r='22' fill='%23C4956A'/%3E%3C/svg%3E" style="width:100%;height:100%;" id="sf-img">
+          <div id="sf-bw-overlay" style="position:absolute;inset:0;background:rgba(100,100,100,0);transition:background .4s;pointer-events:none;mix-blend-mode:color;"></div>
+        </div>
+      </div>
+      <div class="adobe-panels">
+        <div class="panel-hdr">Adjustments</div>
+        <div class="adj-grid">
+          <div class="adj-btn highlight" onclick="handleAction('adj-bw')">B&W</div>
+          <div class="adj-btn">Levels</div>
+          <div class="adj-btn">Curves</div>
+          <div class="adj-btn">Hue/Sat</div>
+        </div>
+        <div class="panel-hdr">Properties (B&W preset)</div>
+        <div class="panel-body">
+          <select class="prop-input" style="width:100%;font-size:10px;" onchange="handleSelect('bw-preset',this.value.toLowerCase())">
+            <option value="">— Choose preset —</option>
+            <option value="default">Default</option>
+            <option value="high contrast red filter">High Contrast Red Filter</option>
+            <option value="infrared">Infrared</option>
+            <option value="low contrast">Low Contrast</option>
+          </select>
+        </div>
+        <div class="panel-hdr">Layers</div>
+        <div class="panel-body" id="sf-layers-panel">
+          <div class="layer-row selected" id="sf-photo-row" onclick="handleLayer('sf-photo')">
+            <span class="layer-eye visible">👁</span>
+            <div class="layer-thumb" style="background:#E8D4B8;" id="sf-layer-thumb"></div>
+            <span class="layer-name" id="sf-layer-name">Photo</span>
+            <span class="layer-badge lb-smart" id="sf-so-badge" style="display:none;">SO</span>
+          </div>
+          <div id="sf-filter-row" style="display:none;padding-left:16px;">
+            <div class="layer-row" ondblclick="handleDblClick('smart-filter-name')" style="cursor:pointer;">
+              <span class="layer-eye visible" style="font-size:9px;">👁</span>
+              <span class="layer-name" style="font-size:10px;color:#FFBB66;" id="sf-filter-label">Gaussian Blur</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INTERACTION HANDLERS
+═══════════════════════════════════════════════════════ */
+function handleMenu(target) { processAction('menu-click', target, target); }
+function handleAction(target) { processAction('click', target, target); }
+function handleToolClick(target) { processAction('tool-select', target, target); }
+function handleLayer(target) { processAction('click', target, target); }
+function handleDblClick(target) { processAction('dblclick', target, target); }
+function handleShiftClick(target) { processAction('shift-click', target, target); }
+function handleInput(target, value) { if (currentMode === 'guided') processAction('input', target, value); }
+function handleSelect(target, value) { if (currentMode === 'guided') processAction('select', target, value); }
+function handleAltClick(target) { processAction('alt-click', target, target); }
+function handleMaskPaint() { processAction('click', 'brush-tool', 'brush-tool'); }
+
+function processAction(action, target, value) {
+  if (!currentTask) return;
+  const step = currentTask.steps[currentStep];
+  if (!step || step === undefined) return;
+
+  const aMatch = !step.expectedAction || action === step.expectedAction;
+  const tMatch = !step.expectedTarget || target === step.expectedTarget;
+  let vMatch = true;
+  if (step.expectedValue !== undefined) {
+    const mt = step.matchType || 'exact';
+    const sv = String(value).toLowerCase().trim();
+    const ev = String(step.expectedValue).toLowerCase().trim();
+    if (mt === 'exact') vMatch = sv === ev;
+    else if (mt === 'contains') vMatch = sv.includes(ev);
+  }
+
+  if (aMatch && tMatch && vMatch) {
+    stepResults[currentStep] = 'correct';
+    showFeedback('correct', step.correctFeedback, step.acpContext);
+    updateDots();
+    applyUIEffect(target, value);
+    if (currentMode === 'guided') setTimeout(() => nextStep(), 1300);
+  } else if (aMatch && tMatch) {
+    showFeedback('incorrect', step.incorrectFeedback, step.acpContext);
+  }
+}
+
+function applyUIEffect(target, value) {
+  // Visual feedback on the simulated UI when a step is completed correctly
+  const effects = {
+    'layer3-name': () => { document.getElementById('inp-rename') && (document.getElementById('inp-rename').style.display='block'); },
+    'layer-rename': () => { const el=document.getElementById('layer3-label'); if(el)el.textContent='Headline'; },
+    'layer-group': () => { /* group visual */ },
+    'group-rename': () => { /* group rename visual */ },
+    'bg-lock': () => { const el=document.getElementById('bg-lock-badge'); if(el){el.textContent='🔒';el.style.color='#FFB800';} },
+    'logo-layer': () => { const el=document.getElementById('logo-layer-row'); if(el)el.classList.add('selected'); },
+    'opacity-value': () => { const el=document.getElementById('logo-layer-vis'); if(el)el.style.opacity=parseInt(value)/100; },
+    'blend-mode': () => { const el=document.getElementById('logo-layer-vis'); if(el)el.style.mixBlendMode=value; },
+    'convert-smart-object': () => { const el=document.getElementById('so-badge'); if(el)el.style.display=''; },
+    'smart-object-badge': () => { /* confirm */ },
+    'product-layer': () => { document.getElementById('product-layer-row')?.classList.add('selected'); },
+    'add-mask-btn': () => { document.getElementById('mask-thumb-el')&&(document.getElementById('mask-thumb-el').style.display='inline'); document.getElementById('mask-link-el')&&(document.getElementById('mask-link-el').style.display='inline'); document.getElementById('mask-badge')&&(document.getElementById('mask-badge').style.display=''); },
+    'mask-thumbnail': () => { const el=document.querySelector('#product-layer-row .mask-thumb'); if(el)el.style.outline='2px solid #31A8FF'; },
+    'brush-tool': () => { document.getElementById('tb-brush')?.classList.add('active'); },
+    'select-and-mask': () => { /* open dialog visual */ },
+    'create-clipping-mask': () => { const el=document.getElementById('clip-badge'); if(el)el.style.display=''; const lr=document.getElementById('photo-clip-row'); if(lr){lr.style.paddingLeft='18px';lr.querySelector('.layer-name').textContent='Photo ↓ (clipped)';} },
+    'clipping-indicator': () => { /* confirm */ },
+    'vector-mask-reveal': () => { document.getElementById('vmask-thumb')&&(document.getElementById('vmask-thumb').style.display=''); },
+    'rectangle-path-mode': () => { document.getElementById('tb-rect-path')?.classList.add('active'); document.getElementById('mode-path')?.classList.add('highlight'); },
+    'mask-thumbnail-disable': () => { const el=document.querySelector('#masked-layer-row .mask-thumb'); if(el){el.style.background='rgba(255,0,0,.2)';el.title='Disabled (Shift+click to re-enable)';el.textContent='✗';} },
+    'mask-thumbnail-enable': () => { const el=document.querySelector('#masked-layer-row .mask-thumb'); if(el){el.style.background='#FFF';el.textContent='M';} },
+    'mask-link': () => { const el=document.getElementById('mm-link')||document.getElementById('mask-link-el'); if(el)el.textContent='—'; },
+    'frame-tool': () => { document.getElementById('tb-frame')?.classList.add('active'); document.getElementById('frame-placeholder')&&(document.getElementById('frame-placeholder').style.borderColor='#31A8FF'); },
+    'adj-levels': () => {
+      const lp=document.getElementById('adj-layers-panel');
+      if(lp)lp.insertAdjacentHTML('afterbegin','<div class="layer-row selected"><span class="layer-eye visible">👁</span><div class="layer-thumb" style="background:linear-gradient(90deg,#000,#FFF);"></div><span class="layer-name">Levels 1</span><span class="layer-badge lb-adj">adj</span></div>');
+      const pp=document.getElementById('adj-props-panel');
+      if(pp)pp.innerHTML='<div class="prop-row"><span class="prop-label">Shadows</span><input type="range" min="0" max="255" value="0" class="prop-slider"></div><div class="prop-row"><span class="prop-label">Midtones</span><input type="range" min="0" max="2" step=".01" value="1" class="prop-slider"></div><div class="prop-row"><span class="prop-label">Highlights</span><input class="prop-input highlight" id="inp-levels-white" value="255" oninput="handleInput(\'levels-white-input\',this.value)" style="width:45px;"></div>';
+      document.getElementById('adj-canvas')&&(document.getElementById('adj-canvas').style.filter='brightness(0.6) saturate(0.4)');
+    },
+    'levels-white-input': () => { const c=document.getElementById('adj-canvas'); if(c&&parseInt(value)<=220)c.style.filter=`brightness(${0.6+0.4*(1-parseInt(value)/255)}) saturate(0.4)`; },
+    'adj-hue-sat': () => {
+      const lp=document.getElementById('adj-layers-panel');
+      if(lp)lp.insertAdjacentHTML('afterbegin','<div class="layer-row selected"><span class="layer-eye visible">👁</span><div class="layer-thumb" style="background:linear-gradient(90deg,#F00,#0F0,#00F);"></div><span class="layer-name">Hue/Sat 1</span><span class="layer-badge lb-adj">adj</span></div>');
+      const pp=document.getElementById('adj-props-panel');
+      if(pp)pp.innerHTML='<div class="prop-row"><span class="prop-label">Hue</span><input type="range" min="-180" max="180" value="0" class="prop-slider"></div><div class="prop-row"><span class="prop-label">Saturation</span><input class="prop-input highlight" id="inp-sat" value="0" oninput="handleInput(\'saturation-value\',this.value)" style="width:45px;"></div><div class="prop-row"><span class="prop-label">Lightness</span><input type="range" min="-100" max="100" value="0" class="prop-slider"></div>';
+    },
+    'saturation-value': () => { const c=document.getElementById('adj-canvas'); if(c&&parseInt(value)>=30)c.style.filter=`brightness(0.9) saturate(${1+parseInt(value)/50})`; },
+    'clip-adj-to-layer': () => { /* clip visual */ },
+    'convert-to-so': () => { const el=document.getElementById('sf-so-badge'); if(el)el.style.display=''; const tn=document.getElementById('sf-layer-thumb'); if(tn)tn.style.outline='2px solid #FF9A00'; },
+    'filter-gaussian-blur': () => { const el=document.getElementById('sf-canvas'); if(el)el.style.filter='blur(3px)'; document.getElementById('sf-filter-row')&&(document.getElementById('sf-filter-row').style.display='block'); },
+    'smart-filter-name': () => { /* reopen visual */ },
+    'adj-bw': () => { const c=document.getElementById('sf-canvas')||document.getElementById('adj-canvas'); if(c)c.style.filter=(c.id==='sf-canvas'?'blur(3px) ':'')+'grayscale(1)'; const ov=document.getElementById('sf-bw-overlay'); if(ov)ov.style.background='rgba(128,128,128,.9)'; },
+    'bw-preset': () => { /* preset applied */ }
+  };
+  if (effects[target]) effects[target]();
+}
+
+/* ═══════════════════════════════════════════════════════
+   STEP / FEEDBACK / SCORE
+═══════════════════════════════════════════════════════ */
+const GAGNE = {1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task, idx) {
+  const step = task.steps[idx];
+  const total = task.steps.length;
+  if (!step) return;
+
+  const dots = task.steps.map((_,i) => {
+    const r = stepResults[i];
+    const cls = r===null?(i===idx?'current':''):r==='correct'?'done':'error';
+    return `<div class="step-dot ${cls}"></div>`;
+  }).join('');
+
+  const gagne = step.gagneEvent ? `<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>` : '';
+
+  document.getElementById('step-panel').innerHTML = `
+    <div class="step-header">
+      <span class="step-counter">Step ${idx+1} of ${total}</span>
+      <div class="step-dots">${dots}</div>
+    </div>
+    ${currentMode==='guided' ? `${gagne}<p class="step-instruction">${step.instruction}</p>` : '<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}
+  `;
+
+  document.getElementById('step-actions').innerHTML = currentMode === 'guided'
+    ? `<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button>
+       <button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button>
+       <button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>
+       ${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    : `<button class="btn btn-primary" onclick="submitIndependent()">Submit answers</button>`;
+
+  document.getElementById('feedback-area').innerHTML = '';
+  document.getElementById('hint-area').innerHTML = '';
+}
+
+function nextStep() {
+  if (currentStep < currentTask.steps.length - 1) {
+    currentStep++;
+    currentHintLevel = 0;
+    renderStep(currentTask, currentStep);
+  } else {
+    completeTask();
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) { currentStep--; renderStep(currentTask, currentStep); }
+}
+
+function submitIndependent() {
+  const correct = stepResults.filter(r => r === 'correct').length;
+  const total = currentTask.steps.length;
+  const pct = Math.round((correct / total) * 100);
+  showScore({ correct, partial:0, incorrect:total-correct, total, pct, passed:pct>=70 });
+}
+
+function completeTask() {
+  const correct = stepResults.filter(r => r === 'correct').length;
+  const total = currentTask.steps.length;
+  const pct = Math.round((correct/total)*100);
+  const passed = pct >= 70;
+  showScore({ correct, partial:0, incorrect:total-correct, total, pct, passed });
+  const scoreEl = document.getElementById('sc-' + currentTask.id.replace(/-/g,''));
+  if (scoreEl) scoreEl.textContent = pct + '%';
+  const iconEl = document.getElementById('icon-' + currentTask.id.replace(/-/g,''));
+  if (iconEl && passed) iconEl.classList.add('done');
+}
+
+function showScore(s) {
+  const color = s.passed ? (s.pct===100?'#00D68F':'#31A8FF') : '#FFB800';
+  const el = document.getElementById('score-report');
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="score-report">
+      <div class="score-circle" style="border-color:${color};">
+        <div class="score-pct" style="color:${color};">${s.pct}%</div>
+        <div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div>
+      </div>
+      <div class="score-grid">
+        <div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div>
+        <div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div>
+        <div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;">
+        <span class="acp-tag">Ps-${currentTask.objective}</span>
+        <span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span>
+      </div>
+      <div class="score-actions">
+        <button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button>
+        <button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button>
+      </div>
+    </div>
+  `;
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function showFeedback(status, msg, ctx) {
+  const icons = {correct:'✓',incorrect:'✗',partial:'~'};
+  document.getElementById('feedback-area').innerHTML = `
+    <div class="feedback-block ${status} animate-fade">
+      <strong>${icons[status]} ${status.charAt(0).toUpperCase()+status.slice(1)}</strong>
+      <p>${msg}</p>
+      ${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}
+    </div>`;
+}
+
+function showHint(level) {
+  if (!currentTask || currentMode !== 'guided') return;
+  const step = currentTask.steps[currentStep];
+  const hints = [null, step.hint1, step.hint2, step.hint3];
+  document.getElementById('hint-area').innerHTML = `
+    <div class="feedback-block partial animate-fade">
+      <strong>💡 Hint ${level}</strong><p>${hints[level]}</p>
+    </div>`;
+}
+
+function updateDots() {
+  if (!currentTask) return;
+  const dotsEl = document.querySelector('.step-dots');
+  if (!dotsEl) return;
+  dotsEl.innerHTML = currentTask.steps.map((_,i)=>{
+    const r=stepResults[i];
+    const cls=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';
+    return `<div class="step-dot ${cls}"></div>`;
+  }).join('');
+}
+
+/* ── Init ─────────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', () => {
+  loadTask('ps-3-1a');
+  ACPProgress.init();
+});
+</script>
+</body>
+</html>

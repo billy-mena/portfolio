@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Theory & Industry Knowledge | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/global.css">
+<style>
+.theory-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#1A1A3D 100%);padding:2.5rem 0 2rem;border-bottom:0.5px solid var(--border);}
+.quiz-wrap{max-width:780px;margin:2rem auto;padding:0 1.5rem;}
+.category-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.cat-tab{padding:.4rem 1rem;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);color:var(--text-secondary);background:transparent;transition:all .15s;font-family:var(--font-ui);}
+.cat-tab.active{background:var(--accent);color:#000;border-color:var(--accent);}
+.cat-tab.ps.active{background:var(--ps-blue);color:#000;}
+.cat-tab.ai.active{background:var(--ai-orange);color:#000;}
+.cat-tab.id.active{background:#00C896;color:#000;}
+.q-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:var(--transition);}
+.q-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;flex-wrap:wrap;}
+.q-code{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.q-tool-badge{font-size:.68rem;padding:2px 8px;border-radius:10px;font-weight:500;}
+.q-text{font-size:.9rem;font-weight:500;color:var(--text-primary);margin-bottom:.6rem;line-height:1.55;}
+.opt{padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--border);background:var(--bg-1);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;}
+.opt:hover{border-color:rgba(49,168,255,.3);}
+.opt.selected{border-color:rgba(49,168,255,.4);background:rgba(49,168,255,.07);}
+.opt.correct{border-color:rgba(0,214,143,.4);background:rgba(0,214,143,.07);color:#7FFFD4;pointer-events:none;}
+.opt.wrong{border-color:rgba(255,77,109,.4);background:rgba(255,77,109,.07);pointer-events:none;}
+.opt.neutral{pointer-events:none;}
+.feedback{margin-top:.5rem;padding:.5rem .75rem;border-radius:8px;font-size:.8rem;line-height:1.55;display:none;}
+.fb-ok{background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.2);color:#7FFFD4;}
+.fb-ng{background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.2);color:#FFB3C1;}
+.score-bar{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem;}
+.score-n{font-size:1.4rem;font-weight:700;}
+.score-track{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden;flex:1;max-width:200px;}
+.score-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease;}
+.reset-btn{padding:.4rem 1rem;border-radius:20px;font-size:.8rem;background:transparent;border:0.5px solid var(--border);color:var(--text-secondary);cursor:pointer;font-family:var(--font-ui);}
+.reset-btn:hover{background:var(--surface);color:var(--text-primary);}
+.progress-text{font-size:.78rem;color:var(--text-tertiary);}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="theory-hero">
+  <div class="container">
+    <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem;">
+      <span class="badge" style="background:rgba(99,102,241,.15);color:#818CF8;border:0.5px solid rgba(99,102,241,.3);">Shared module</span>
+      <span class="acp-tag">All three tools — Domain 1</span>
+    </div>
+    <h1 style="font-size:2rem;font-weight:700;margin-bottom:.5rem;">Design Theory &amp; Industry Knowledge</h1>
+    <p style="color:var(--text-secondary);max-width:560px;line-height:1.65;">The multiple-choice section of every ACP exam covers design industry concepts, copyright, digital terminology, and design principles. Practise all topics here before tackling any tool's live tasks.</p>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.25rem;">
+      <span class="badge badge-mc">40 questions</span>
+      <span class="badge" style="background:rgba(99,102,241,.1);color:#818CF8;">Ps + Ai + Id domains</span>
+      <span class="badge" style="background:rgba(99,102,241,.1);color:#818CF8;">Instant feedback</span>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-wrap">
+
+  <div class="score-bar">
+    <div>
+      <div class="score-n" id="score-display" style="color:var(--accent);">0 / 0</div>
+      <div class="progress-text" id="progress-text">Answer questions to see your score</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem;flex:1;max-width:280px;">
+      <div class="score-track"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+      <span id="score-pct" style="font-size:.82rem;color:var(--text-tertiary);min-width:36px;">—</span>
+    </div>
+    <button class="reset-btn" onclick="resetQuiz()">Reset all</button>
+  </div>
+
+  <div class="category-tabs">
+    <button class="cat-tab active" onclick="filterCat('all',this)">All (40)</button>
+    <button class="cat-tab" onclick="filterCat('copyright',this)">Copyright &amp; IP</button>
+    <button class="cat-tab" onclick="filterCat('colour',this)">Colour &amp; modes</button>
+    <button class="cat-tab" onclick="filterCat('raster-vector',this)">Raster vs vector</button>
+    <button class="cat-tab" onclick="filterCat('print',this)">Print production</button>
+    <button class="cat-tab" onclick="filterCat('principles',this)">Design principles</button>
+    <button class="cat-tab" onclick="filterCat('typography',this)">Typography</button>
+  </div>
+
+  <div id="quiz-container"></div>
+
+</div>
+
+<script>
+const QUESTIONS=[
+  // Copyright & IP
+  {id:1,cat:'copyright',tools:['ps','ai','id'],code:'D1.2',q:'A designer finds a photograph on a Google Images search and uses it in a client brochure without permission. This is most likely a violation of:',options:['Fair use','Copyright law — the image is protected and requires a licence or permission','Creative Commons licence','Public domain rules'],correct:1,explanation:'Images found via search are almost always copyright-protected. Copyright exists automatically at the moment of creation — no registration required. Always check licence status and obtain permission or use properly licensed stock.'},
+  {id:2,cat:'copyright',tools:['ps','ai','id'],code:'D1.2',q:'A client asks you to use an image licensed under Creative Commons CC BY 4.0. What does the "BY" requirement mean?',options:['The image can only be used for commercial purposes','You must credit the original creator','You cannot modify the image','You must share your work under the same licence'],correct:1,explanation:'CC BY = Attribution. You must give appropriate credit to the original creator, provide a link to the licence, and indicate if changes were made. Other CC conditions: SA (ShareAlike), NC (NonCommercial), ND (NoDerivatives).'},
+  {id:3,cat:'copyright',tools:['ps','ai','id'],code:'D1.2',q:'You use an AI tool to generate an image for a project. What is the correct approach to copyright for AI-generated images?',options:['AI-generated images are always in the public domain','Copyright automatically belongs to the person who wrote the prompt','Copyright status varies by jurisdiction and tool EULA — always check the specific tool\'s terms before commercial use','The AI tool company owns all rights to generated images'],correct:2,explanation:'Copyright law for AI-generated content is unsettled and varies by country. Some tools grant commercial licences to users; others retain rights. Always read the tool\'s terms of service before using AI-generated content commercially.'},
+  {id:4,cat:'copyright',tools:['ai'],code:'Ai-1.2',q:'In Adobe Illustrator, where can you view and change the copyright metadata embedded in a document?',options:['File → Document Properties → Copyright tab','Edit → Preferences → Copyright','File → File Info (XMP metadata panel)','Object → Document Info'],correct:2,explanation:'File → File Info opens the XMP metadata panel where you can view and edit copyright status, creator, rights statement, and other metadata. This is testable in the ACP Illustrator exam.'},
+  {id:5,cat:'copyright',tools:['ps'],code:'Ps-1.2',q:'Which licence type allows you to use an image for any purpose — commercial or personal — without attribution?',options:['Creative Commons CC BY','Rights Managed (RM)','Royalty-Free (RF) with commercial licence','Editorial use only'],correct:2,explanation:'Royalty-Free with commercial licence allows unlimited use once purchased, without per-use fees or attribution. "Royalty-Free" does NOT mean free — it means no ongoing royalties. Editorial use only = cannot be used in commercial advertising.'},
+
+  // Colour & modes
+  {id:6,cat:'colour',tools:['ps','ai','id'],code:'D1.3',q:'A designer is preparing artwork for professional offset printing. Which colour mode should the final Illustrator document use?',options:['RGB','HSB','CMYK','LAB'],correct:2,explanation:'CMYK (Cyan, Magenta, Yellow, Key/Black) is the colour model for professional offset printing. RGB is for screen/digital output. Converting RGB to CMYK for print can shift colours — design in CMYK from the start for print projects.'},
+  {id:7,cat:'colour',tools:['ps','ai','id'],code:'D1.3',q:'A client specifies a brand colour as PMS 185 C. What does "PMS" refer to?',options:['A type of RGB colour profile','The Pantone Matching System — a standardised spot colour ink system','A pixel measurement standard','A digital colour format for web use'],correct:1,explanation:'PMS = Pantone Matching System. Pantone spot colours are pre-mixed inks that print as a dedicated plate, ensuring exact colour reproduction regardless of printer or press. Essential for brand standards.'},
+  {id:8,cat:'colour',tools:['ps'],code:'Ps-1.3',q:'What is the maximum number of tonal values per channel in an 8-bit image?',options:['8','64','256','65,536'],correct:2,explanation:'8-bit = 2⁸ = 256 tonal values per channel (0–255). 16-bit = 65,536 values per channel. More bit depth = smoother tonal gradations and less banding when editing. Use 16-bit for retouching master files.'},
+  {id:9,cat:'colour',tools:['ps','ai'],code:'D1.3',q:'You are designing a website. Which colour mode is correct for web and screen output?',options:['CMYK','RGB','LAB','Greyscale'],correct:1,explanation:'RGB (Red, Green, Blue) is the additive colour model used by all screens and monitors. CMYK is subtractive and for print. Web hex colours (#RRGGBB) are hexadecimal representations of RGB values.'},
+  {id:10,cat:'colour',tools:['ps','ai'],code:'D1.3',q:'Rich black in print production typically means:',options:['100% K only','A combination of all four CMYK inks (e.g. C:60 M:40 Y:40 K:100) for a deeper black on large areas','Any dark colour near black','A special spot colour black ink'],correct:1,explanation:'Rich black combines all four CMYK inks for deeper, richer black on large areas. Standard black (100K only) can look grey on large areas. Note: never use rich black for small text — it causes registration issues.'},
+
+  // Raster vs Vector
+  {id:11,cat:'raster-vector',tools:['ps','ai'],code:'D1.3',q:'Which of the following is the most accurate definition of a vector graphic?',options:['A file made up of a fixed grid of pixels','Mathematical paths (points, lines, curves) that can be scaled to any size without quality loss','A photograph that has been converted to greyscale','A file saved in the .jpg format'],correct:1,explanation:'Vector graphics are resolution-independent mathematical descriptions of paths and shapes. They can be scaled from business card to billboard without any quality degradation. Raster images are pixel grids — scaling causes pixelation.'},
+  {id:12,cat:'raster-vector',tools:['ps','ai'],code:'D1.3',q:'A photographic portrait is best described as:',options:['A vector graphic','A raster (bitmap) image','A compound path','A clipping mask'],correct:1,explanation:'Photographs are raster (bitmap) images — grids of pixels. Each pixel holds a colour value. Vector graphics cannot accurately represent the continuous tonal variation of photographs. Photoshop works primarily with raster; Illustrator works primarily with vectors.'},
+  {id:13,cat:'raster-vector',tools:['ps','ai'],code:'D1.3',q:'Which file format preserves both vector paths AND raster layers in a single file?',options:['JPEG','PNG','PDF','GIF'],correct:2,explanation:'PDF can embed both vector artwork and raster images in a single file. It is used for print delivery (press-quality PDF) and digital documents (interactive PDF). PSD and AI also support mixed content but are application-specific native formats.'},
+  {id:14,cat:'raster-vector',tools:['ps','ai'],code:'D1.3',q:'A logo must be reproduced at sizes ranging from a 1cm business card icon to a 3-metre billboard. Which format is most appropriate?',options:['JPEG','PNG at 300ppi','SVG (vector)','TIFF at 72ppi'],correct:2,explanation:'SVG (Scalable Vector Graphics) is a vector format that scales perfectly to any size — from 1mm to 30m — without quality loss. JPEG, PNG, and TIFF are raster formats that will pixelate at the billboard scale.'},
+  {id:15,cat:'raster-vector',tools:['ps'],code:'Ps-1.3',q:'The resolution of a Photoshop document is 72 ppi. This setting is most appropriate for:',options:['Professional offset printing','Large-format print','Screen and web output','Photographic retouching masters'],correct:2,explanation:'72 ppi is the standard for screen/web output where physical print size does not matter. Print work typically requires 300 ppi at final print dimensions. Screen output is measured in pixels, not physical size.'},
+
+  // Print production
+  {id:16,cat:'print',tools:['ps','ai','id'],code:'D1.3',q:'In print production, "bleed" refers to:',options:['The amount of ink used per page','Artwork that extends beyond the trim edge to prevent white borders after cutting','The registration marks on a press sheet','The gap between the text and the page edge (margin)'],correct:1,explanation:'Bleed is artwork that extends beyond the final trim size (typically 3mm / 0.125 inches on each side). When the printer cuts the paper, small cutting variations could reveal white edges without bleed. Any background colour or image touching the edge needs bleed.'},
+  {id:17,cat:'print',tools:['ai','id'],code:'D1.3',q:'In a print document, the "live area" (or "safety area") is:',options:['The full page size including bleed','The area beyond the trim','The inner area where important content should be kept to avoid being cut off','The area reserved for printer marks'],correct:2,explanation:'The live area is the zone inside the trim marks where critical content (text, logos, important images) must be placed. It accounts for cutting tolerances — nothing critical should be placed too close to the trim edge.'},
+  {id:18,cat:'print',tools:['id'],code:'Id-1.3',q:'What does "preflight" mean in InDesign\'s publishing workflow?',options:['Exporting a PDF for print','Packaging the document','Checking a document for potential errors (missing fonts, missing links, image resolution) before output','Sending a proof to the client'],correct:2,explanation:'Preflight is a quality-check process that scans a document for potential production problems: missing fonts, unlinked images, low-resolution images, overset text, and other issues that could cause print errors.'},
+  {id:19,cat:'print',tools:['ai','id'],code:'D1.3',q:'A designer needs to deliver an Illustrator file to a commercial printer. Which step ensures fonts and linked images are included?',options:['File → Export → Export As','File → Save As → PDF','File → Package','File → Print → Save'],correct:2,explanation:'File → Package collects the .ai file, all linked images, and document fonts into one folder. Missing fonts or linked files are the most common causes of print production errors when sharing files.'},
+  {id:20,cat:'print',tools:['ps','id'],code:'D1.3',q:'What does "spot colour" mean in the context of professional printing?',options:['A colour applied only to selected spots on the page','A pre-mixed ink printed with its own dedicated plate — used for precise brand colour matching','Any saturated, vivid colour','A Photoshop brush that creates spots of colour'],correct:1,explanation:'Spot colours (like Pantone inks) are pre-mixed inks that require their own printing plate. They guarantee exact colour reproduction for brand standards. They add cost (extra plate/pass) but ensure consistency across different printers.'},
+
+  // Design principles
+  {id:21,cat:'principles',tools:['ps','ai','id'],code:'D1.4',q:'Which design principle suggests placing the subject at intersecting thirds of the frame rather than the centre?',options:['The golden ratio','Visual hierarchy','The rule of thirds','Contrast'],correct:2,explanation:'The rule of thirds divides the frame into a 3×3 grid. Placing subjects at the four intersections (power points) creates more dynamic, visually engaging compositions than centring the subject.'},
+  {id:22,cat:'principles',tools:['ps','ai','id'],code:'D1.4',q:'Visual hierarchy in design is primarily achieved through:',options:['Using only one typeface throughout a document','Varying size, weight, colour, and positioning to guide the viewer\'s eye in a specific order','Using the maximum number of colours','Making all text the same size for consistency'],correct:1,explanation:'Visual hierarchy uses size, weight (bold), colour contrast, white space, and position to signal importance and guide reading order. The most important element should visually dominate; secondary elements recede.'},
+  {id:23,cat:'principles',tools:['ps','ai','id'],code:'D1.4',q:'Which principle describes using contrasting elements (dark/light, large/small, serif/sans) to create visual interest and emphasis?',options:['Repetition','Alignment','Contrast','Proximity'],correct:2,explanation:'Contrast draws the viewer\'s eye to important elements and prevents monotony. Effective contrast uses opposites: dark vs light, large vs small, serif vs sans-serif, geometric vs organic. Low contrast = flat, hard to read.'},
+  {id:24,cat:'principles',tools:['ps'],code:'Ps-1.4',q:'In photography, "depth of field" refers to:',options:['The physical depth of the camera sensor','The range of distance in a scene that appears acceptably sharp in a photograph','The number of pixels in the image','The focal length of the lens'],correct:1,explanation:'Depth of field (DOF) is the zone of acceptable sharpness in a photograph. Shallow DOF = only a thin plane is sharp (blurred background — bokeh). Deep DOF = most of the scene is sharp (landscape photography).'},
+  {id:25,cat:'principles',tools:['ps','ai','id'],code:'D1.4',q:'Which design principle groups related elements together to show their relationship?',options:['Contrast','Alignment','Proximity','Balance'],correct:2,explanation:'Proximity groups related items to show they are connected. Unrelated items should have more space between them. Proximity reduces visual clutter and helps the viewer understand which elements belong together.'},
+
+  // Typography
+  {id:26,cat:'typography',tools:['ps','ai','id'],code:'D1.4',q:'What is "leading" in typography?',options:['The space between individual letters in a word','The vertical distance between lines of text (line-height)','The horizontal spacing between all characters in a block of text','The distance from the baseline to the top of capital letters'],correct:1,explanation:'Leading (rhymes with "heading") is the vertical distance between baselines of consecutive lines of text. Named after the lead strips historically placed between type lines. In digital tools: line-height or line spacing.'},
+  {id:27,cat:'typography',tools:['ps','ai','id'],code:'D1.4',q:'What is the difference between "kerning" and "tracking" in typography?',options:['They are the same thing','Kerning adjusts space between a specific pair of characters; tracking adjusts space uniformly across all selected characters','Kerning applies to entire paragraphs; tracking applies to individual letters','Tracking is for print; kerning is for screen'],correct:1,explanation:'Kerning = manual adjustment of space between a specific character pair (e.g. AV, WA, To — pairs that optically look too tight or loose). Tracking = uniform spacing applied to all characters in a selection. Both are in the Character panel.'},
+  {id:28,cat:'typography',tools:['ps','ai','id'],code:'D1.4',q:'A serif typeface is best characterised by:',options:['Uniform stroke width and no decorative elements at letter endings','Small decorative strokes (serifs) at the ends of letterforms','A handwritten or script style','All-caps letterforms only'],correct:1,explanation:'Serifs are the small decorative strokes at the ends of letterforms (e.g. Times New Roman, Georgia). Sans-serif fonts lack these strokes (e.g. Helvetica, Arial). Serifs traditionally aid readability in long body text; sans-serifs dominate screen/digital design.'},
+  {id:29,cat:'typography',tools:['ai','id'],code:'D1.4',q:'In professional typography, what does "baseline" refer to?',options:['The top of capital letters','The average height of lowercase letters','The invisible line on which most letters sit','The descending portion of letters like p, g, y'],correct:2,explanation:'The baseline is the invisible horizontal line on which most letters rest. Descenders (p, y, g) dip below the baseline; ascenders (b, d, h) rise above the x-height. Baseline shift in design tools moves characters above or below this line.'},
+  {id:30,cat:'typography',tools:['ps','ai','id'],code:'D1.4',q:'Which typographic term describes the height of a lowercase letter "x" — used as a reference for the proportion of lowercase letters in a typeface?',options:['Cap height','Ascender height','X-height','Mean line'],correct:2,explanation:'X-height is the height of a lowercase "x" in a given typeface. It serves as the standard measure for lowercase letter height. Typefaces with high x-heights (like Helvetica) tend to be more legible at small sizes because the lowercase letters are larger relative to the cap height.'},
+
+  // Additional cross-tool questions
+  {id:31,cat:'copyright',tools:['ps','ai','id'],code:'D1.2',q:'Which of the following best describes "public domain" in the context of creative works?',options:['Works freely available on the internet','Works whose copyright has expired, been forfeited, or waived — free to use without restriction','Works licensed under Creative Commons','Works created by government agencies'],correct:1,explanation:'Public domain works are free from copyright restrictions — anyone can use, modify, and distribute them without permission. Copyright expires after a set period (e.g. 70 years after the creator\'s death in many countries). Some creators deliberately release work into the public domain.'},
+  {id:32,cat:'raster-vector',tools:['ps','ai'],code:'D1.3',q:'Which file format supports transparency (alpha channel) and is the standard for web graphics requiring transparent backgrounds?',options:['JPEG','GIF','PNG','BMP'],correct:2,explanation:'PNG (Portable Network Graphics) supports full alpha transparency and uses lossless compression. JPEG has no transparency support. GIF supports binary transparency (one colour = transparent) but has a limited 256-colour palette. PNG is the web standard for graphics requiring transparency.'},
+  {id:33,cat:'colour',tools:['ps','ai'],code:'D1.3',q:'sRGB and Adobe RGB are both RGB colour profiles. What is the practical difference?',options:['sRGB is for print; Adobe RGB is for screen','Adobe RGB has a wider colour gamut — it can represent more colours, especially in the cyan-green range; sRGB is the web standard','sRGB produces larger files','There is no visible difference'],correct:1,explanation:'Adobe RGB has a wider colour gamut than sRGB, particularly in cyans and greens. Use Adobe RGB for photography intended for print. Convert to sRGB before web publishing — browsers and screens expect sRGB; other profiles may display with muted or shifted colours.'},
+  {id:34,cat:'principles',tools:['ps','ai','id'],code:'D1.4',q:'Which principle describes ensuring all elements in a layout are intentionally placed relative to a consistent reference point or line?',options:['Contrast','Balance','Alignment','Repetition'],correct:2,explanation:'Alignment connects elements visually — aligning text, images, and objects to a common edge or centre creates order and cohesion. Random placement feels chaotic even when the content is strong. Most professional layouts align everything to a grid.'},
+  {id:35,cat:'print',tools:['ai','id'],code:'D1.3',q:'What is the purpose of "registration marks" in print production?',options:['They indicate the file creation date','They help the printing press align multiple colour plates (CMYK) precisely on top of each other','They show where the paper should be folded','They indicate the designer\'s name and copyright'],correct:1,explanation:'Registration marks (crosshair circles) help press operators align the separate CMYK printing plates so they print in exact register. Misregistration causes blurry edges and colour fringes around elements.'},
+  {id:36,cat:'typography',tools:['ai','id'],code:'D1.4',q:'In a typographic hierarchy, what is the typical relationship between the headline font size and the body copy font size?',options:['They should be identical for visual consistency','The headline is significantly larger — typically 3–8× the body size — to signal importance and guide reading order','The body copy is always larger than the headline','There is no standard relationship'],correct:1,explanation:'Typographic hierarchy uses size contrast to guide the reader. A headline at 36pt with body at 10pt creates a 3.6× ratio — enough contrast to clearly signal the reading order. Too little difference collapses the hierarchy and makes layouts feel flat.'},
+  {id:37,cat:'colour',tools:['ps','ai','id'],code:'D1.3',q:'When printing, "overprinting" means:',options:['Printing the same image twice for darker results','Allowing ink layers to print on top of each other rather than knocking out the background colour beneath','Exceeding the maximum ink coverage for a press','Printing with an extra pass of varnish'],correct:1,explanation:'Overprinting allows one ink layer to print on top of another. The default is "knockout" — the bottom colour is removed where the top colour prints. Overprinting black text on coloured backgrounds avoids misregistration gaps and is standard practice.'},
+  {id:38,cat:'principles',tools:['ps','ai','id'],code:'D1.4',q:'The "golden ratio" (approximately 1:1.618) is used in design to:',options:['Determine the exact number of colours to use in a palette','Create proportional relationships that are considered naturally harmonious and aesthetically pleasing','Set the correct DPI for print output','Calculate the optimal font size for body copy'],correct:1,explanation:'The golden ratio appears throughout nature and has been used in design and architecture for millennia. Applying it to layout proportions, image cropping, and typography ratios creates compositions that feel naturally balanced and harmonious.'},
+  {id:39,cat:'copyright',tools:['ps','ai','id'],code:'D1.2',q:'A designer is hired to create a logo for a client. Who typically owns the copyright to the finished logo?',options:['Always the designer, as the creator','Always the client, as the person who paid for it','Depends on the contract — without a written work-for-hire agreement, copyright may remain with the designer','Adobe, since it was created in their software'],correct:2,explanation:'Copyright ownership in commissioned work depends on the contract. In many countries, independent contractors retain copyright unless a "work for hire" agreement is signed. Always specify copyright transfer in client contracts to avoid disputes.'},
+  {id:40,cat:'print',tools:['ps','ai','id'],code:'D1.3',q:'A print job specifies "4/0 printing". What does this notation mean?',options:['4 colours on the front side, nothing on the back (one-sided printing)','4pt font on page 0','4 pages, no bleed','4 inks and 0 varnish coats'],correct:0,explanation:'"4/0" means 4 colours (CMYK) printed on the front only — single sided. "4/4" = both sides in full colour. "4/1" = full colour front, black only back. "1/0" = black only, single sided. This shorthand is standard in print production.'},
+];
+
+let answers={};
+let currentFilter='all';
+
+function getFiltered(){
+  if(currentFilter==='all')return QUESTIONS;
+  return QUESTIONS.filter(q=>q.cat===currentFilter);
+}
+
+function renderQuiz(){
+  const qs=getFiltered();
+  const container=document.getElementById('quiz-container');
+  container.innerHTML=qs.map((q,i)=>`
+    <div class="q-card" id="qcard-${q.id}">
+      <div class="q-meta">
+        <span class="q-code">${q.code}</span>
+        ${q.tools.map(t=>`<span class="q-tool-badge" style="background:${t==='ps'?'rgba(49,168,255,.15)':t==='ai'?'rgba(255,154,0,.15)':'rgba(0,200,150,.15)'};color:${t==='ps'?'#31A8FF':t==='ai'?'#FF9A00':'#00C896'}">${t.toUpperCase()}</span>`).join('')}
+      </div>
+      <div class="q-text">${i+1}. ${q.q}</div>
+      ${q.options.map((opt,oi)=>`
+        <div class="opt" id="opt-${q.id}-${oi}" onclick="selectAnswer(${q.id},${oi},${q.correct})">
+          <strong>${String.fromCharCode(65+oi)}.</strong> ${opt}
+        </div>`).join('')}
+      <div class="feedback" id="fb-${q.id}"></div>
+    </div>`).join('');
+
+  // Re-apply answered state
+  Object.keys(answers).forEach(qid=>{
+    const a=answers[qid];
+    const q=QUESTIONS.find(x=>x.id===parseInt(qid));
+    if(!q)return;
+    q.options.forEach((_,oi)=>{
+      const el=document.getElementById(`opt-${qid}-${oi}`);
+      if(!el)return;
+      el.classList.add('neutral');
+      if(oi===q.correct)el.classList.add('correct');
+      if(oi===a.chosen&&a.chosen!==q.correct)el.classList.add('wrong');
+    });
+    const fb=document.getElementById(`fb-${qid}`);
+    if(fb){fb.style.display='block';fb.className='feedback '+(a.correct?'fb-ok':'fb-ng');fb.innerHTML='<strong>'+(a.correct?'✓ Correct':'✗ Incorrect')+'</strong> — '+q.explanation;}
+  });
+  updateScore();
+}
+
+function selectAnswer(qid,chosen,correct){
+  if(answers[qid])return;
+  answers[qid]={chosen,correct:chosen===correct};
+
+  const q=QUESTIONS.find(x=>x.id===qid);
+  q.options.forEach((_,oi)=>{
+    const el=document.getElementById(`opt-${qid}-${oi}`);
+    if(!el)return;
+    el.classList.add('neutral');
+    if(oi===correct)el.classList.add('correct');
+    if(oi===chosen&&chosen!==correct)el.classList.add('wrong');
+  });
+  const fb=document.getElementById(`fb-${qid}`);
+  if(fb){fb.style.display='block';fb.className='feedback '+(chosen===correct?'fb-ok':'fb-ng');fb.innerHTML='<strong>'+(chosen===correct?'✓ Correct':'✗ Incorrect')+'</strong> — '+q.explanation;}
+  updateScore();
+}
+
+function updateScore(){
+  const answered=Object.keys(answers).length;
+  const correct=Object.values(answers).filter(a=>a.correct).length;
+  const pct=answered>0?Math.round(correct/answered*100):0;
+  document.getElementById('score-display').textContent=correct+' / '+answered;
+  document.getElementById('progress-text').textContent=answered+' of 40 answered';
+  document.getElementById('score-pct').textContent=answered>0?pct+'%':'—';
+  document.getElementById('score-fill').style.width=pct+'%';
+  const fillEl=document.getElementById('score-fill');
+  fillEl.style.background=pct>=80?'var(--correct)':pct>=60?'#FF9A00':'var(--wrong)';
+}
+
+function filterCat(cat,btn){
+  currentFilter=cat;
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function resetQuiz(){
+  answers={};renderQuiz();
+}
+
+window.addEventListener('DOMContentLoaded',()=>renderQuiz());
+</script>
+</body>
+</html>

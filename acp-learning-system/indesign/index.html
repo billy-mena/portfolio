@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InDesign — ACP 2025 Print & Digital Media | ACP Learning System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/global.css">
+<style>
+.id-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#001A10 100%);padding:2.5rem 0 2rem;border-bottom:0.5px solid var(--border);position:relative;overflow:hidden;}
+.id-hero::before{content:'Id';position:absolute;right:-20px;top:-20px;font-size:220px;font-weight:700;color:rgba(0,200,150,.04);font-family:var(--font-mono);pointer-events:none;line-height:1;}
+.domain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem;}
+.domain-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;position:relative;overflow:hidden;transition:var(--transition);}
+.domain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#00C896;border-radius:var(--radius-lg) var(--radius-lg) 0 0;}
+.domain-card:hover{border-color:var(--border-strong);transform:translateY(-1px);}
+.domain-card.dim{opacity:.65;}
+.domain-num{font-family:var(--font-mono);font-size:.75rem;color:#00C896;font-weight:500;margin-bottom:.3rem;}
+.domain-title{font-size:1rem;font-weight:600;margin-bottom:.4rem;}
+.domain-desc{font-size:.82rem;color:var(--text-secondary);margin-bottom:.75rem;line-height:1.6;}
+.obj-list{list-style:none;margin-bottom:.75rem;}
+.obj-list li{font-size:.78rem;color:var(--text-secondary);padding:.2rem 0;display:flex;align-items:flex-start;gap:.4rem;line-height:1.4;}
+.obj-list li::before{content:'·';color:#00C896;flex-shrink:0;margin-top:1px;}
+.obj-code{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);flex-shrink:0;}
+.domain-actions{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;}
+.status-badge{font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:20px;}
+.status-ready{background:rgba(0,214,143,.12);color:var(--correct);border:0.5px solid rgba(0,214,143,.3);}
+.status-coming{background:rgba(255,154,0,.1);color:var(--ai-orange);border:0.5px solid rgba(255,154,0,.25);}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem;}
+.info-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-md);padding:.875rem;text-align:center;}
+.info-n{font-size:1.5rem;font-weight:700;color:#00C896;}
+.info-l{font-size:.75rem;color:var(--text-tertiary);margin-top:2px;}
+@media(max-width:768px){.domain-grid{grid-template-columns:1fr;}.info-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../illustrator/index.html" class="nav-link ai">Illustrator</a>
+      <a href="index.html" class="nav-link id active">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="id-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem;">
+      <span class="badge badge-id">InDesign</span>
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">ACP Print &amp; Digital Media · v20.x</span>
+    </div>
+    <h1 style="font-size:2rem;font-weight:700;margin-bottom:.4rem;">Print &amp; Digital Media Publication<br>Using Adobe InDesign</h1>
+    <p style="color:var(--text-secondary);max-width:540px;line-height:1.65;">ACP 2025 exam preparation — 6 domains, 22 objectives. All 6 domains are now available with interactive task simulators. with interactive task simulators.</p>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.25rem;">
+      <span class="badge badge-live">All domains live</span>
+      <span class="badge badge-mc">D4–D6 coming</span>
+      <span class="badge" style="background:rgba(0,200,150,.08);color:#00C896;border:0.5px solid rgba(0,200,150,.2);">~4–6 hours total</span>
+    </div>
+  </div>
+</div>
+
+<div class="container page-wrap">
+  <div class="info-grid">
+    <div class="info-card"><div class="info-n">6</div><div class="info-l">Domains</div></div>
+    <div class="info-card"><div class="info-n">22</div><div class="info-l">ACP objectives</div></div>
+    <div class="info-card"><div class="info-n">5</div><div class="info-l">Simulators live</div></div>
+    <div class="info-card"><div class="info-n">50</div><div class="info-l">Min exam</div></div>
+  </div>
+
+  <div class="domain-grid">
+
+    <div class="domain-card dim">
+      <div class="domain-num">Domain 1</div>
+      <div class="domain-title">Working in the Design Industry</div>
+      <div class="domain-desc">Print concepts, copyright, bleed/trim/slug/live area, colour modes, design principles — covered by the shared theory module.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">1.1</span>Purpose, audience, accessibility in publication design</li>
+        <li><span class="obj-code">1.2</span>Copyright, licensing, AI-generated content</li>
+        <li><span class="obj-code">1.3</span>Bleed, trim, slug, live area, CMYK, spot, rich black</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="badge badge-mc">MC only</span>
+        <a href="../shared/theory.html" class="btn btn-ghost btn-sm" style="text-decoration:none;">Design theory module →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-num">Domain 2</div>
+      <div class="domain-title">Document Setup &amp; Interface</div>
+      <div class="domain-desc">New document with bleed, slug, columns, margins; workspace; placing and linking assets; CMYK and spot colour swatches.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">2.1</span>New document — bleed, slug, margins, columns, facing pages</li>
+        <li><span class="obj-code">2.2</span>Workspace, Smart Guides, Document Grid, Preflight</li>
+        <li><span class="obj-code">2.3</span>Place assets — Links panel, Relink, Edit Original</li>
+        <li><span class="obj-code">2.4</span>Swatches — CMYK, tints, gradients, Pantone spot</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="status-badge status-ready">Live</span>
+        <a href="simulator/d2-document-setup.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Start Domain 2 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-num">Domain 3</div>
+      <div class="domain-title">Organising Documents</div>
+      <div class="domain-desc">The master pages system, automatic page numbering, section markers, text variables, layers, and object styles — the structural backbone of professional InDesign documents.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">3.1</span>Master pages — create, apply, override, detach</li>
+        <li><span class="obj-code">3.2</span>Page numbering, section markers, text variables (running headers)</li>
+        <li><span class="obj-code">3.3</span>Layers — create, lock, hide, reorder</li>
+        <li><span class="obj-code">3.4</span>Object styles — create, apply, redefine, clear overrides</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="status-badge status-ready">Live</span>
+        <a href="simulator/d3-master-pages.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Start Domain 3 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-num">Domain 4</div>
+      <div class="domain-title">Text &amp; Tables</div>
+      <div class="domain-desc">Threading text frames, managing overflow, Paragraph and Character Styles, tables, and Story Editor.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">4.1</span>Text frames — threading, overflow, inset spacing, columns</li>
+        <li><span class="obj-code">4.2</span>Paragraph Styles, Character Styles — create, apply, sync</li>
+        <li><span class="obj-code">4.3</span>Tables — create, format, import from Word/Excel</li>
+        <li><span class="obj-code">4.4</span>Story Editor, spell check, Find/Change</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="status-badge status-ready">Live</span>
+        <a href="simulator/d4-text-tables.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Start Domain 4 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-num">Domain 5</div>
+      <div class="domain-title">Visual Elements &amp; AI Features</div>
+      <div class="domain-desc">Image frames and fitting, transparency, effects, shapes, corner effects, and the 2025 AI objectives.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">5.1</span>Image frames — Place, fitting options, content vs frame</li>
+        <li><span class="obj-code">5.2</span>Transparency, effects, drop shadows, blending modes</li>
+        <li><span class="obj-code">5.3</span>Shapes, drawn objects, corner effects</li>
+        <li><span class="obj-code" style="color:#9B8EF0;">5.5 ✦</span>AI — text-to-image, Generative Expand (2025)</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="status-badge status-ready">Live</span>
+        <a href="simulator/d5-visual-elements.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Start Domain 5 →</a>
+      </div>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-num">Domain 6</div>
+      <div class="domain-title">Publishing</div>
+      <div class="domain-desc">Preflight, Package, PDF export (Print and Interactive), EPUB, and print production settings.</div>
+      <ul class="obj-list">
+        <li><span class="obj-code">6.1</span>Preflight — live, custom profiles, resolve errors</li>
+        <li><span class="obj-code">6.2</span>Package — collect fonts, links, job instructions</li>
+        <li><span class="obj-code">6.3</span>Export — PDF Print, PDF Interactive, EPUB</li>
+        <li><span class="obj-code">6.4</span>Print dialog — separations, bleeds, marks</li>
+      </ul>
+      <div class="domain-actions">
+        <span class="status-badge status-ready">Live</span>
+        <a href="simulator/d6-publishing.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Start Domain 6 →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Resources section -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+    <a href="slides/id-simulator-slides.html" style="text-decoration:none;">
+      <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:var(--transition);">
+        <div style="font-size:.78rem;font-weight:600;color:#00C896;margin-bottom:.25rem;">Slide deck</div>
+        <div style="font-size:.82rem;color:var(--text-secondary);">24 slides · All 6 domains · 12 MC knowledge checks · SCORM stub</div>
+      </div>
+    </a>
+    <a href="files/id-task-briefs.html" style="text-decoration:none;">
+      <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:var(--transition);">
+        <div style="font-size:.78rem;font-weight:600;color:#00C896;margin-bottom:.25rem;">Task briefs &amp; rubric</div>
+        <div style="font-size:.82rem;color:var(--text-secondary);">10 task briefs · Answer keys · 5-criterion rubric /20 · 12-Q MC answer key</div>
+      </div>
+    </a>
+    <a href="../evaluation/kirkpatrick-id.html" style="text-decoration:none;">
+      <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;transition:var(--transition);">
+        <div style="font-size:.78rem;font-weight:600;color:#00C896;margin-bottom:.25rem;">Kirkpatrick L1–L3</div>
+        <div style="font-size:.82rem;color:var(--text-secondary);">Reaction survey · Pre/post L2 assessment · Observation checklist</div>
+      </div>
+    </a>
+  </div>
+
+  <div style="background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.5rem;">
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.65rem;">ACP InDesign exam format</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;font-size:.82rem;color:var(--text-secondary);">
+      <div><strong style="color:var(--text-primary);display:block;margin-bottom:.2rem;">50-minute exam</strong>MC questions (Domain 1) then Live-in-the-App tasks inside real InDesign (Domains 2–6).</div>
+      <div><strong style="color:var(--text-primary);display:block;margin-bottom:.2rem;">Key 2025 AI objectives</strong>Text-to-image and Generative Expand (Domain 5) are testable in the 2025 exam.</div>
+      <div><strong style="color:var(--text-primary);display:block;margin-bottom:.2rem;">What to practise most</strong>Master pages, Paragraph Styles, and Preflight are consistently the most-tested Live-in-the-App areas.</div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/progress.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>ACPProgress.init());</script>
+</body>
+</html>

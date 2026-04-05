@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photoshop — Task Briefs, Answer Keys & Rubric | ACP 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ps:#31A8FF;--bg:#1A1A2E;--bg1:#16213E;--surf:#252540;--surf2:#2E2E50;
+  --border:rgba(255,255,255,.08);--border-strong:rgba(255,255,255,.16);
+  --text:#F0F0FF;--text2:#A8A8C8;--text3:#6868A0;
+  --correct:#00D68F;--wrong:#FF4D6D;--partial:#FFB800;
+  --r:10px;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;padding:0;}
+
+/* Nav */
+.nav{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.nav-logo{font-weight:700;font-size:.9rem;color:var(--ps);font-family:var(--mono);}
+.nav-link{font-size:.83rem;color:var(--text2);text-decoration:none;padding:.3rem .7rem;border-radius:6px;transition:all .15s;}
+.nav-link:hover,.nav-link.active{background:var(--surf);color:var(--text);}
+.nav-link.ps{color:var(--ps);}
+
+/* Tab nav */
+.tab-bar{background:var(--bg1);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+.tab-btn{padding:.4rem 1rem;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border);color:var(--text2);background:transparent;transition:all .15s;font-family:var(--font);}
+.tab-btn:hover{background:var(--surf);color:var(--text);}
+.tab-btn.active{background:var(--ps);color:#000;border-color:var(--ps);}
+
+.page{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* Section styles */
+.section-label{font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin:.875rem 0 .5rem;}
+.brief-card{background:var(--surf);border:0.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.brief-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;flex-wrap:wrap;}
+.brief-num{font-family:var(--mono);font-size:.72rem;color:var(--ps);background:rgba(49,168,255,.1);padding:3px 9px;border-radius:4px;border:0.5px solid rgba(49,168,255,.3);}
+.brief-title{font-size:1rem;font-weight:600;color:var(--text);}
+.brief-badge{font-size:.7rem;padding:2px 8px;border-radius:20px;font-weight:500;}
+.bloom-badge{background:rgba(0,214,143,.1);color:var(--correct);border:0.5px solid rgba(0,214,143,.25);}
+.time-badge{background:var(--surf2);color:var(--text3);}
+.brief-scenario{font-size:.875rem;color:var(--text2);line-height:1.65;padding:.7rem .9rem;background:var(--bg);border-radius:8px;border-left:3px solid var(--ps);margin-bottom:.875rem;}
+.brief-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.5rem;margin-bottom:.875rem;}
+.spec-item{background:var(--bg);border:0.5px solid var(--border);border-radius:7px;padding:.5rem .75rem;font-size:.82rem;}
+.spec-label{font-size:.68rem;color:var(--text3);margin-bottom:2px;font-family:var(--mono);}
+.spec-value{color:var(--text);font-weight:500;}
+.steps-ol{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.steps-ol li{display:flex;gap:.65rem;align-items:flex-start;font-size:.83rem;color:var(--text2);line-height:1.5;}
+.step-n{width:20px;height:20px;border-radius:50%;background:rgba(49,168,255,.15);color:var(--ps);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;flex-shrink:0;margin-top:1px;font-family:var(--mono);}
+.answer-row{display:flex;gap:.75rem;padding:.6rem 0;border-bottom:0.5px solid var(--border);align-items:flex-start;}
+.answer-row:last-child{border-bottom:none;}
+.ans-step{font-family:var(--mono);font-size:.7rem;color:var(--ps);min-width:55px;padding-top:2px;}
+.ans-action{flex:1;font-size:.83rem;color:var(--text);}
+.ans-value{font-family:var(--mono);font-size:.78rem;color:var(--correct);background:rgba(0,214,143,.08);padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.ans-context{font-size:.75rem;color:var(--text3);margin-top:.2rem;}
+
+/* Rubric */
+.rubric-wrap{overflow-x:auto;}
+table.rubric{width:100%;border-collapse:collapse;font-size:.82rem;min-width:600px;}
+table.rubric th{padding:.6rem .875rem;font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);border-bottom:0.5px solid var(--border);text-align:left;background:var(--bg1);}
+table.rubric td{padding:.65rem .875rem;border-bottom:0.5px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+table.rubric td:first-child{font-weight:500;color:var(--text);white-space:nowrap;}
+table.rubric tr:last-child td{border-bottom:none;}
+.level-4{color:var(--correct);}
+.level-3{color:var(--ps);}
+.level-2{color:var(--partial);}
+.level-1{color:var(--wrong);}
+.rubric-score{text-align:center;font-weight:700;font-family:var(--mono);}
+.acp-ref{font-family:var(--mono);font-size:.68rem;color:var(--text3);display:block;margin-top:2px;}
+
+/* Print */
+@media print{
+  .nav,.tab-bar{display:none;}
+  .panel{display:block!important;}
+  .brief-card{break-inside:avoid;background:white;color:black;border:1px solid #ddd;}
+  body{background:white;color:black;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">Ps</span>
+  <a href="../index.html" class="nav-link">← Photoshop</a>
+  <a href="../../index.html" class="nav-link">Home</a>
+  <span style="margin-left:auto;font-size:.8rem;color:var(--text3);">Supporting files · Ps D2–D4</span>
+</nav>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('briefs')">📋 Task briefs</button>
+  <button class="tab-btn" onclick="showTab('keys')">🗝 Answer keys</button>
+  <button class="tab-btn" onclick="showTab('rubric')">📊 Portfolio rubric</button>
+  <button class="tab-btn" onclick="showTab('mc')">✅ MC answer key</button>
+  <button style="margin-left:auto;padding:.4rem 1rem;border-radius:20px;font-size:.8rem;background:transparent;border:0.5px solid var(--border);color:var(--text2);cursor:pointer;font-family:var(--font);" onclick="window.print()">🖨 Print</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════════ TASK BRIEFS ════════════════════════════ -->
+<div class="panel active" id="panel-briefs">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Print and distribute these briefs to learners before each task simulation. They match the scenarios in the interactive simulators.</p>
+
+  <p class="section-label">Domain 2 — Project Setup &amp; Interface</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-2.1a</span>
+      <span class="brief-title">Set appropriate document settings</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">A client needs a print-ready flyer for their event. Create a new Photoshop document meeting the following professional print specifications.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Width</div><div class="spec-value">8.5 Inches</div></div>
+      <div class="spec-item"><div class="spec-label">Height</div><div class="spec-value">11 Inches</div></div>
+      <div class="spec-item"><div class="spec-label">Orientation</div><div class="spec-value">Portrait</div></div>
+      <div class="spec-item"><div class="spec-label">Resolution</div><div class="spec-value">300 Pixels/Inch</div></div>
+      <div class="spec-item"><div class="spec-label">Color Mode</div><div class="spec-value">RGB Color</div></div>
+      <div class="spec-item"><div class="spec-label">Bit Depth</div><div class="spec-value">8 bit</div></div>
+      <div class="spec-item"><div class="spec-label">Background</div><div class="spec-value">White</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Open the New Document dialog using File → New.</li>
+      <li><span class="step-n">2</span>Enter the width and height, ensuring units are set to Inches.</li>
+      <li><span class="step-n">3</span>Set the Resolution to 300 Pixels/Inch.</li>
+      <li><span class="step-n">4</span>Set Color Mode to RGB Color and Bit Depth to 8 bit.</li>
+      <li><span class="step-n">5</span>Set Background Contents to White, then click Create.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-2.3a</span>
+      <span class="brief-title">Open and place assets as linked Smart Objects</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~7 min</span>
+    </div>
+    <div class="brief-scenario">Add a client logo to an existing Photoshop document. The logo must be placed as a linked Smart Object so any updates to the original file automatically update in the document.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Use File → Place Linked (not Place Embedded) to insert the logo file.</li>
+      <li><span class="step-n">2</span>Select the logo file and click Place.</li>
+      <li><span class="step-n">3</span>Commit the transform by pressing Enter or clicking the ✓ in the Options Bar.</li>
+      <li><span class="step-n">4</span>Verify the linked Smart Object icon in the Layers panel, then open Window → Links.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 3 — Layers, Masks &amp; Adjustments</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-3.2b</span>
+      <span class="brief-title">Create a pixel mask to remove a background</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Remove the background of a product photograph non-destructively using a pixel mask. The original pixels must remain intact and the mask must remain editable at all times.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Select the "Product" layer in the Layers panel.</li>
+      <li><span class="step-n">2</span>Click the Add Layer Mask button at the bottom of the Layers panel to add a white pixel mask.</li>
+      <li><span class="step-n">3</span>Click the white mask thumbnail to target the mask (not the layer).</li>
+      <li><span class="step-n">4</span>Select the Brush tool (B), set foreground colour to black (D to reset). Paint over the background to hide it.</li>
+      <li><span class="step-n">5</span>Use Select → Select and Mask to refine the edge around the subject.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-3.3a</span>
+      <span class="brief-title">Apply adjustment layers — Levels and Hue/Saturation</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Correct an underexposed, desaturated photo using non-destructive adjustment layers. Limit both adjustments to affect only the background layer, not the entire document.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Levels — White Input</div><div class="spec-value">210</div></div>
+      <div class="spec-item"><div class="spec-label">Hue/Sat — Saturation</div><div class="spec-value">+35</div></div>
+      <div class="spec-item"><div class="spec-label">Clipping</div><div class="spec-value">Yes — background only</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Open Window → Adjustments and click the Levels icon to add a Levels adjustment layer.</li>
+      <li><span class="step-n">2</span>In the Properties panel, set the white input level to 210.</li>
+      <li><span class="step-n">3</span>Add a Hue/Saturation adjustment layer. Set Saturation to +35.</li>
+      <li><span class="step-n">4</span>Alt+click (Option+click) the border between both adjustment layers and the layer below to clip them.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 4 — Adding Content</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num" style="color:#9B8EF0;background:rgba(155,142,240,.1);border-color:rgba(155,142,240,.3);">Ps-4.1c ✦</span>
+      <span class="brief-title">AI tools — Generative Fill &amp; Sky Replacement</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">A landscape photo has an overcast sky and an unwanted sign in the foreground. Replace the sky and remove the sign using Photoshop AI tools. All results must be non-destructive.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Edit → Sky Replacement. Select a Sunsets preset. Click OK.</li>
+      <li><span class="step-n">2</span>Select the unwanted sign using any selection tool.</li>
+      <li><span class="step-n">3</span>Edit → Generative Fill. Leave the text prompt EMPTY. Click Generate.</li>
+      <li><span class="step-n">4</span>Use the arrows in the contextual taskbar to choose the best of the 3 AI variations.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-4.3a/b</span>
+      <span class="brief-title">Type tools &amp; character settings — typographic hierarchy</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Create a two-level typographic layout for a magazine headline. Apply precise character settings to both the headline and subtitle.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Headline</div><div class="spec-value">SUMMER 2025</div></div>
+      <div class="spec-item"><div class="spec-label">Font size</div><div class="spec-value">72 pt</div></div>
+      <div class="spec-item"><div class="spec-label">Tracking</div><div class="spec-value">200</div></div>
+      <div class="spec-item"><div class="spec-label">Alignment</div><div class="spec-value">Centered</div></div>
+      <div class="spec-item"><div class="spec-label">Subtitle size</div><div class="spec-value">16 pt</div></div>
+      <div class="spec-item"><div class="spec-label">Type mode</div><div class="spec-value">Area type (click-drag)</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Press T (Type tool). Single-click on canvas. Type "SUMMER 2025". Commit: Ctrl+Enter.</li>
+      <li><span class="step-n">2</span>Window → Character. Set font size to 72 pt.</li>
+      <li><span class="step-n">3</span>Set Tracking (AV↔) to 200.</li>
+      <li><span class="step-n">4</span>Window → Paragraph. Set alignment to Centered.</li>
+      <li><span class="step-n">5</span>Click-drag with Type tool to create area type. Type subtitle. Set to 16 pt, Left alignment.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 5 — Modifying Visual Elements</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-5.1a/b/c</span>
+      <span class="brief-title">Selections — Subject, Color Range &amp; save as alpha channel</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Isolate a subject from a complex background using AI-based and colour-range selection methods. Refine the selection edge and save it as a reusable alpha channel.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Select → Subject. AI detects the main subject. Marching ants appear.</li>
+      <li><span class="step-n">2</span>Select → Color Range. Click the sky. Set Fuzziness to 40. Click OK.</li>
+      <li><span class="step-n">3</span>Hold Shift and brush to add to selection. Hold Alt/Option to subtract regions.</li>
+      <li><span class="step-n">4</span>Select → Modify → Feather. Radius: 5 pixels.</li>
+      <li><span class="step-n">5</span>Select → Save Selection. Name it and click OK. Stored as an alpha channel — load via Channels panel or Select → Load Selection.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num" style="color:#9B8EF0;background:rgba(155,142,240,.1);border-color:rgba(155,142,240,.3);">Ps-5.2a ✦</span>
+      <span class="brief-title">AI Remove tool, Clone Stamp &amp; Find Distractions</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~9 min</span>
+    </div>
+    <div class="brief-scenario">Remove three types of unwanted elements from a photograph: a blemish (Spot Healing), a texture area (Clone Stamp), and background distractions (AI Remove + Find Distractions).</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Press J — Spot Healing Brush. Options Bar: Mode = Normal, Type = Content-Aware. Click on the blemish.</li>
+      <li><span class="step-n">2</span>Press S — Clone Stamp. Alt+click clean source area. Paint over the problem area.</li>
+      <li><span class="step-n">3</span>Shift+J to cycle to the Remove tool. Enable "Create New Layer" in Options Bar. Paint over the unwanted object and release.</li>
+      <li><span class="step-n">4</span>Edit → Find Distractions. Photoshop scans and marks all distracting elements. Click Remove Distractions.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-5.3a/b</span>
+      <span class="brief-title">Non-destructive crop, Canvas Size &amp; Free Transform with Warp</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Prepare an image for Instagram: apply a non-destructive square crop, add a white border with Canvas Size, then apply Warp to a layer element.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Crop ratio</div><div class="spec-value">1:1 (Square)</div></div>
+      <div class="spec-item"><div class="spec-label">Delete pixels</div><div class="spec-value">UNCHECKED</div></div>
+      <div class="spec-item"><div class="spec-label">Canvas addition</div><div class="spec-value">+200px W and H</div></div>
+      <div class="spec-item"><div class="spec-label">Transform</div><div class="spec-value">Warp (right-click in Free Transform)</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Press C (Crop). Options Bar: set ratio to 1:1. UNCHECK "Delete Cropped Pixels".</li>
+      <li><span class="step-n">2</span>Drag to frame composition. Press Enter to commit. Hidden pixels are preserved.</li>
+      <li><span class="step-n">3</span>Image → Canvas Size. Add 200px to both width and height. Anchor: centre. Click OK.</li>
+      <li><span class="step-n">4</span>Select the logo layer. Press Ctrl+T (Free Transform). Right-click inside bounding box → Warp. Drag mesh points. Press Enter.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-5.4a/b</span>
+      <span class="brief-title">Smart Filters &amp; layer styles — apply, copy, scale</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~8 min</span>
+    </div>
+    <div class="brief-scenario">Apply a Smart Filter to a Smart Object, add Drop Shadow and Bevel &amp; Emboss styles, then copy and paste those styles to a second layer and scale them proportionally.</div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>Right-click the layer → Convert to Smart Object.</li>
+      <li><span class="step-n">2</span>Filter → Blur → Gaussian Blur. Radius: 3.0 pixels. Click OK. Smart Filter appears sub-layer.</li>
+      <li><span class="step-n">3</span>Click fx at Layers panel bottom → Drop Shadow. Enable Bevel &amp; Emboss in same dialog. Click OK.</li>
+      <li><span class="step-n">4</span>Right-click the fx badge → Copy Layer Style. Click the second layer → Paste Layer Style.</li>
+      <li><span class="step-n">5</span>Right-click fx on second layer → Scale Effects → set to 80%.</li>
+    </ol>
+  </div>
+
+  <p class="section-label">Domain 6 — Publishing Digital Media</p>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-6.1a/b</span>
+      <span class="brief-title">Export artboards at 1x &amp; 2x, Layers to Files, Quick Export preference</span>
+      <span class="brief-badge bloom-badge">Apply</span>
+      <span class="brief-badge time-badge">~7 min</span>
+    </div>
+    <div class="brief-scenario">Export 3 social media artboards as PNG at standard and Retina resolutions, export individual layers as separate files, and configure the Quick Export format preference.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Export format</div><div class="spec-value">PNG</div></div>
+      <div class="spec-item"><div class="spec-label">Scales</div><div class="spec-value">1x and 2x</div></div>
+      <div class="spec-item"><div class="spec-label">Use artboards</div><div class="spec-value">Checked</div></div>
+      <div class="spec-item"><div class="spec-label">Quick Export fmt</div><div class="spec-value">JPEG</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → Export → Export As. Format: PNG. Check "Use Artboards". Click Add Scale → 2x.</li>
+      <li><span class="step-n">2</span>Click Export All. Choose destination folder. Files are named using artboard names.</li>
+      <li><span class="step-n">3</span>File → Export → Layers to Files. Set file type. Click Run.</li>
+      <li><span class="step-n">4</span>Edit → Preferences → Export. Set Quick Export Format to JPEG. Click OK.</li>
+    </ol>
+  </div>
+
+  <div class="brief-card">
+    <div class="brief-top">
+      <span class="brief-num">Ps-6.2a/b</span>
+      <span class="brief-title">Save formats — PSD master, Save a Copy, format selection</span>
+      <span class="brief-badge bloom-badge">Evaluate</span>
+      <span class="brief-badge time-badge">~7 min</span>
+    </div>
+    <div class="brief-scenario">Save a layered document as a PSD master, produce a flat JPEG copy without altering the working file, and identify the correct output format for three different delivery scenarios.</div>
+    <div class="brief-specs">
+      <div class="spec-item"><div class="spec-label">Master format</div><div class="spec-value">PSD (Save As)</div></div>
+      <div class="spec-item"><div class="spec-label">Flat copy</div><div class="spec-value">JPEG via Save a Copy</div></div>
+      <div class="spec-item"><div class="spec-label">Web transparency</div><div class="spec-value">PNG</div></div>
+      <div class="spec-item"><div class="spec-label">Print master</div><div class="spec-value">TIFF 16-bit</div></div>
+    </div>
+    <ol class="steps-ol">
+      <li><span class="step-n">1</span>File → Save As → Photoshop (.psd). This preserves all layers — master file.</li>
+      <li><span class="step-n">2</span>File → Save a Copy → JPEG. Saves a flat copy; the PSD stays open and unchanged.</li>
+      <li><span class="step-n">3</span>For web graphic with transparency: use PNG (lossless, supports alpha channel).</li>
+      <li><span class="step-n">4</span>For print retouching master: TIFF at 16-bit (lossless, transparency, maximum tonal range).</li>
+      <li><span class="step-n">5</span>Before web delivery: Image → Mode → assign sRGB profile. Adobe RGB shifts colours in browsers.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ══════════════ ANSWER KEYS ═══════════════════════════ -->
+<div class="panel" id="panel-keys">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Exact expected values for each step in every task. Use these for grading and self-checking.</p>
+
+  <p class="section-label">Ps-2.1a — Set appropriate document settings</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Open New Document dialog</div><div><span class="ans-value">File → New</span></div><div class="ans-context">Keyboard: Ctrl+N (Win) / Cmd+N (Mac)</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Width and unit</div><div><span class="ans-value">8.5 Inches</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Height and unit</div><div><span class="ans-value">11 Inches</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Resolution</div><div><span class="ans-value">300 Pixels/Inch</span></div><div class="ans-context">Not 72 (screen). Not 150. 300 = professional print standard.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Color Mode / Bit Depth</div><div><span class="ans-value">RGB Color / 8 bit</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 6</span><div><div class="ans-action">Background + commit</div><div><span class="ans-value">White → Create</span></div></div></div>
+  </div>
+
+  <p class="section-label">Ps-3.2b — Create a pixel mask</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Select target layer</div><div><span class="ans-value">Click "Product" layer row</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Add pixel mask</div><div><span class="ans-value">Click □● icon at bottom of Layers panel</span></div><div class="ans-context">A white rectangle thumbnail appears next to the layer thumbnail.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Target the mask</div><div><span class="ans-value">Click the white mask thumbnail (right thumbnail)</span></div><div class="ans-context">A border appears around the mask thumbnail confirming it is active.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Brush tool + black foreground</div><div><span class="ans-value">B → D → paint on background</span></div><div class="ans-context">Black conceals. White reveals. Grey = partial transparency.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Refine edges</div><div><span class="ans-value">Select → Select and Mask</span></div></div></div>
+  </div>
+
+  <p class="section-label">Ps-3.3a — Adjustment layers</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Open Adjustments panel</div><div><span class="ans-value">Window → Adjustments</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Add Levels layer</div><div><span class="ans-value">Click Levels icon (histogram shape)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">White input value</div><div><span class="ans-value">210</span></div><div class="ans-context">Right input field under histogram. Not 255 (default). Setting 210 brightens highlights.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Add Hue/Saturation layer</div><div><span class="ans-value">Click Hue/Sat icon (three coloured bars)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Saturation value</div><div><span class="ans-value">+35</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 6</span><div><div class="ans-action">Clip adjustments to one layer</div><div><span class="ans-value">Alt+click (Option+click) border between adj layer and layer below</span></div></div></div>
+  </div>
+
+  <p class="section-label">Ps-4.1c — Generative Fill &amp; Sky Replacement</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Open Sky Replacement</div><div><span class="ans-value">Edit → Sky Replacement</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Sky preset category</div><div><span class="ans-value">Sunsets (any sunset sky)</span></div><div class="ans-context">Any sky from the Sunsets category is acceptable.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Commit sky</div><div><span class="ans-value">Click OK</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Select object + Generative Fill</div><div><span class="ans-value">Select tool → Edit → Generative Fill</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Prompt content</div><div><span class="ans-value">EMPTY (no text)</span></div><div class="ans-context">Critical: empty prompt = remove and fill. Any typed text = replace with generated content.</div></div></div>
+  </div>
+
+  <p class="section-label">Ps-4.3a/b — Type tools &amp; character settings</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Type tool mode</div><div><span class="ans-value">T → single click (point type)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Headline text</div><div><span class="ans-value">"SUMMER 2025" → Ctrl+Enter</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Font size</div><div><span class="ans-value">72 pt</span></div><div class="ans-context">Set in Window → Character or the Options Bar.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Tracking</div><div><span class="ans-value">200</span></div><div class="ans-context">The AV↔ field in the Character panel. Not kerning.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Paragraph alignment</div><div><span class="ans-value">Center (Window → Paragraph)</span></div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 6</span><div><div class="ans-action">Subtitle type mode</div><div><span class="ans-value">Click-drag with Type tool (area type)</span></div></div></div>
+  </div>
+
+  <p class="section-label">Ps-5.1a/b/c — Selections &amp; alpha channels</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">AI selection method</div><span class="ans-value">Select → Subject</span><div class="ans-context">Works instantly. Marching ants appear around the detected subject.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Color Range command</div><span class="ans-value">Select → Color Range → click sky → Fuzziness 40</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Add to selection</div><span class="ans-value">Hold Shift + brush/click</span><div class="ans-context">Alt/Option = subtract. Shift = add. Works with any active selection tool.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Feather radius</div><span class="ans-value">Select → Modify → Feather → 5 px</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Save selection</div><span class="ans-value">Select → Save Selection → name → OK</span><div class="ans-context">Stored as alpha channel. Load via Select → Load Selection or Ctrl+click channel thumbnail.</div></div></div>
+  </div>
+
+  <p class="section-label">Ps-5.2a — Retouching &amp; AI Remove</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Spot Healing settings</div><span class="ans-value">J → Options Bar: Type = Content-Aware</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Clone Stamp source</div><span class="ans-value">S → Alt+click clean area → paint</span><div class="ans-context">Alt+click sets the source point. Paint to copy that area over the problem region.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">AI Remove tool</div><span class="ans-value">J → Shift+J to cycle → paint object → release</span><div class="ans-context">Enable "Create New Layer" in Options Bar for non-destructive removal.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Find Distractions</div><span class="ans-value">Edit → Find Distractions → Remove Distractions</span><div class="ans-context">New 2025. Scans the entire image and marks all distracting elements for batch removal.</div></div></div>
+  </div>
+
+  <p class="section-label">Ps-5.3a/b — Crop, Canvas Size &amp; Warp</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Non-destructive crop</div><span class="ans-value">C → ratio 1:1 → UNCHECK "Delete Cropped Pixels"</span><div class="ans-context">Critical: unchecked = non-destructive. Cropped pixels remain recoverable.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Canvas Size addition</div><span class="ans-value">Image → Canvas Size → +200px W and H → Anchor: centre</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Warp access</div><span class="ans-value">Ctrl+T → right-click inside bounding box → Warp</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Commit transform</div><span class="ans-value">Press Enter (or tick in Options Bar)</span></div></div>
+  </div>
+
+  <p class="section-label">Ps-5.4a/b — Smart Filters &amp; layer styles</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Convert to Smart Object</div><span class="ans-value">Right-click layer → Convert to Smart Object</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Gaussian Blur value</div><span class="ans-value">Filter → Blur → Gaussian Blur → Radius: 3.0 px</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Apply two styles</div><span class="ans-value">fx → Drop Shadow + Bevel &amp; Emboss → OK</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Copy styles</div><span class="ans-value">Right-click fx badge → Copy Layer Style</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 5</span><div><div class="ans-action">Scale pasted styles</div><span class="ans-value">Right-click fx on second layer → Scale Effects → 80%</span><div class="ans-context">Scale Effects proportionally resizes all style values to match the new layer size.</div></div></div>
+  </div>
+
+  <p class="section-label">Ps-6.1a/b — Export artboards &amp; Quick Export</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Export path</div><span class="ans-value">File → Export → Export As</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Export settings</div><span class="ans-value">Format: PNG · Check "Use Artboards" · Add Scale: 2x</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Layers to Files</div><span class="ans-value">File → Export → Layers to Files → Run</span></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Quick Export preference</div><span class="ans-value">Edit → Preferences → Export → Quick Export Format: JPEG</span></div></div>
+  </div>
+
+  <p class="section-label">Ps-6.2a/b — Save formats</p>
+  <div class="brief-card">
+    <div class="answer-row"><span class="ans-step">Step 1</span><div><div class="ans-action">Save master</div><span class="ans-value">File → Save As → Photoshop (.psd)</span><div class="ans-context">Preserves all layers, Smart Objects, adjustment layers, masks.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 2</span><div><div class="ans-action">Save flat copy</div><span class="ans-value">File → Save a Copy → JPEG</span><div class="ans-context">Critical: "Save a Copy" does NOT change the active document. "Save As" JPEG would switch the working document to JPEG.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 3</span><div><div class="ans-action">Format for web transparency</div><span class="ans-value">PNG</span><div class="ans-context">PNG = lossless compression + full alpha transparency. JPEG has no transparency support.</div></div></div>
+    <div class="answer-row"><span class="ans-step">Step 4</span><div><div class="ans-action">Format for print master</div><span class="ans-value">TIFF at 16-bit</span><div class="ans-context">TIFF: lossless LZW compression + transparency + 16-bit. Only format supporting all three for print.</div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════ RUBRIC ════════════════════════════════ -->
+<div class="panel" id="panel-rubric">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Use this rubric to assess the Photoshop portfolio project. Each criterion maps to an official ACP 2025 exam objective.</p>
+
+  <div class="brief-card" style="padding:0;overflow:hidden;">
+    <div class="rubric-wrap">
+      <table class="rubric">
+        <thead>
+          <tr>
+            <th style="min-width:140px;">Criterion</th>
+            <th style="min-width:30px;text-align:center;">4 — Exemplary</th>
+            <th style="min-width:30px;text-align:center;">3 — Proficient</th>
+            <th style="min-width:30px;text-align:center;">2 — Developing</th>
+            <th style="min-width:30px;text-align:center;">1 — Beginning</th>
+            <th style="text-align:center;min-width:50px;">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Document setup<span class="acp-ref">Ps-2.1a</span></td>
+            <td><span class="level-4">All specs correct: 300 ppi, RGB, correct dimensions, White background. Document presets used.</span></td>
+            <td><span class="level-3">All critical specs correct (300 ppi, RGB). Minor formatting issue.</span></td>
+            <td><span class="level-2">Most specs correct; 1–2 errors (e.g. wrong ppi or colour mode).</span></td>
+            <td><span class="level-1">Multiple incorrect settings; document not print-ready.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Layer organisation<span class="acp-ref">Ps-3.1a</span></td>
+            <td><span class="level-4">All layers named descriptively. Logical groups used. Background locked. Layer types identifiable by icon.</span></td>
+            <td><span class="level-3">Most layers named. At least 1 group used. Background locked.</span></td>
+            <td><span class="level-2">Some layers named. No groups. Background unlocked.</span></td>
+            <td><span class="level-1">Layers unnamed ("Layer 1", "Layer 2"). No organisation.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Non-destructive masking<span class="acp-ref">Ps-3.2b/e</span></td>
+            <td><span class="level-4">Pixel or clipping mask used. Original pixels intact. Mask is re-editable. Clean edges (Select and Mask used).</span></td>
+            <td><span class="level-3">Mask applied correctly. Original pixels preserved. Some rough edges.</span></td>
+            <td><span class="level-2">Mask applied but destructive method (eraser) also used, or original pixels altered.</span></td>
+            <td><span class="level-1">No masking used. Background deleted destructively.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Colour correction<span class="acp-ref">Ps-3.3a</span></td>
+            <td><span class="level-4">Adjustment layers used (not direct adjustments). Levels white point set correctly. Saturation natural and boosted. Adjustments clipped to target layer.</span></td>
+            <td><span class="level-3">Adjustment layers used. Correct values applied. Not clipped (affects all layers).</span></td>
+            <td><span class="level-2">Adjustment layers used but values incorrect or not applied.</span></td>
+            <td><span class="level-1">Image → Adjustments used (destructive). No adjustment layers.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Typography<span class="acp-ref">Ps-4.3a/b</span></td>
+            <td><span class="level-4">Clear 2-level hierarchy. Headline: 72 pt, tracking 200, centered. Subtitle: area type, 16 pt, correct alignment. Character/Paragraph panels used.</span></td>
+            <td><span class="level-3">Two-level hierarchy present. Correct tools used. 1–2 spec values slightly off.</span></td>
+            <td><span class="level-2">Type present but no clear hierarchy. Settings not applied via Character panel.</span></td>
+            <td><span class="level-1">Single text size. No formatting applied. Incorrect type mode used.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Retouching &amp; selection<span class="acp-ref">Ps-5.1/5.2</span></td>
+            <td><span class="level-4">Non-destructive selection (Subject or Color Range). Alpha channel saved. AI Remove or Find Distractions used. Clean edges.</span></td>
+            <td><span class="level-3">Correct selection method used. Edge quality acceptable. One retouching tool applied correctly.</span></td>
+            <td><span class="level-2">Selection made but not saved. Retouching destructive (no new layer).</span></td>
+            <td><span class="level-1">No selection method used. Background erased destructively.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+          <tr>
+            <td>Export &amp; file management<span class="acp-ref">Ps-6.1/6.2</span></td>
+            <td><span class="level-4">PSD master saved. Flat copy via Save a Copy (not Save As). Correct format selected for each scenario: PNG for transparency, TIFF 16-bit for print master. sRGB assigned for web.</span></td>
+            <td><span class="level-3">PSD saved. Flat copy produced correctly. Format choices mostly appropriate.</span></td>
+            <td><span class="level-2">File saved but Save As used instead of Save a Copy. Format choices partially incorrect.</span></td>
+            <td><span class="level-1">Only one format saved. No distinction between master and delivery format.</span></td>
+            <td class="rubric-score">/ 4</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:var(--bg1);">
+            <td style="font-weight:600;color:var(--text);" colspan="5">Total score</td>
+            <td class="rubric-score" style="color:var(--ps);">/ 24</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1rem;">
+    <div style="background:rgba(0,214,143,.08);border:0.5px solid rgba(0,214,143,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--correct);">22–24</div><div style="font-size:.75rem;color:var(--text3);">Distinction · ACP ready</div></div>
+    <div style="background:rgba(49,168,255,.08);border:0.5px solid rgba(49,168,255,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--ps);">18–21</div><div style="font-size:.75rem;color:var(--text3);">Merit · Near ready</div></div>
+    <div style="background:rgba(255,184,0,.08);border:0.5px solid rgba(255,184,0,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--partial);">13–17</div><div style="font-size:.75rem;color:var(--text3);">Pass · More practice needed</div></div>
+    <div style="background:rgba(255,77,109,.08);border:0.5px solid rgba(255,77,109,.25);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.1rem;font-weight:700;color:var(--wrong);">0–12</div><div style="font-size:.75rem;color:var(--text3);">Resubmit · Not yet</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ MC ANSWER KEY ════════════════════════ -->
+<div class="panel" id="panel-mc">
+  <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.25rem;">Full MC question bank with correct answers, distractors explained, and ACP objective codes.</p>
+
+  <div id="mc-list"></div>
+</div>
+
+</div><!-- end page -->
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Build MC answer key
+const mcQuestions = [
+  { code:"Ps-2.1a/1.3b", q:"A designer needs a banner for large-format printing at 24 inches wide. Which resolution setting is correct?", options:["72 ppi","150 ppi","300 ppi","600 ppi"], correct:2, explanation:"300 ppi is the professional print standard. 72 ppi is for screen only. 600 ppi creates unnecessarily large files with no visible quality improvement." },
+  { code:"Ps-2.3a", q:"You placed an asset using File > Place Linked. Which icon confirms it is a linked Smart Object?", options:["A lock icon","A chain/link badge on the Smart Object thumbnail","A camera icon","A star icon"], correct:1, explanation:"Linked Smart Objects show a chain-link badge on their thumbnail. Place Embedded creates a Smart Object icon without the chain, indicating the file is embedded inside the document." },
+  { code:"Ps-1.3c", q:"What is the key difference between destructive and non-destructive editing?", options:["Destructive is faster","Destructive permanently alters pixel data; non-destructive preserves the original","Destructive uses less RAM","There is no practical difference"], correct:1, explanation:"Destructive edits alter pixels permanently and cannot be undone after saving. Non-destructive methods such as adjustment layers, Smart Objects, masks, and Smart Filters preserve the original and stay editable." },
+  { code:"Ps-3.1c", q:"What is the primary advantage of converting a layer to a Smart Object before applying filters?", options:["File size is reduced","Filters become Smart Filters - non-destructive and re-editable at any time","The layer backs up to the cloud","It converts raster pixels to vectors"], correct:1, explanation:"Smart Filters are the defining benefit of Smart Objects. They appear as sub-layers, can be toggled, re-edited by double-clicking, reordered, and removed without altering original pixels." },
+  { code:"Ps-3.3a", q:"How do you limit an adjustment layer to affect only the layer directly below it?", options:["Use Image > Adjustments instead","Lock the adjustment layer","Merge it with the layer below","Alt+click the border between the adjustment layer and the layer below"], correct:3, explanation:"Alt+clicking (Option+click on Mac) the border between layers creates a clipping group. The adjustment clips to the layer below only, not all layers underneath." },
+  { code:"Ps-4.1c", q:"When using Generative Fill to remove an unwanted object, what should the text prompt contain?", options:["A detailed description of the background","The word remove plus the object name","The surrounding colour name","Nothing - leave the prompt completely empty"], correct:3, explanation:"An empty prompt instructs Photoshop to analyse surrounding context and fill intelligently, removing the object. Typing a description replaces the selection with AI-generated content matching that description instead." },
+  { code:"Ps-4.3a", q:"What is the difference between point type and area type in Photoshop?", options:["Point type wraps; area type grows with the text","Point type grows with content; area type wraps inside a defined box","Point type is for headlines only","There is no functional difference"], correct:1, explanation:"Point type expands horizontally as you type and does not wrap. Area type wraps automatically within defined box boundaries - essential for body copy." },
+  { code:"Ps-4.3b", q:"In the Character panel, which setting adjusts spacing uniformly across all selected characters?", options:["Kerning","Leading","Tracking","Baseline shift"], correct:2, explanation:"Tracking uniformly adjusts spacing between all selected characters. Kerning only adjusts a specific character pair. Leading controls line height." },
+  { code:"Ps-5.1c", q:"You want to reuse a complex selection later without re-selecting. What is the correct approach?", options:["Save the document as PDF","Select > Save Selection - stored as an alpha channel","Merge all layers before saving","Export as JPEG"], correct:1, explanation:"Select > Save Selection stores the selection as a greyscale alpha channel in the Channels panel. Reload anytime via Select > Load Selection or Ctrl+click the channel thumbnail." },
+  { code:"Ps-5.2a", q:"Which 2025 Photoshop tool removes an object by painting over it and then uses AI to fill the area?", options:["Eraser tool","Clone Stamp","Content-Aware Fill via Edit menu","The Remove tool"], correct:3, explanation:"The Remove tool paints over an object and on release uses AI context analysis to fill the area. Enable Create New Layer in Options Bar for non-destructive removal." },
+  { code:"Ps-5.3a", q:"A non-destructive crop hides pixels rather than deleting them. Which setting enables this?", options:["Check Show Original","Uncheck Delete Cropped Pixels","Set ratio to Custom","Enable the Shield"], correct:1, explanation:"Unchecking Delete Cropped Pixels in the Crop tool Options Bar preserves hidden pixels. The full image data remains recoverable by resizing the crop or via Image > Reveal All." },
+  { code:"Ps-5.4b", q:"After pasting a Drop Shadow from a 400px logo onto a 50px icon, the shadow is too large. Fastest fix?", options:["Delete and re-enter values manually","Reduce the layer size","Right-click fx badge > Scale Effects > reduce the percentage","Clear Layer Style and re-apply"], correct:2, explanation:"Scale Effects proportionally scales all layer style values simultaneously - far faster than adjusting Distance, Size, and Spread individually, and preserves the relative look of all styles." },
+  { code:"Ps-6.2a", q:"A client needs a layered PSD for editing AND a flat JPEG for their website. How do you produce both without changing the working file?", options:["File > Save As > JPEG","File > Export > Quick Export as JPEG","Flatten the image then File > Save","File > Save a Copy > JPEG"], correct:3, explanation:"File > Save a Copy saves a flat duplicate in any format while keeping the original PSD open and unchanged as the active document. File > Save As would switch the active document to JPEG." },
+  { code:"Ps-6.2b", q:"Which format supports lossless compression AND transparency AND 16-bit colour depth for print production?", options:["JPEG","PNG","TIFF","PSD"], correct:2, explanation:"TIFF supports lossless LZW compression, full alpha transparency, and 16-bit colour depth - making it the only standard delivery format combining all three for high-end print retouching masters." },
+];
+
+document.getElementById('mc-list').innerHTML = mcQuestions.map((item, i) => `
+  <div class="brief-card" style="margin-bottom:.75rem;">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;">
+      <span style="font-size:.68rem;font-family:var(--mono);color:var(--ps);background:rgba(49,168,255,.1);padding:2px 7px;border-radius:4px;">Q${i+1}</span>
+      <span style="font-family:var(--mono);font-size:.68rem;color:var(--text3);">${item.code}</span>
+    </div>
+    <p style="font-size:.875rem;font-weight:500;color:var(--text);margin-bottom:.6rem;line-height:1.5;">${item.q}</p>
+    ${item.options.map((opt, oi) => `
+      <div style="padding:.4rem .75rem;border-radius:7px;border:0.5px solid ${oi===item.correct?'rgba(0,214,143,.4)':'var(--border)'};background:${oi===item.correct?'rgba(0,214,143,.07)':'var(--bg)'};font-size:.82rem;color:${oi===item.correct?'#7FFFD4':'var(--text3)'};margin-bottom:.25rem;">
+        ${oi===item.correct?'✓ ':''}<strong>${String.fromCharCode(65+oi)}.</strong> ${opt}
+      </div>`).join('')}
+    <div style="margin-top:.6rem;padding:.6rem .875rem;background:rgba(49,168,255,.06);border:0.5px solid rgba(49,168,255,.2);border-radius:8px;font-size:.8rem;color:#B5D4F4;line-height:1.55;">
+      <strong>Explanation:</strong> ${item.explanation}
+    </div>
+  </div>
+`).join('');
+</script>
+</body>
+</html>

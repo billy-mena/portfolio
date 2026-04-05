@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Id · Domain 5: Visual Elements & AI | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--id:#00C896;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#001A10 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(0,200,150,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--id);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--id);color:#000;border-color:var(--id);}
+.adobe-sim{background:#303030;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3A3A3A;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#00C896;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 240px;min-height:360px;}
+.adobe-tools{background:#303030;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(0,200,150,.2);color:#00C896;}
+.tool-btn.highlight{border:1.5px solid #00C896;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#5A5A5A;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.id-page{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.adobe-panels{background:#303030;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;overflow-y:auto;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;cursor:pointer;flex-shrink:0;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;min-width:55px;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#00C896;}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#00C896;color:#00C896;}
+.ai-badge{display:inline-block;font-size:.68rem;padding:2px 8px;border-radius:10px;background:rgba(155,142,240,.15);color:#9B8EF0;border:0.5px solid rgba(155,142,240,.25);}
+/* Image frame */
+.id-img-frame{position:relative;overflow:hidden;}
+.id-img-frame::before{content:'';position:absolute;inset:0;border:0.5px solid rgba(0,100,200,.3);}
+.id-img-frame .x-marks{position:absolute;inset:0;pointer-events:none;}
+.id-img-frame .x-marks::before{content:'';position:absolute;left:0;right:0;top:50%;height:0.5px;background:rgba(0,100,200,.25);}
+.id-img-frame .x-marks::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:0.5px;background:rgba(0,100,200,.25);}
+/* Step/score */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link id active">InDesign</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../illustrator/index.html" class="nav-link ai">Illustrator</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;">
+      <span class="badge badge-id">InDesign</span>
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id · Domain 5</span>
+      <span class="badge badge-live">Live tasks</span>
+      <span class="badge" style="background:rgba(155,142,240,.1);color:#9B8EF0;border:0.5px solid rgba(155,142,240,.25);">✦ AI objectives</span>
+    </div>
+    <h1 style="font-size:1.6rem;margin:.5rem 0 .3rem;">Visual Elements &amp; AI Features</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;">4 objectives · 7 tasks · Guided &amp; Independent modes · ACP 2025 v20.x</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+<aside class="task-list">
+  <div class="task-list-title">Domain 5 tasks</div>
+  <div class="task-item active" onclick="loadTask('id-5-1a')" id="nav-id51a">
+    <div class="task-icon" id="icon-id51a">5.1</div>
+    <div class="task-info"><div class="task-obj">Id-5.1a</div><div class="task-name">Place images &amp; frame fitting</div></div>
+    <div class="task-score" id="sc-id51a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-5-1b')" id="nav-id51b">
+    <div class="task-icon" id="icon-id51b">5.1</div>
+    <div class="task-info"><div class="task-obj">Id-5.1b</div><div class="task-name">Content vs frame — reposition &amp; resize</div></div>
+    <div class="task-score" id="sc-id51b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-5-2a')" id="nav-id52a">
+    <div class="task-icon" id="icon-id52a">5.2</div>
+    <div class="task-info"><div class="task-obj">Id-5.2a</div><div class="task-name">Transparency, effects &amp; drop shadows</div></div>
+    <div class="task-score" id="sc-id52a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-5-3a')" id="nav-id53a">
+    <div class="task-icon" id="icon-id53a">5.3</div>
+    <div class="task-info"><div class="task-obj">Id-5.3a</div><div class="task-name">Shapes, drawn objects &amp; corner effects</div></div>
+    <div class="task-score" id="sc-id53a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-5-5a')" id="nav-id55a">
+    <div class="task-icon" id="icon-id55a" style="color:#9B8EF0;font-size:.6rem;">AI</div>
+    <div class="task-info"><div class="task-obj">Id-5.5 ✦</div><div class="task-name">Text-to-image &amp; Generative Expand (2025)</div></div>
+    <div class="task-score" id="sc-id55a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('id-5-mc')" id="nav-id5mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 5</div><div class="task-name">Knowledge check</div></div>
+    <div class="task-score" id="sc-id5mc">—</div>
+  </div>
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="d4-text-tables.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Domain 4</div></div>
+  </a>
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:#00C896;">↑</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Id overview</div></div>
+  </a>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS={
+
+'id-5-1a':{
+  id:'id-5-1a',tool:'indesign',domain:5,
+  objective:'5.1a',objectiveText:'Place images into frames and use fitting options',
+  bloomsLevel:'Apply',estimatedMinutes:8,uiType:'image-frames',
+  scenario:'Place a photograph into an image frame, then use the fitting options to fill the frame proportionally. Apply Auto Fit so the image always fills the frame when it is resized.',
+  steps:[
+    {id:1,instruction:'Draw an image frame. Press F (Frame tool — Rectangle Frame) and drag a frame on the page.',
+     expectedAction:'tool-select',expectedTarget:'frame-tool',
+     hint1:'Press F for the Rectangle Frame tool.',hint2:'Press F → drag a rectangle frame on the page.',hint3:'Press F → drag a frame → an empty frame with an X through it appears.',
+     correctFeedback:'Image frame drawn. The X crosshairs indicate an empty image frame — ready to receive content.',
+     incorrectFeedback:'Press F for the Rectangle Frame tool and drag a frame.',
+     acpContext:'ACP Id-5.1a: InDesign has two rectangle tools: Rectangle (M) creates plain graphic frames with no X. Rectangle Frame (F) creates image frames with an X, signalling they are containers for placed content.',gagneEvent:4},
+    {id:2,instruction:'Place an image into the frame. Select the frame, then File → Place (Ctrl+D). Select a photograph and click Open.',
+     expectedAction:'menu-click',expectedTarget:'file-place-img',
+     hint1:'Select the frame first, then File → Place.',hint2:'Click the frame to select it → File → Place (Ctrl+D) → select the image → Open.',hint3:'Select frame → File → Place (Ctrl+D) → choose photo → Open → image places directly into the selected frame.',
+     correctFeedback:'Image placed into the frame. The photo may not fill the frame perfectly — fitting options will fix this.',
+     incorrectFeedback:'Select the frame and go to File → Place.',
+     acpContext:'ACP Id-5.1a: If a frame is selected when you place, the image goes directly into it. If no frame is selected, you get the place cursor to draw a new frame or click-to-place.',gagneEvent:5},
+    {id:3,instruction:'Fill frame proportionally. Right-click the frame → Fitting → Fill Frame Proportionally.',
+     expectedAction:'menu-click',expectedTarget:'fill-frame-proportionally',
+     hint1:'Right-click the frame.',hint2:'Right-click → Fitting → Fill Frame Proportionally.',hint3:'Right-click → Fitting → Fill Frame Proportionally — the image scales to fill the frame with no empty space.',
+     correctFeedback:'Fill Frame Proportionally applied. The image fills the entire frame — some edges may be cropped but no white gaps.',
+     incorrectFeedback:'Right-click the frame and choose Fitting → Fill Frame Proportionally.',
+     acpContext:'ACP Id-5.1a: Fitting options — Fill Frame Proportionally: fills frame, may crop. Fit Content Proportionally: fits all content, may leave gaps. Fit Frame to Content: resizes frame to match image. Fit Content to Frame: stretches/distorts image.',gagneEvent:6},
+    {id:4,instruction:'Enable Auto Fit. In the Control bar (Options Bar at top), check the "Auto Fit" checkbox.',
+     expectedAction:'click',expectedTarget:'auto-fit',
+     hint1:'Look in the Options Bar at the top of the screen.',hint2:'In the Control bar when the frame is selected, find and check the "Auto Fit" checkbox.',hint3:'Frame selected → Control bar → check Auto Fit checkbox.',
+     correctFeedback:'Auto Fit enabled. Now when you resize the frame, the image automatically re-fits to fill it proportionally.',
+     incorrectFeedback:'Check the Auto Fit checkbox in the Control bar at the top.',
+     acpContext:'ACP Id-5.1a: Auto Fit is a per-frame setting. It eliminates the need to manually re-fit after every resize — essential for production efficiency with many image frames.',gagneEvent:7},
+    {id:5,instruction:'Fit frame to content. With an existing image frame selected: Object → Fitting → Fit Frame to Content.',
+     expectedAction:'menu-click',expectedTarget:'fit-frame-to-content',
+     hint1:'Go to Object → Fitting.',hint2:'Object → Fitting → Fit Frame to Content.',hint3:'Select the frame → Object → Fitting → Fit Frame to Content — the frame resizes to match the image dimensions exactly.',
+     correctFeedback:'Frame resized to match the image. No cropping — frame and image are the same size.',
+     incorrectFeedback:'Go to Object → Fitting → Fit Frame to Content.',
+     acpContext:'ACP Id-5.1a: Object → Fitting (and the right-click Fitting submenu) contains all five fitting options. Shortcut: Ctrl+Alt+C (Fit Content Proportionally) and Ctrl+Alt+Shift+C (Fill Frame Proportionally).',gagneEvent:7}
+  ]
+},
+
+'id-5-1b':{
+  id:'id-5-1b',tool:'indesign',domain:5,
+  objective:'5.1b',objectiveText:'Reposition content within a frame independently of the frame',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'content-frame',
+  scenario:'A placed photo needs repositioning within its frame — the face in the image is cropped. Move the content (not the frame) to recompose the crop without changing the frame position.',
+  steps:[
+    {id:1,instruction:'Select the frame with the Selection tool (V). The frame handles appear.',
+     expectedAction:'tool-select',expectedTarget:'selection-tool',
+     hint1:'Press V for the Selection tool.',hint2:'Press V → click the image frame.',hint3:'Press V → click the frame → blue selection handles appear around the frame.',
+     correctFeedback:'Frame selected with the Selection tool. You can now move or resize the entire frame (frame + content together).',
+     incorrectFeedback:'Press V for the Selection tool and click the frame.',
+     acpContext:'ACP Id-5.1b: In InDesign, clicking once with the Selection tool selects the FRAME. Double-clicking (or clicking the content grabber circle) selects the CONTENT inside the frame. This is the core of the two-level selection model.',gagneEvent:4},
+    {id:2,instruction:'Enter content selection mode. Double-click the image, or click the content grabber (the brown circle that appears at the centre when hovering).',
+     expectedAction:'click',expectedTarget:'content-grabber',
+     hint1:'Double-click the image.',hint2:'Double-click the image to switch from frame selection to content selection.',hint3:'Double-click the image — the selection handles change colour (brown/orange) to indicate content is selected.',
+     correctFeedback:'Content selected. The handles are now brown/orange, indicating you are selecting the image content, not the frame. Moving now repositions only the image.',
+     incorrectFeedback:'Double-click the image to select the content inside the frame.',
+     acpContext:'ACP Id-5.1b: The content grabber (the small circle at the image centre) is the fastest way to select content. Hover over the image → the circle appears → click it. This eliminates the double-click step.',gagneEvent:5},
+    {id:3,instruction:'Drag the image to reposition it within the frame. Move it until the subject is well-composed within the crop.',
+     expectedAction:'click',expectedTarget:'drag-content',
+     hint1:'Drag the image with the content selected.',hint2:'With content selected (brown handles), drag the image to reposition it within the frame boundaries.',hint3:'Drag the image → the frame stays fixed → only the image moves within it.',
+     correctFeedback:'Image repositioned. The frame is unchanged — only the crop changed.',
+     incorrectFeedback:'Drag the image to reposition the content within the frame.',
+     acpContext:'ACP Id-5.1b: This is the fundamental "crop" workflow in InDesign. The frame is the crop boundary. The content is independently movable within it. Professional workflow: size the frame first, then reposition content.',gagneEvent:6},
+    {id:4,instruction:'Click outside the frame to deselect. Then single-click the frame to select the frame again (not the content).',
+     expectedAction:'click',expectedTarget:'reselect-frame',
+     hint1:'Click outside the frame first, then single-click to reselect.',hint2:'Click the pasteboard (grey area outside the page) to deselect → then single-click the image frame.',hint3:'Click outside → single-click the frame → blue handles appear (frame selected, not content).',
+     correctFeedback:'Frame reselected. Blue handles = frame selection. Brown/orange handles = content selection.',
+     incorrectFeedback:'Click outside to deselect, then single-click the frame.',
+     acpContext:'ACP Id-5.1b: The handle colour is the reliable indicator: blue = frame selected, brown/orange = content selected. Understanding this distinction is essential for the ACP exam.',gagneEvent:7}
+  ]
+},
+
+'id-5-2a':{
+  id:'id-5-2a',tool:'indesign',domain:5,
+  objective:'5.2a',objectiveText:'Apply transparency, effects, and drop shadows to objects',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'effects',
+  scenario:'Apply a Drop Shadow to a headline text frame, set a blending mode on an image, and use the Effects panel to add an Inner Glow to a pull-quote box.',
+  steps:[
+    {id:1,instruction:'Open the Effects panel. Window → Effects (Ctrl+Shift+F10 / Cmd+Shift+F10).',
+     expectedAction:'menu-click',expectedTarget:'window-effects',
+     hint1:'Go to Window → Effects.',hint2:'Window → Effects (Ctrl+Shift+F10).',hint3:'Window → Effects opens the Effects panel.',
+     correctFeedback:'Effects panel open. It shows Fill, Stroke, Text, and Object rows for the selected object with their individual opacity and blending settings.',
+     incorrectFeedback:'Go to Window → Effects.',
+     acpContext:'ACP Id-5.2a: The Effects panel in InDesign controls opacity and blending per object attribute (Fill, Stroke, Text, or the whole Object). This is more granular than Photoshop — you can make just the fill transparent while keeping the stroke opaque.',gagneEvent:3},
+    {id:2,instruction:'Apply a Drop Shadow to the headline text frame. Select it, then click the fx button in the Effects panel and choose Drop Shadow.',
+     expectedAction:'click',expectedTarget:'drop-shadow-btn',
+     hint1:'Look for the fx button in the Effects panel.',hint2:'Select the text frame → Effects panel → fx button → Drop Shadow.',hint3:'Select the frame → Effects panel → fx button (at panel bottom) → Drop Shadow → the Effects dialog opens.',
+     correctFeedback:'Drop Shadow dialog open. Set the angle, distance, blur, and opacity to your specification.',
+     incorrectFeedback:'Click the fx button in the Effects panel and choose Drop Shadow.',
+     acpContext:'ACP Id-5.2a: The fx button in the Effects panel gives access to all InDesign effects: Drop Shadow, Inner Shadow, Outer Glow, Inner Glow, Bevel and Emboss, Satin, Basic Feather, Directional Feather, Gradient Feather.',gagneEvent:6},
+    {id:3,instruction:'Set the Drop Shadow: Distance 3mm, Angle 135°, Size (blur) 2mm, Opacity 60%. Click OK.',
+     expectedAction:'click',expectedTarget:'shadow-ok',
+     hint1:'Set the values in the Drop Shadow dialog.',hint2:'Distance: 3mm → Angle: 135° → Size: 2mm → Opacity: 60% → OK.',hint3:'Drop Shadow dialog → Distance: 3mm, Angle: 135, Size: 2mm, Opacity: 60% → OK.',
+     correctFeedback:'Drop Shadow applied. It appears in the Effects panel as an active effect on the object.',
+     incorrectFeedback:'Set the Drop Shadow values and click OK.',
+     acpContext:'ACP Id-5.2a: InDesign effects are live — double-click the effect name in the Effects panel to reopen and edit. Check the Preview checkbox in the dialog to see changes before committing.',gagneEvent:7},
+    {id:4,instruction:'Set a blending mode on an image. Select an image frame. In the Effects panel, change the Blending Mode dropdown from Normal to Multiply.',
+     expectedAction:'select',expectedTarget:'blend-mode',expectedValue:'multiply',matchType:'contains',
+     hint1:'Select an image frame.',hint2:'Effects panel → Blending Mode dropdown (top-left, shows "Normal") → Multiply.',hint3:'Select image frame → Effects panel → Normal dropdown → Multiply.',
+     correctFeedback:'Multiply blending mode applied. The image now interacts with layers below it — white areas become transparent, darker areas multiply.',
+     incorrectFeedback:'Select the image and change the blending mode to Multiply in the Effects panel.',
+     acpContext:'ACP Id-5.2a: Blending modes in InDesign match Photoshop. Multiply (darkens), Screen (lightens), Overlay (contrast), Soft Light (gentle overlay). Useful for logos on coloured backgrounds.',gagneEvent:7},
+    {id:5,instruction:'Clear effects from an object. Select the pull-quote box. Effects panel → fx → Clear Effects. This removes all applied effects at once.',
+     expectedAction:'click',expectedTarget:'clear-effects',
+     hint1:'Find the Clear Effects option.',hint2:'Select the object → Effects panel → fx button → Clear Effects.',hint3:'Select frame → Effects panel → fx → Clear Effects → all effects removed.',
+     correctFeedback:'All effects cleared from the object. It returns to its base appearance.',
+     incorrectFeedback:'Click the fx button and choose Clear Effects.',
+     acpContext:'ACP Id-5.2a: Clear Effects removes all applied effects but preserves transparency and blending mode settings. To also reset those: Effects panel → click the trash icon while holding Alt.',gagneEvent:8}
+  ]
+},
+
+'id-5-3a':{
+  id:'id-5-3a',tool:'indesign',domain:5,
+  objective:'5.3a',objectiveText:'Create shapes and apply corner effects',
+  bloomsLevel:'Apply',estimatedMinutes:6,uiType:'shapes',
+  scenario:'Draw a rounded-rectangle pull-quote box, apply a specific corner effect, then convert a rectangle to a different shape using the Pathfinder panel.',
+  steps:[
+    {id:1,instruction:'Draw a rectangle. Press M (Rectangle tool) and drag a rectangle on the page.',
+     expectedAction:'tool-select',expectedTarget:'rect-tool',
+     hint1:'Press M for the Rectangle tool.',hint2:'Press M → drag a rectangle.',hint3:'Press M → drag a rectangle on the page.',
+     correctFeedback:'Rectangle drawn. Corner effects and shape conversion start from a basic rectangle.',
+     incorrectFeedback:'Press M for the Rectangle tool and draw a rectangle.',
+     acpContext:'ACP Id-5.3a: InDesign\'s shape tools: Rectangle (M), Ellipse (L), Polygon. Press M or L and click (no drag) for exact dimensions. The Polygon tool has a star option via double-click.',gagneEvent:4},
+    {id:2,instruction:'Apply corner effects. Object → Corner Options. Set all corners to Rounded, size 5mm.',
+     expectedAction:'menu-click',expectedTarget:'corner-options',
+     hint1:'Go to Object → Corner Options.',hint2:'Object → Corner Options → set type to Rounded, size 5mm.',hint3:'Object → Corner Options → all corners: Rounded → Size: 5mm → OK.',
+     correctFeedback:'Rounded corners applied. The rectangle now has 5mm rounded corners.',
+     incorrectFeedback:'Go to Object → Corner Options.',
+     acpContext:'ACP Id-5.3a: Corner Options: None, Fancy, Bevel, Inset, Inverse Rounded, Rounded. You can set different options per corner using the chain-link icon in the dialog. Live preview via the Preview checkbox.',gagneEvent:6},
+    {id:3,instruction:'Change one corner to a different style. In Corner Options, unlink the corners. Set the top-left corner to Bevel.',
+     expectedAction:'click',expectedTarget:'unlink-corners',
+     hint1:'In Corner Options, click the chain link to unlink corners.',hint2:'Corner Options → click chain link to unlink → top-left: Bevel → OK.',hint3:'Object → Corner Options → unlink icon → top-left dropdown: Bevel → OK.',
+     correctFeedback:'Mixed corner effects applied. Top-left is bevelled; others remain rounded.',
+     incorrectFeedback:'Click the chain link in Corner Options to unlink corners, then set top-left to Bevel.',
+     acpContext:'ACP Id-5.3a: Unlinked corners allow per-corner style variations — useful for design elements that need asymmetric corner treatments.',gagneEvent:6},
+    {id:4,instruction:'Convert to a different shape using Pathfinder. Open Window → Object & Layout → Pathfinder. Click the Triangle button.',
+     expectedAction:'menu-click',expectedTarget:'window-pathfinder-id',
+     hint1:'Go to Window → Object & Layout.',hint2:'Window → Object & Layout → Pathfinder.',hint3:'Window → Object & Layout → Pathfinder → click a shape button to convert.',
+     correctFeedback:'Pathfinder panel open. The Convert Shape section at the bottom converts rectangles to triangles, circles, polygons, and other shapes.',
+     incorrectFeedback:'Go to Window → Object & Layout → Pathfinder.',
+     acpContext:'ACP Id-5.3a: InDesign\'s Pathfinder panel has two sections: Pathfinder (combine shapes like Illustrator) and Convert Shape (change the shape type of an existing frame). The converted frame retains its content.',gagneEvent:7}
+  ]
+},
+
+'id-5-5a':{
+  id:'id-5-5a',tool:'indesign',domain:5,
+  objective:'5.5',objectiveText:'Use Text-to-Image and Generative Expand — Adobe Firefly AI',
+  bloomsLevel:'Apply',estimatedMinutes:7,uiType:'gen-expand',
+  scenario:'Generate a full-bleed magazine background image from a text prompt using Text-to-Image. Then use Generative Expand to extend a placed photograph beyond its original boundaries to fill a wider frame.',
+  steps:[
+    {id:1,instruction:'Open Text-to-Image. Draw an image frame on the page. With it selected, go to Object → Generate Image, or click the Generate button in the contextual taskbar.',
+     expectedAction:'menu-click',expectedTarget:'generate-image',
+     hint1:'Select the empty image frame.',hint2:'Object → Generate Image, or click Generate in the contextual taskbar.',hint3:'Select empty frame → Object → Generate Image → the AI prompt panel opens.',
+     correctFeedback:'Text-to-Image panel open. Enter a text prompt to describe the image to generate.',
+     incorrectFeedback:'Go to Object → Generate Image with an empty frame selected.',
+     acpContext:'ACP Id-5.5: Text-to-Image in InDesign uses Adobe Firefly. The generated image fills the frame and is placed as a linked asset — it can be regenerated from the same prompt.',gagneEvent:4},
+    {id:2,instruction:'Enter a prompt: "aerial view of a mountain range, golden hour lighting, wide format". Click Generate.',
+     expectedAction:'input',expectedTarget:'gen-img-prompt',expectedValue:'mountain',matchType:'contains',
+     hint1:'Type your description in the prompt field.',hint2:'Include subject, lighting, and composition details in the prompt.',hint3:'Prompt: "aerial view of a mountain range, golden hour lighting, wide format" → Generate.',
+     correctFeedback:'Prompt entered. InDesign generates 4 variations using Firefly.',
+     incorrectFeedback:'Type a prompt including "mountain" and click Generate.',
+     acpContext:'ACP Id-5.5: Effective Text-to-Image prompts for publication use include: subject, lighting (golden hour, studio, overcast), composition (wide, portrait, close-up), and mood (serene, dramatic, vibrant).',gagneEvent:6},
+    {id:3,instruction:'Select the best variation and click Place. The generated image fills the frame.',
+     expectedAction:'click',expectedTarget:'place-generated-img',
+     hint1:'Four variations appear. Click the best one.',hint2:'Click a variation thumbnail → click Place (or double-click) → the image fills the frame.',hint3:'Click best variation → Place → image placed in the frame as a linked file.',
+     correctFeedback:'Generated image placed. It appears in the frame and in the Links panel as a Firefly-generated asset.',
+     incorrectFeedback:'Click the best variation and click Place.',
+     acpContext:'ACP Id-5.5: Generated images appear in the Links panel. They can be regenerated from the same frame, exported to Creative Cloud Libraries, or replaced with a placed photograph.',gagneEvent:7},
+    {id:4,instruction:'Use Generative Expand. Select a placed photograph. Resize the FRAME larger than the image (handles appear). Then click "Generative Expand" in the contextual taskbar.',
+     expectedAction:'click',expectedTarget:'generative-expand',
+     hint1:'Select a placed image and make the frame larger than the image content.',hint2:'Resize the frame beyond the image boundaries → click Generative Expand in the taskbar.',hint3:'Frame selected → drag frame handle to make frame larger → Generative Expand button appears → click it.',
+     correctFeedback:'Generative Expand fills the empty areas of the frame with AI-generated content that seamlessly matches the original photograph.',
+     incorrectFeedback:'Resize the frame larger than the image, then click Generative Expand.',
+     acpContext:'ACP Id-5.5: Generative Expand extends images seamlessly — the AI analyses the image edges and generates matching content. Essential for repurposing images to different aspect ratios without recomposing the shot.',gagneEvent:7},
+    {id:5,instruction:'Choose the best Generative Expand variation from the 4 options in the contextual taskbar, then click Accept.',
+     expectedAction:'click',expectedTarget:'accept-expand',
+     hint1:'Variation thumbnails appear in the taskbar or panel.',hint2:'Click the best variation → click Accept to finalise.',hint3:'Click the best variation thumbnail → Accept → the expanded image replaces the placeholder.',
+     correctFeedback:'Generative Expand accepted. The image now fills the larger frame seamlessly.',
+     incorrectFeedback:'Select the best expansion variation and click Accept.',
+     acpContext:'ACP Id-5.5: Generative Expand is the InDesign equivalent of Photoshop\'s Generative Fill in expansion mode. Both use Adobe Firefly and produce results that blend with original content.',gagneEvent:8}
+  ]
+},
+
+'id-5-mc':{
+  id:'id-5-mc',tool:'indesign',domain:5,
+  objective:'5.1–5.5',objectiveText:'Domain 5 knowledge check',
+  bloomsLevel:'Understand',estimatedMinutes:7,uiType:'mc',
+  questions:[
+    {q:'When you double-click an image in InDesign, what do you select?',options:['The entire page','The image frame (container)','The image content inside the frame','The text frame behind the image'],correct:2,explanation:'Double-clicking an image selects the content inside the frame (indicated by brown/orange handles). Single-clicking selects the frame itself (blue handles). This two-level selection model is fundamental to InDesign\'s frame-based approach.',acpObj:'Id-5.1b'},
+    {q:'Which fitting option fills a frame completely with no empty space but may crop the image?',options:['Fit Content Proportionally','Fit Frame to Content','Fill Frame Proportionally','Center Content'],correct:2,explanation:'"Fill Frame Proportionally" scales the image until it fills the entire frame — no white gaps. Some edges may be cropped. "Fit Content Proportionally" shows the whole image but may leave gaps at the top/bottom or sides.',acpObj:'Id-5.1a'},
+    {q:'In InDesign\'s Effects panel, you can set opacity independently for the Fill, Stroke, and Text attributes of the same object. This means:',options:['You can only apply one opacity to the whole object','The fill can be transparent while the stroke remains fully opaque','Effects only apply to image frames','Blending modes only work on text'],correct:1,explanation:'InDesign\'s Effects panel allows per-attribute opacity and blending. This is more flexible than Photoshop\'s layer-level opacity — you can have a solid stroke on a semi-transparent filled box in a single object.',acpObj:'Id-5.2a'},
+    {q:'What is the purpose of Generative Expand in InDesign?',options:['It generates new text content for empty text frames','It resizes the document to fit the content','It fills the empty areas of a frame when you enlarge the frame beyond the original image boundaries, generating matching content seamlessly','It applies a gradient to the edges of an image'],correct:2,explanation:'Generative Expand uses Adobe Firefly to fill the space when you enlarge an image frame beyond the original image. The AI analyses the edge content and generates new imagery that blends seamlessly — allowing aspect ratio changes without reshooting.',acpObj:'Id-5.5'},
+    {q:'Which InDesign corner effect creates a flat angled cut across the corner?',options:['Rounded','Inset','Bevel','Fancy'],correct:2,explanation:'"Bevel" cuts the corner at a flat 45° angle — a diagonal cut. "Rounded" creates a smooth curve. "Inset" creates an inward scallop. "Fancy" creates an ornate curved inward cut.',acpObj:'Id-5.3a'},
+    {q:'The fx button in the Effects panel allows you to apply which types of effects? (Choose the most complete answer)',options:['Drop Shadow only','Drop Shadow and Outer Glow only','Drop Shadow, Inner Shadow, Outer Glow, Inner Glow, Bevel and Emboss, Satin, Feather effects','Only Feather and transparency effects'],correct:2,explanation:'The fx button provides access to all InDesign live effects: Drop Shadow, Inner Shadow, Outer Glow, Inner Glow, Bevel and Emboss, Satin, Basic Feather, Directional Feather, and Gradient Feather. All are non-destructive and editable.',acpObj:'Id-5.2a'}
+  ]
+}
+};
+
+/* ═══ ENGINE (same pattern throughout) ══════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[],mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array((task.steps||[]).length).fill(null);mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(t){
+  const aiTag=t.objective==='5.5'?'<span class="ai-badge" style="margin-left:.4rem;">✦ AI 2025</span>':'';
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#00C896;border-color:rgba(0,200,150,.3);background:rgba(0,200,150,.08);">Id-${t.objective}</span>${aiTag}
+      <span class="badge badge-id">InDesign</span>
+      <span class="badge badge-live">${t.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${t.estimatedMinutes} min</span>
+    </div>
+    <h2>${t.objectiveText}</h2>
+    <div class="task-scenario">${t.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+function renderUI(t){
+  if(t.uiType==='mc'){document.getElementById('adobe-sim').innerHTML='';return;}
+  const map={'image-frames':imageFramesUI,'content-frame':contentFrameUI,'effects':effectsUI,'shapes':shapesUI,'gen-expand':genExpandUI};
+  document.getElementById('adobe-sim').innerHTML=map[t.uiType]?map[t.uiType]():'';
+}
+
+function idShell(menus,tools,canvas,panels){
+  return`<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Id</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function imageFramesUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('file-place-img')">File</span>
+     <span class="menu-item" onclick="doMenu('fill-frame-proportionally')">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-frame" onclick="doTool('frame-tool')" title="Frame (F)">⊠</div>
+     <div class="tool-btn">▭</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:6px;padding:.5rem;">
+      <div id="empty-frame" style="width:160px;height:110px;border:0.5px solid rgba(0,100,200,.4);position:relative;cursor:pointer;" onclick="doMenu('file-place-img')">
+        <div id="x-crosshair" style="position:absolute;inset:0;">
+          <div style="position:absolute;left:0;right:0;top:50%;height:0.5px;background:rgba(0,100,200,.3);"></div>
+          <div style="position:absolute;top:0;bottom:0;left:50%;width:0.5px;background:rgba(0,100,200,.3);"></div>
+        </div>
+        <div id="placed-img" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#6B8CAE,#8AAABF,#4A6A8A);"></div>
+        <div id="unfitted-label" style="display:none;position:absolute;bottom:2px;left:3px;font-size:7px;color:#888;">image placed — not fitted</div>
+        <div id="fitted-label" style="display:none;position:absolute;bottom:2px;left:3px;font-size:7px;color:#00C896;">fill frame ✓</div>
+      </div>
+      <div id="auto-fit-badge" style="display:none;font-size:8px;color:#00C896;text-align:center;">Auto Fit enabled</div>
+    </div>`,
+    `<div class="panel-hdr">Image fitting</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doTool('frame-tool')">F: Rectangle Frame</div>
+       <div class="adj-btn" onclick="doMenu('file-place-img')">File → Place (Ctrl+D)</div>
+       <div class="adj-btn" onclick="doMenu('fill-frame-proportionally')">Right-click → Fitting → Fill Frame Proportionally</div>
+       <div class="adj-btn" onclick="doAction('auto-fit')">Control bar: Auto Fit ✓</div>
+       <div class="adj-btn" onclick="doMenu('fit-frame-to-content')">Object → Fitting → Fit Frame to Content</div>
+     </div>`
+  );
+}
+
+function contentFrameUI(){
+  return idShell(
+    `<span class="menu-item">File</span><span class="menu-item">Object</span>`,
+    `<div class="tool-btn active" id="tb-sel" onclick="doTool('selection-tool')" title="Selection (V)">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn" style="font-weight:700;font-size:12px;">T</div>`,
+    `<div class="adobe-canvas">
+      <div class="id-page" style="width:200px;height:150px;display:flex;align-items:center;justify-content:center;position:relative;">
+        <div id="img-frame-outer" style="width:140px;height:100px;border:0.5px solid #31A8FF;position:relative;overflow:hidden;cursor:pointer;" onclick="doAction('content-grabber')">
+          <div id="photo-content" style="width:200px;height:140px;background:linear-gradient(135deg,#6B8CAE 0%,#8AAABF 30%,#4A6A8A 60%,#3A5A7A 100%);position:absolute;top:-20px;left:-30px;transition:all .5s;cursor:pointer;" onclick="doAction('drag-content')"></div>
+          <div id="frame-handles" style="position:absolute;inset:0;pointer-events:none;">
+            <div style="position:absolute;top:-2px;left:-2px;width:6px;height:6px;background:#31A8FF;border-radius:1px;"></div>
+            <div style="position:absolute;top:-2px;right:-2px;width:6px;height:6px;background:#31A8FF;border-radius:1px;"></div>
+            <div style="position:absolute;bottom:-2px;left:-2px;width:6px;height:6px;background:#31A8FF;border-radius:1px;"></div>
+            <div style="position:absolute;bottom:-2px;right:-2px;width:6px;height:6px;background:#31A8FF;border-radius:1px;"></div>
+          </div>
+          <div id="content-handles" style="display:none;position:absolute;inset:0;pointer-events:none;">
+            <div style="position:absolute;top:-2px;left:-2px;width:6px;height:6px;background:#FF9A00;border-radius:1px;"></div>
+            <div style="position:absolute;top:-2px;right:-2px;width:6px;height:6px;background:#FF9A00;border-radius:1px;"></div>
+            <div style="position:absolute;bottom:-2px;left:-2px;width:6px;height:6px;background:#FF9A00;border-radius:1px;"></div>
+            <div style="position:absolute;bottom:-2px;right:-2px;width:6px;height:6px;background:#FF9A00;border-radius:1px;"></div>
+          </div>
+          <div id="content-grabber-circle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:rgba(255,154,0,.3);border:1px solid #FF9A00;pointer-events:none;"></div>
+        </div>
+        <div id="selection-mode-label" style="position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;color:#31A8FF;">Frame selected (blue)</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Frame vs content</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doTool('selection-tool')">V: Select frame (blue)</div>
+       <div class="adj-btn" onclick="doAction('content-grabber')">Double-click: select content (orange)</div>
+       <div class="adj-btn" onclick="doAction('drag-content')">Drag content to reposition</div>
+       <div class="adj-btn" onclick="doAction('reselect-frame')">Click outside → reselect frame</div>
+     </div>`
+  );
+}
+
+function effectsUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('window-effects')">Window</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;flex-wrap:wrap;align-content:center;justify-content:center;">
+      <div id="headline-frame" style="width:130px;height:30px;background:rgba(255,154,0,.1);border:0.5px solid rgba(255,154,0,.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#1A1A2E;cursor:pointer;transition:all .4s;position:relative;" onclick="doAction('drop-shadow-btn')">
+        HEADLINE TEXT
+        <div id="shadow-effect" style="display:none;position:absolute;inset:0;box-shadow:2px 2px 4px rgba(0,0,0,.3);border-radius:0;"></div>
+      </div>
+      <div id="img-blend-frame" style="width:130px;height:80px;background:linear-gradient(135deg,#6B8CAE,#4A6A8A);cursor:pointer;transition:all .4s;position:relative;" onclick="doSelect('blend-mode','multiply')">
+        <div id="blend-overlay" style="display:none;position:absolute;inset:0;background:rgba(255,100,50,.4);mix-blend-mode:multiply;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Effects</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('window-effects')">Window → Effects (Ctrl+Shift+F10)</div>
+       <div class="adj-btn" onclick="doAction('drop-shadow-btn')">fx → Drop Shadow</div>
+       <div class="adj-btn" onclick="doAction('shadow-ok')">Set values → OK</div>
+       <div class="prop-row" style="margin-top:4px;"><span class="prop-label">Blend mode</span>
+         <select class="prop-select" onchange="doSelect('blend-mode',this.value.toLowerCase())">
+           <option value="normal">Normal</option>
+           <option value="multiply">Multiply</option>
+           <option value="screen">Screen</option>
+           <option value="overlay">Overlay</option>
+         </select></div>
+       <div class="adj-btn" onclick="doAction('clear-effects')">fx → Clear Effects</div>
+     </div>`
+  );
+}
+
+function shapesUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('corner-options')">Object</span>
+     <span class="menu-item" onclick="doMenu('window-pathfinder-id')">Window</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-rect" onclick="doTool('rect-tool')" title="Rectangle (M)">▭</div>
+     <div class="tool-btn" title="Ellipse (L)">○</div>`,
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;flex-wrap:wrap;align-content:center;justify-content:center;">
+      <div id="shape-rect" style="width:100px;height:70px;background:rgba(0,200,150,.15);border:1px solid #00C896;transition:all .4s;cursor:pointer;" onclick="doMenu('corner-options')"></div>
+      <div id="shape-result" style="display:none;width:70px;height:70px;background:rgba(0,200,150,.15);border:1px solid #00C896;clip-path:polygon(50% 0%,100% 100%,0% 100%);"></div>
+    </div>`,
+    `<div class="panel-hdr">Shapes &amp; corners</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doTool('rect-tool')">M: Rectangle tool</div>
+       <div class="adj-btn" onclick="doMenu('corner-options')">Object → Corner Options</div>
+       <div class="adj-btn" onclick="doAction('unlink-corners')">Unlink corners → per-corner style</div>
+       <div class="adj-btn" onclick="doMenu('window-pathfinder-id')">Window → Object &amp; Layout → Pathfinder</div>
+     </div>`
+  );
+}
+
+function genExpandUI(){
+  return idShell(
+    `<span class="menu-item" onclick="doMenu('generate-image')">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-frame-gen" onclick="doTool('frame-tool')" title="Frame (F)">⊠</div>`,
+    `<div class="adobe-canvas" style="flex-direction:column;gap:.5rem;padding:.5rem;">
+      <div id="gen-frame" style="width:190px;height:110px;border:0.5px solid rgba(0,100,200,.4);position:relative;cursor:pointer;overflow:hidden;" onclick="doMenu('generate-image')">
+        <div id="gen-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;">Empty frame — click to generate</div>
+        <div id="gen-result" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#1A3A5A 0%,#2A5A3A 30%,#4A7A2A 60%,#8A9A6A 100%);"></div>
+        <div id="expand-zone" style="display:none;position:absolute;right:-30px;top:0;bottom:0;width:30px;background:rgba(155,142,240,.15);border:0.5px dashed #9B8EF0;"></div>
+      </div>
+      <div id="gen-prompt-bar" style="display:none;background:#1A0F3D;border:0.5px solid rgba(155,142,240,.3);border-radius:5px;padding:5px 8px;width:190px;">
+        <div style="font-size:8px;color:#9B8EF0;margin-bottom:3px;">Generate Image ✦</div>
+        <input id="gen-img-input" style="width:100%;background:transparent;border:none;color:#E0D8FF;font-size:9px;outline:none;" placeholder="Describe image…" oninput="doInput('gen-img-prompt',this.value.toLowerCase())">
+        <button onclick="doAction('place-generated-img')" style="margin-top:3px;padding:2px 8px;background:#7B68EE;color:#FFF;border:none;border-radius:3px;font-size:8px;cursor:pointer;">Generate</button>
+      </div>
+    </div>`,
+    `<div class="panel-hdr" style="background:rgba(155,142,240,.08);">AI — Text-to-Image ✦</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" style="border-color:rgba(155,142,240,.4);color:#9B8EF0;" onclick="doMenu('generate-image')">Object → Generate Image</div>
+       <div class="adj-btn" onclick="doAction('place-generated-img')">Select variation → Place</div>
+       <div class="adj-btn" onclick="doAction('generative-expand')">Resize frame → Generative Expand</div>
+       <div class="adj-btn" onclick="doAction('accept-expand')">Select variation → Accept</div>
+       <div style="margin-top:6px;font-size:9px;color:#888;line-height:1.6;">Powered by Adobe Firefly<br>2025 ACP testable objective</div>
+     </div>`
+  );
+}
+
+/* ═══ EFFECTS MAP ════════════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+function applyEffect(t){
+  const fx={
+    'frame-tool':()=>{document.getElementById('tb-frame')?.classList.add('active');document.getElementById('tb-frame-gen')?.classList.add('active');},
+    'file-place-img':()=>{const p=document.getElementById('placed-img');if(p)p.style.display='block';const x=document.getElementById('x-crosshair');if(x)x.style.display='none';const l=document.getElementById('unfitted-label');if(l)l.style.display='block';},
+    'fill-frame-proportionally':()=>{const l1=document.getElementById('unfitted-label');if(l1)l1.style.display='none';const l2=document.getElementById('fitted-label');if(l2)l2.style.display='block';},
+    'auto-fit':()=>{const b=document.getElementById('auto-fit-badge');if(b)b.style.display='block';},
+    'fit-frame-to-content':()=>{},
+    'selection-tool':()=>{document.getElementById('tb-sel')?.classList.add('active');},
+    'content-grabber':()=>{
+      document.getElementById('frame-handles').style.display='none';
+      document.getElementById('content-handles').style.display='block';
+      document.getElementById('selection-mode-label').textContent='Content selected (orange)';
+      document.getElementById('selection-mode-label').style.color='#FF9A00';
+    },
+    'drag-content':()=>{const p=document.getElementById('photo-content');if(p){p.style.top='-40px';p.style.left='-10px';}},
+    'reselect-frame':()=>{
+      document.getElementById('frame-handles').style.display='block';
+      document.getElementById('content-handles').style.display='none';
+      document.getElementById('selection-mode-label').textContent='Frame selected (blue)';
+      document.getElementById('selection-mode-label').style.color='#31A8FF';
+    },
+    'window-effects':()=>{},
+    'drop-shadow-btn':()=>{},
+    'shadow-ok':()=>{const s=document.getElementById('shadow-effect');if(s)s.style.display='block';const h=document.getElementById('headline-frame');if(h)h.style.boxShadow='2px 2px 5px rgba(0,0,0,.3)';},
+    'blend-mode':()=>{const o=document.getElementById('blend-overlay');if(o)o.style.display='block';},
+    'clear-effects':()=>{const h=document.getElementById('headline-frame');if(h)h.style.boxShadow='none';},
+    'rect-tool':()=>{document.getElementById('tb-rect')?.classList.add('active');},
+    'corner-options':()=>{const r=document.getElementById('shape-rect');if(r)r.style.borderRadius='8px';},
+    'unlink-corners':()=>{const r=document.getElementById('shape-rect');if(r){r.style.borderTopLeftRadius='2px';r.style.borderTopRightRadius='8px';r.style.borderBottomLeftRadius='8px';r.style.borderBottomRightRadius='8px';}},
+    'window-pathfinder-id':()=>{const r=document.getElementById('shape-rect');if(r)r.style.display='none';document.getElementById('shape-result').style.display='block';},
+    'generate-image':()=>{const p=document.getElementById('gen-prompt-bar');if(p)p.style.display='block';},
+    'gen-img-prompt':()=>{},
+    'place-generated-img':()=>{const r=document.getElementById('gen-result');if(r)r.style.display='block';const p=document.getElementById('gen-placeholder');if(p)p.style.display='none';document.getElementById('gen-prompt-bar').style.display='none';},
+    'generative-expand':()=>{const z=document.getElementById('expand-zone');if(z)z.style.display='block';},
+    'accept-expand':()=>{const r=document.getElementById('gen-result');if(r){r.style.right='-30px';r.style.width='calc(100% + 30px)';}const z=document.getElementById('expand-zone');if(z)z.style.display='none';}
+  };
+  if(fx[t])fx[t]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask||currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value||'').toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">Domain 5 knowledge check · ${qs.length} questions</div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`<div onclick="selectMC(${qi},${oi},${q.correct})" id="mc-opt-${qi}-${oi}" style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;">${opt}</div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;line-height:1.5;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()">Submit answers</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{el.style.borderColor='var(--color-border-tertiary)';el.style.background='var(--surface)';el.style.color='var(--text-secondary)';});
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(0,200,150,.4)';sel.style.background='rgba(0,200,150,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}el.style.cursor='default';el.style.pointerEvents='none';});
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation+` <span style="font-family:var(--font-mono);font-size:.7rem;opacity:.7;">${q.acpObj}</span>`;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const id=currentTask.id.replace(/-/g,'');const sc=document.getElementById('sc-'+id);if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+id);if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#00C896'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#00C896;">Id-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button><a href="../index.html" class="btn btn-primary btn-sm" style="text-decoration:none;background:#00C896;border-color:#00C896;color:#000;">Id overview →</a></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('id-5-1a');ACPProgress.init();});
+</script>
+</body>
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ai · Domain 2: Document Management | ACP 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/global.css">
+<style>
+:root{--ai:#FF9A00;}
+.domain-hero{background:linear-gradient(135deg,var(--bg-1) 0%,#2A1A00 100%);padding:2rem 0;border-bottom:0.5px solid var(--border);}
+.domain-hero h1{font-size:1.6rem;margin-bottom:.3rem;}
+.domain-meta{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;}
+.sim-layout{display:grid;grid-template-columns:255px 1fr;gap:1.5rem;align-items:start;padding:1.5rem 0;}
+.task-list{position:sticky;top:72px;}
+.task-list-title{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:.5rem;}
+.task-item{display:flex;align-items:center;gap:.55rem;padding:.55rem .8rem;border-radius:var(--radius-md);cursor:pointer;transition:var(--transition);border:0.5px solid transparent;margin-bottom:.2rem;}
+.task-item:hover{background:var(--surface);border-color:var(--border);}
+.task-item.active{background:var(--surface);border-color:rgba(255,154,0,.4);}
+.task-icon{width:26px;height:26px;border-radius:5px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;font-family:var(--font-mono);color:var(--text-tertiary);}
+.task-icon.done{background:rgba(0,214,143,.15);color:var(--correct);}
+.task-info{flex:1;min-width:0;}
+.task-obj{font-family:var(--font-mono);font-size:.68rem;color:var(--text-tertiary);}
+.task-name{font-size:.78rem;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.task-score{font-size:.68rem;color:var(--text-tertiary);margin-left:auto;}
+.task-header h2{font-size:1.1rem;margin:.35rem 0 .45rem;}
+.task-scenario{font-size:.875rem;color:var(--text-secondary);line-height:1.65;padding:.7rem .9rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--ai);margin-bottom:.875rem;}
+.task-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem;}
+.mode-bar{display:flex;gap:.5rem;margin-bottom:1rem;}
+.mode-btn{flex:1;padding:.45rem;border-radius:var(--radius-md);font-size:.78rem;font-weight:500;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);transition:var(--transition);}
+.mode-btn.active{background:var(--ai);color:#000;border-color:var(--ai);}
+
+/* Illustrator UI chrome */
+.adobe-sim{background:#323232;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;border:0.5px solid rgba(255,255,255,.06);}
+.adobe-menubar{background:#3D3D3D;padding:5px 12px;display:flex;align-items:center;gap:2px;border-bottom:1px solid #1A1A1A;}
+.adobe-app-icon{font-size:13px;font-weight:700;color:#FF9A00;padding:0 8px;font-family:var(--font-mono);}
+.menu-item{padding:4px 10px;font-size:11px;color:#CCC;cursor:pointer;border-radius:3px;transition:background .1s;}
+.menu-item:hover{background:#555;color:#FFF;}
+.adobe-body{display:grid;grid-template-columns:44px 1fr 230px;min-height:360px;}
+.adobe-tools{background:#323232;border-right:1px solid #1A1A1A;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;}
+.tool-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font-size:13px;color:#AAA;border:none;background:transparent;transition:background .12s;}
+.tool-btn:hover{background:#444;}
+.tool-btn.active{background:rgba(255,154,0,.2);color:#FF9A00;}
+.tool-btn.highlight{border:1.5px solid #FF9A00;animation:pulse-ring 1.2s infinite;}
+.tool-sep{width:28px;height:1px;background:#444;margin:3px 0;}
+.adobe-canvas{background:#666;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.artboard{background:#FFF;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.5);}
+.artboard-label{position:absolute;top:-16px;left:0;font-size:9px;color:#AAA;font-family:var(--font-mono);}
+.artboard.highlight-ab{outline:2px solid #FF9A00;outline-offset:2px;}
+.adobe-panels{background:#323232;border-left:1px solid #1A1A1A;display:flex;flex-direction:column;font-size:11px;}
+.panel-hdr{background:#333;padding:6px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#999;cursor:pointer;border-bottom:1px solid #1A1A1A;display:flex;justify-content:space-between;}
+.panel-hdr:hover{background:#3A3A3A;}
+.panel-body{padding:6px 8px;}
+.prop-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prop-label{font-size:10px;color:#999;}
+.prop-input{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 5px;border-radius:3px;font-family:var(--font-mono);}
+.prop-input.highlight{border-color:#FF9A00;box-shadow:0 0 0 2px rgba(255,154,0,.2);}
+.prop-select{background:#1A1A1A;border:0.5px solid #444;color:#CCC;font-size:10px;padding:3px 4px;border-radius:3px;width:100%;cursor:pointer;}
+.adj-btn{padding:5px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;text-align:center;transition:background .1s;margin-bottom:3px;width:100%;}
+.adj-btn:hover{background:#4A4A4A;color:#FFF;}
+.adj-btn.highlight{border-color:#FF9A00;color:#FF9A00;}
+.layer-row{display:flex;align-items:center;gap:5px;padding:4px 5px;border-radius:3px;cursor:pointer;margin-bottom:1px;border:1px solid transparent;}
+.layer-row:hover{background:#3A3A3A;}
+.layer-row.selected{background:rgba(255,154,0,.15);border-color:rgba(255,154,0,.3);}
+.layer-thumb{width:24px;height:18px;border-radius:2px;border:1px solid #555;flex-shrink:0;}
+.layer-name{flex:1;color:#CCC;font-size:10px;}
+
+/* Dialog */
+.dialog-box{background:#3D3D3D;border-radius:6px;width:100%;max-width:340px;border:0.5px solid #555;box-shadow:0 16px 50px rgba(0,0,0,.8);}
+.dialog-title{background:#333;padding:10px 14px;font-size:11px;font-weight:600;color:#EEE;border-bottom:1px solid #1A1A1A;border-radius:6px 6px 0 0;}
+.dialog-body{padding:12px 14px;}
+.dialog-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.dialog-label{font-size:10px;color:#AAA;min-width:70px;}
+.dialog-input{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:10px;padding:4px 7px;border-radius:3px;flex:1;font-family:var(--font-mono);}
+.dialog-input.highlight{border-color:#FF9A00;box-shadow:0 0 0 2px rgba(255,154,0,.2);}
+.dialog-select{background:#1A1A1A;border:0.5px solid #555;color:#EEE;font-size:10px;padding:4px 6px;border-radius:3px;flex:1;cursor:pointer;}
+.dialog-select.highlight{border-color:#FF9A00;}
+.dialog-footer{padding:8px 14px;background:#2B2B2B;border-top:1px solid #1A1A1A;border-radius:0 0 6px 6px;display:flex;justify-content:flex-end;gap:6px;}
+.dialog-btn{padding:5px 16px;border-radius:3px;font-size:10px;font-weight:500;cursor:pointer;border:none;}
+.dialog-btn-ok{background:#FF9A00;color:#000;}
+.dialog-btn-cancel{background:#555;color:#CCC;}
+
+/* Step/feedback/score */
+.step-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;}
+.step-counter{font-size:.78rem;color:var(--text-tertiary);}
+.gagne-tag{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:10px;background:rgba(123,104,238,.15);color:#9B8EF0;border:0.5px solid rgba(123,104,238,.25);margin-bottom:.35rem;}
+.step-instruction{font-size:.9rem;color:var(--color-text-primary);line-height:1.6;margin-bottom:.5rem;}
+.score-report{text-align:center;padding:1.5rem;}
+.score-circle{width:90px;height:90px;border-radius:50%;border:4px solid;margin:0 auto .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-pct{font-size:1.6rem;font-weight:700;}
+.score-lbl{font-size:.72rem;color:var(--text-secondary);}
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.875rem 0;}
+.score-stat-card{background:var(--surface);border-radius:var(--radius-md);padding:.65rem;text-align:center;}
+.score-stat-n{font-size:1.4rem;font-weight:700;display:block;}
+.score-stat-l{font-size:.72rem;color:var(--text-tertiary);}
+.score-actions{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-top:.875rem;}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr;}.task-list{position:static;}}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <span class="nav-logo">ACP 2025</span>
+    <div class="nav-links">
+      <a href="../../index.html" class="nav-link">Home</a>
+      <a href="../index.html" class="nav-link ai active">Illustrator</a>
+      <a href="../../photoshop/index.html" class="nav-link ps">Photoshop</a>
+      <a href="../../indesign/index.html" class="nav-link id">InDesign</a>
+    </div>
+  </div>
+</nav>
+
+<div class="domain-hero">
+  <div class="container">
+    <div class="domain-meta">
+      <span class="badge badge-ai">Illustrator</span>
+      <span class="acp-tag" style="color:var(--ai-orange);border-color:rgba(255,154,0,.3);background:rgba(255,154,0,.08);">Ai · Domain 2</span>
+      <span class="badge badge-live">Live tasks</span>
+    </div>
+    <h1>Document Management</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-top:.3rem;">4 objectives · 7 tasks · Guided &amp; Independent modes · ACP 2025 v29.x</p>
+  </div>
+</div>
+
+<div class="container">
+<div class="sim-layout">
+
+<aside class="task-list">
+  <div class="task-list-title">Domain 2 tasks</div>
+  <div class="task-item active" onclick="loadTask('ai-2-1a')" id="nav-ai21a">
+    <div class="task-icon" id="icon-ai21a">2.1</div>
+    <div class="task-info"><div class="task-obj">Ai-2.1a/b</div><div class="task-name">New document settings &amp; presets</div></div>
+    <div class="task-score" id="sc-ai21a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-2-2a')" id="nav-ai22a">
+    <div class="task-icon" id="icon-ai22a">2.2</div>
+    <div class="task-info"><div class="task-obj">Ai-2.2a</div><div class="task-name">Artboard tool — manage multiple artboards</div></div>
+    <div class="task-score" id="sc-ai22a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-2-3a')" id="nav-ai23a">
+    <div class="task-icon" id="icon-ai23a">2.3</div>
+    <div class="task-info"><div class="task-obj">Ai-2.3a/b</div><div class="task-name">Place assets &amp; Links panel</div></div>
+    <div class="task-score" id="sc-ai23a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-2-4a')" id="nav-ai24a">
+    <div class="task-icon" id="icon-ai24a">2.4</div>
+    <div class="task-info"><div class="task-obj">Ai-2.4a/b</div><div class="task-name">Save &amp; export (.ai, .pdf, .svg)</div></div>
+    <div class="task-score" id="sc-ai24a">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-2-4b')" id="nav-ai24b">
+    <div class="task-icon" id="icon-ai24b">2.4</div>
+    <div class="task-info"><div class="task-obj">Ai-2.4b/c</div><div class="task-name">Export for Screens &amp; Package</div></div>
+    <div class="task-score" id="sc-ai24b">—</div>
+  </div>
+  <div class="task-item" onclick="loadTask('ai-2-mc')" id="nav-ai2mc">
+    <div class="task-icon">MC</div>
+    <div class="task-info"><div class="task-obj">Domain 1–2</div><div class="task-name">Knowledge check</div></div>
+    <div class="task-score" id="sc-ai2mc">—</div>
+  </div>
+  <hr class="divider" style="margin:.875rem 0;">
+  <a href="../index.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:var(--ai-orange);">←</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">← Ai overview</div></div>
+  </a>
+  <a href="d3-workflow.html" class="task-item" style="text-decoration:none;">
+    <div class="task-icon" style="color:var(--ai-orange);">→</div>
+    <div class="task-info"><div class="task-name" style="color:var(--text-tertiary);">Domain 3 →</div></div>
+  </a>
+  <hr class="divider" style="margin:.875rem 0;">
+  <div id="progress-summary"></div>
+</aside>
+
+<main>
+  <div id="task-header" class="task-header"></div>
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-guided" onclick="switchMode('guided')">📚 Guided</button>
+    <button class="mode-btn" id="btn-independent" onclick="switchMode('independent')">🎯 Independent</button>
+  </div>
+  <div id="adobe-sim"></div>
+  <div class="card" style="border-radius:var(--border-radius-lg);">
+    <div id="step-panel"></div>
+    <div id="feedback-area" style="margin-top:.6rem;"></div>
+    <div id="hint-area" style="margin-top:.4rem;"></div>
+    <div id="step-actions" style="margin-top:.7rem;display:flex;gap:.45rem;flex-wrap:wrap;"></div>
+  </div>
+  <div id="score-report" style="display:none;" class="card"></div>
+</main>
+</div>
+</div>
+
+<script src="../../assets/js/scoring.js"></script>
+<script src="../../assets/js/progress.js"></script>
+<script src="../../assets/js/engine.js"></script>
+<script>
+const TASKS = {
+
+'ai-2-1a': {
+  id:'ai-2-1a', tool:'illustrator', domain:2,
+  objective:'2.1a/b', objectiveText:'Set appropriate document settings and create presets',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'new-doc',
+  scenario:'Create a new Illustrator document for a set of 3 social media graphics: Width 1080px, Height 1080px, 3 artboards, colour mode RGB, raster effects 72 ppi. Then save these settings as a preset called "Social Square 1080".',
+  steps:[
+    {id:1,instruction:'Open the New Document dialog. Go to File → New.',
+     expectedAction:'menu-click',expectedTarget:'file-new',
+     hint1:'Go to the File menu.',hint2:'File → New opens the New Document dialog.',hint3:'Click File → New (Ctrl+N / Cmd+N).',
+     correctFeedback:'New Document dialog opened. Configure the settings for a social media document.',
+     incorrectFeedback:'Go to File → New.',
+     acpContext:'ACP Ai-2.1a: The New Document dialog has preset tabs (Print, Web, Mobile, etc.) and a custom settings area.',gagneEvent:3},
+    {id:2,instruction:'Set Width and Height both to 1080. Set the unit to Pixels.',
+     expectedAction:'input',expectedTarget:'doc-width',expectedValue:'1080',matchType:'exact',
+     hint1:'Find the Width and Height fields.',hint2:'Set Width to 1080 and Height to 1080. Change unit to Pixels.',hint3:'Width: 1080, Height: 1080, Units: Pixels.',
+     correctFeedback:'1080×1080 px set — the standard Instagram square format.',
+     incorrectFeedback:'Set both Width and Height to 1080 pixels.',
+     acpContext:'ACP Ai-2.1a: Units matter — pixels for screen, mm or inches for print. The unit setting affects all rulers and measurements in the document.',gagneEvent:6},
+    {id:3,instruction:'Set the number of artboards to 3.',
+     expectedAction:'input',expectedTarget:'num-artboards',expectedValue:'3',matchType:'exact',
+     hint1:'Find the Artboards field in the New Document dialog.',hint2:'There is a number field for artboards — type 3.',hint3:'Artboards field → type 3.',
+     correctFeedback:'3 artboards configured. They will be created side by side, each 1080×1080 px.',
+     incorrectFeedback:'Set the number of artboards to 3.',
+     acpContext:'ACP Ai-2.2a: Multiple artboards in one document allow different layout variants to be designed and exported together — ideal for social media size variants.',gagneEvent:6},
+    {id:4,instruction:'Set Colour Mode to RGB and Raster Effects to 72 ppi (Screen).',
+     expectedAction:'select',expectedTarget:'colour-mode',expectedValue:'rgb',matchType:'exact',
+     hint1:'Find the Colour Mode dropdown.',hint2:'Colour Mode: RGB. Raster Effects: 72 ppi (for screen/web output).',hint3:'Colour Mode dropdown → RGB. Raster Effects dropdown → 72 ppi.',
+     correctFeedback:'RGB colour mode and 72 ppi raster effects set — correct for screen output.',
+     incorrectFeedback:'Set Colour Mode to RGB.',
+     acpContext:'ACP Ai-2.1a: Raster Effects ppi controls the resolution of raster effects (drop shadows, glows) when exported. 72 ppi = screen. 300 ppi = print.',gagneEvent:6},
+    {id:5,instruction:'Save the settings as a preset. Click the Save Document Preset icon (floppy disk) and name it "Social Square 1080".',
+     expectedAction:'input',expectedTarget:'preset-name',expectedValue:'social square 1080',matchType:'contains',
+     hint1:'Look for a save/preset icon in the New Document dialog.',hint2:'Click the floppy disk icon near the preset name field → type the name.',hint3:'Click the save preset icon → name: Social Square 1080 → click OK.',
+     correctFeedback:'Preset saved. It will appear in the Saved tab of the New Document dialog for instant reuse.',
+     incorrectFeedback:'Name the preset "Social Square 1080" and click the save icon.',
+     acpContext:'ACP Ai-2.1b: Presets save time for recurring project types. Teams share presets to ensure consistent document setup across all projects.',gagneEvent:7},
+    {id:6,instruction:'Click Create to generate the document with 3 artboards.',
+     expectedAction:'click',expectedTarget:'create-btn',
+     hint1:'The Create button is at the bottom-right of the New Document dialog.',hint2:'Click Create to open the new document.',hint3:'Click the Create button.',
+     correctFeedback:'Document created with 3 artboards at 1080×1080 px, RGB, 72 ppi.',
+     incorrectFeedback:'Click Create in the New Document dialog.',
+     acpContext:'ACP Ai-2.1a: After creation, artboards can be added, deleted, resized, or rearranged using the Artboard tool (Shift+O).',gagneEvent:7}
+  ]
+},
+
+'ai-2-2a': {
+  id:'ai-2-2a', tool:'illustrator', domain:2,
+  objective:'2.2a', objectiveText:'Manage and work with artboards',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'artboards',
+  scenario:'A document has 3 artboards. Duplicate the first artboard, resize the second to 1200×630px (Facebook), rename both artboards, and rearrange them so Facebook comes first.',
+  steps:[
+    {id:1,instruction:'Activate the Artboard tool. Press Shift+O or find it in the toolbar.',
+     expectedAction:'tool-select',expectedTarget:'artboard-tool',
+     hint1:'Press Shift+O.',hint2:'Press Shift+O or find the Artboard tool in the toolbar (it looks like a rectangle with a cursor).',hint3:'Press Shift+O to select the Artboard tool.',
+     correctFeedback:'Artboard tool active. Click any artboard to select it; drag handles to resize.',
+     incorrectFeedback:'Press Shift+O for the Artboard tool.',
+     acpContext:'ACP Ai-2.2a: The Artboard tool (Shift+O) lets you create, resize, and move artboards. You can also manage artboards via the Artboards panel (Window → Artboards).',gagneEvent:4},
+    {id:2,instruction:'Select Artboard 1 by clicking it. In the Options Bar, click "New Artboard" (or Alt+drag the artboard) to duplicate it.',
+     expectedAction:'click',expectedTarget:'duplicate-artboard',
+     hint1:'Select an artboard with the Artboard tool, then find the duplicate option.',hint2:'With Artboard 1 selected, click the "New Artboard" icon in the Options Bar, or Alt+drag the artboard.',hint3:'Click Artboard 1 → Options Bar "New Artboard" icon (or Alt+drag) → a copy is created.',
+     correctFeedback:'Artboard duplicated. The copy contains the same artwork and settings as the original.',
+     incorrectFeedback:'Click Artboard 1 with the Artboard tool, then click the New Artboard icon or Alt+drag.',
+     acpContext:'ACP Ai-2.2a: Alt+dragging an artboard duplicates both the artboard AND all artwork on it — useful for creating size variants.',gagneEvent:6},
+    {id:3,instruction:'Resize Artboard 2 to 1200×630 px for Facebook. Select it, then type the values in the Options Bar W and H fields.',
+     expectedAction:'input',expectedTarget:'artboard-width',expectedValue:'1200',matchType:'exact',
+     hint1:'Select Artboard 2 with the Artboard tool, then look at the Options Bar.',hint2:'With Artboard 2 selected, find the W (width) field in the Options Bar and type 1200.',hint3:'Artboard tool → click Artboard 2 → W field: 1200 → H field: 630 → press Enter.',
+     correctFeedback:'Artboard 2 resized to 1200×630 px — standard Facebook post format.',
+     incorrectFeedback:'Set the artboard width to 1200 in the Options Bar.',
+     acpContext:'ACP Ai-2.2a: You can also resize artboards in the Artboards panel by double-clicking the artboard entry and editing the dimensions.',gagneEvent:6},
+    {id:4,instruction:'Rename Artboard 2 to "Facebook". Double-click the artboard name in the Artboards panel (Window → Artboards).',
+     expectedAction:'input',expectedTarget:'artboard-name',expectedValue:'facebook',matchType:'contains',
+     hint1:'Open Window → Artboards to see the artboards panel.',hint2:'In the Artboards panel, double-click the artboard name field to rename it.',hint3:'Window → Artboards → double-click the name of Artboard 2 → type "Facebook".',
+     correctFeedback:'Artboard renamed "Facebook". Descriptive names are essential for organised export workflows.',
+     incorrectFeedback:'Double-click the artboard name in the Artboards panel and type "Facebook".',
+     acpContext:'ACP Ai-2.2a: Artboard names are used as filenames when exporting with "Use Artboard Names" — always name artboards before exporting.',gagneEvent:7},
+    {id:5,instruction:'Rearrange artboards in the Artboards panel. Drag "Facebook" to the top of the list so it becomes Artboard 1.',
+     expectedAction:'click',expectedTarget:'reorder-artboard',
+     hint1:'In the Artboards panel, artboards can be dragged to reorder.',hint2:'Click and drag the Facebook artboard row in the Artboards panel to the top of the list.',hint3:'In the Artboards panel, drag the Facebook row above Instagram to make it Artboard 1.',
+     correctFeedback:'Artboards reordered. Facebook is now Artboard 1. The artboard order affects export sequencing.',
+     incorrectFeedback:'Drag the Facebook artboard row to the top of the Artboards panel.',
+     acpContext:'ACP Ai-2.2a: Artboard order in the panel determines the order of exported files (1, 2, 3...). Reorder before exporting for logical file naming.',gagneEvent:7}
+  ]
+},
+
+'ai-2-3a': {
+  id:'ai-2-3a', tool:'illustrator', domain:2,
+  objective:'2.3a/b', objectiveText:'Place assets and use the Links panel',
+  bloomsLevel:'Apply', estimatedMinutes:7, uiType:'place-assets',
+  scenario:'Place a client logo into an Illustrator document as an embedded asset, then place a background texture as a linked asset. Use the Links panel to verify link status and open the original for editing.',
+  steps:[
+    {id:1,instruction:'Place the logo as an embedded file. Go to File → Place. In the Place dialog, UNCHECK "Link".',
+     expectedAction:'menu-click',expectedTarget:'file-place',
+     hint1:'Go to the File menu.',hint2:'File → Place opens the place dialog.',hint3:'File → Place → find the file → uncheck "Link" to embed → click Place.',
+     correctFeedback:'Place dialog opened. Unchecking "Link" will embed the file inside the document.',
+     incorrectFeedback:'Go to File → Place.',
+     acpContext:'ACP Ai-2.3a: Embed = file copies into the document (larger file, no external dependency). Link = reference to original file (smaller, updates automatically if original changes).',gagneEvent:4},
+    {id:2,instruction:'Uncheck "Link" in the Place dialog to embed the file, then click Place.',
+     expectedAction:'click',expectedTarget:'uncheck-link',
+     hint1:'Find the "Link" checkbox in the Place dialog.',hint2:'Uncheck the Link checkbox — this embeds the file rather than linking to it.',hint3:'Uncheck "Link" → click Place → click on the canvas to place.',
+     correctFeedback:'Link unchecked — the logo will be embedded in the document.',
+     incorrectFeedback:'Uncheck the Link checkbox in the Place dialog.',
+     acpContext:'ACP Ai-2.3a: Embedded files are self-contained — safe to share without packaging. Linked files must be included when sharing or packaging the document.',gagneEvent:5},
+    {id:3,instruction:'Now place the background texture as a LINKED file. File → Place again, this time CHECK "Link".',
+     expectedAction:'click',expectedTarget:'check-link',
+     hint1:'File → Place again.',hint2:'This time, CHECK the Link checkbox before clicking Place.',hint3:'File → Place → check "Link" → click Place → place on canvas.',
+     correctFeedback:'Background texture placed as a linked asset. A chain-link icon appears on the placed image indicating it is linked.',
+     incorrectFeedback:'Check the Link checkbox when placing the background texture.',
+     acpContext:'ACP Ai-2.3a: Linked files keep Illustrator documents smaller. If the linked file is moved or renamed, the link breaks — shown as a warning in the Links panel.',gagneEvent:6},
+    {id:4,instruction:'Open the Links panel (Window → Links) to verify the link status of both placed assets.',
+     expectedAction:'menu-click',expectedTarget:'window-links',
+     hint1:'Go to the Window menu.',hint2:'Window → Links opens the Links panel.',hint3:'Window → Links.',
+     correctFeedback:'Links panel open. The embedded logo shows no link warning. The linked texture shows its file path and status.',
+     incorrectFeedback:'Go to Window → Links.',
+     acpContext:'ACP Ai-2.3b: The Links panel shows all placed assets with their status: linked (chain icon), embedded (no icon), missing (warning), or modified (exclamation).',gagneEvent:7},
+    {id:5,instruction:'Use "Edit Original" to open the linked texture in its native application. Click the linked asset in the Links panel, then click the Edit Original button.',
+     expectedAction:'click',expectedTarget:'edit-original',
+     hint1:'In the Links panel, select the linked asset.',hint2:'With the linked asset selected in the Links panel, click the Edit Original button (pencil icon).',hint3:'Links panel → click the linked file row → click the Edit Original icon (pencil).',
+     correctFeedback:'Edit Original opens the file in its native application (e.g. Photoshop for PSD files). Changes saved there automatically update in Illustrator when you switch back.',
+     incorrectFeedback:'Select the linked asset in the Links panel and click Edit Original.',
+     acpContext:'ACP Ai-2.3b: Edit Original is the primary advantage of linked files — update the source once and all linked instances update automatically.',gagneEvent:7}
+  ]
+},
+
+'ai-2-4a': {
+  id:'ai-2-4a', tool:'illustrator', domain:2,
+  objective:'2.4a/b', objectiveText:'Save documents — .ai, .pdf, .eps, .svg formats',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'save-export',
+  scenario:'Save your Illustrator project in three formats: native .ai for further editing, .pdf for client review, and .svg for web development handoff. Understand the settings and trade-offs of each.',
+  steps:[
+    {id:1,instruction:'Save as native .ai format. Go to File → Save As. Set format to Adobe Illustrator (.ai).',
+     expectedAction:'menu-click',expectedTarget:'file-save-as',
+     hint1:'Go to File → Save As.',hint2:'File → Save As → Format: Adobe Illustrator (.ai) → Save.',hint3:'File → Save As → select Adobe Illustrator from the format dropdown.',
+     correctFeedback:'Save As dialog opened.',
+     incorrectFeedback:'Go to File → Save As.',
+     acpContext:'ACP Ai-2.4a: The native .ai format preserves all Illustrator features — live effects, symbols, brushes, artboards, and editability. Always save .ai as your master file.',gagneEvent:4},
+    {id:2,instruction:'In the Illustrator Options dialog, set compatibility to Illustrator 2020 (or the appropriate version). Click OK.',
+     expectedAction:'select',expectedTarget:'ai-compatibility',expectedValue:'illustrator 2020',matchType:'contains',
+     hint1:'After clicking Save, an Illustrator Options dialog appears.',hint2:'The compatibility dropdown lets you save for older Illustrator versions. Select Illustrator 2020.',hint3:'Illustrator Options → Compatibility dropdown → select Illustrator 2020 → OK.',
+     correctFeedback:'Compatibility set. Files saved with older compatibility can be opened by users with earlier Illustrator versions.',
+     incorrectFeedback:'Set the compatibility version in the Illustrator Options dialog.',
+     acpContext:'ACP Ai-2.4a: Saving with older compatibility reduces file size but may disable newer features. The ACP exam tests awareness of the compatibility option.',gagneEvent:6},
+    {id:3,instruction:'Save as PDF for client review. File → Save As → set format to Adobe PDF (.pdf) → Save.',
+     expectedAction:'select',expectedTarget:'save-format',expectedValue:'pdf',matchType:'contains',
+     hint1:'File → Save As again.',hint2:'File → Save As → Format: Adobe PDF (.pdf).',hint3:'File → Save As → Adobe PDF (.pdf) → Save → choose PDF preset.',
+     correctFeedback:'Adobe PDF format selected.',
+     incorrectFeedback:'Select Adobe PDF (.pdf) from the format dropdown.',
+     acpContext:'ACP Ai-2.4a: Saving as PDF from Illustrator can preserve editability (PDF Compatible File checkbox). This allows reopening in Illustrator while also being viewable in Acrobat.',gagneEvent:6},
+    {id:4,instruction:'In the Save Adobe PDF dialog, choose the "[Illustrator Default]" preset and click Save PDF.',
+     expectedAction:'click',expectedTarget:'save-pdf-btn',
+     hint1:'A dialog appears with PDF presets.',hint2:'Select "[Illustrator Default]" preset from the dropdown and click Save PDF.',hint3:'PDF preset → [Illustrator Default] → Save PDF.',
+     correctFeedback:'PDF saved. Clients can view and comment without needing Illustrator.',
+     incorrectFeedback:'Click Save PDF in the PDF options dialog.',
+     acpContext:'ACP Ai-2.4a: The [PDF/X-1a] preset is used for professional print; [Press Quality] for commercial printing; [Smallest File Size] for email delivery.',gagneEvent:7},
+    {id:5,instruction:'Export as SVG for web. Go to File → Save As → set format to SVG (.svg) → Save.',
+     expectedAction:'select',expectedTarget:'save-format-svg',expectedValue:'svg',matchType:'contains',
+     hint1:'File → Save As → find SVG in the format list.',hint2:'File → Save As → Format: SVG (.svg) → Save.',hint3:'File → Save As → SVG (.svg) → Save → SVG Options dialog appears.',
+     correctFeedback:'SVG format selected. SVG is a vector format for web — scalable to any size without quality loss.',
+     incorrectFeedback:'Select SVG (.svg) from the format dropdown.',
+     acpContext:'ACP Ai-2.4a: SVG (Scalable Vector Graphics) is the native vector format for the web. Logos in SVG scale perfectly on any device — no pixelation.',gagneEvent:7}
+  ]
+},
+
+'ai-2-4b': {
+  id:'ai-2-4b', tool:'illustrator', domain:2,
+  objective:'2.4b/c', objectiveText:'Export for Screens, Asset Export panel, and Package a project',
+  bloomsLevel:'Apply', estimatedMinutes:8, uiType:'export-package',
+  scenario:'Export all artboards at multiple resolutions using Export for Screens, then add individual assets to the Asset Export panel. Finally, package the project to collect all fonts and linked files.',
+  steps:[
+    {id:1,instruction:'Open Export for Screens. Go to File → Export → Export for Screens.',
+     expectedAction:'menu-click',expectedTarget:'export-for-screens',
+     hint1:'Go to File → Export.',hint2:'File → Export → Export for Screens (not "Export As").',hint3:'File → Export → Export for Screens.',
+     correctFeedback:'Export for Screens opened. This dialog lets you export artboards and assets at multiple scales and formats simultaneously.',
+     incorrectFeedback:'Go to File → Export → Export for Screens.',
+     acpContext:'ACP Ai-2.4b: Export for Screens is the modern export workflow — replace the older "Save for Web". It exports at multiple resolutions (@1x, @2x, @3x) in one operation.',gagneEvent:4},
+    {id:2,instruction:'In the Artboards tab, verify all 3 artboards are checked. Add a @2x scale. Click "+ Add Scale" and set to 2x, PNG format.',
+     expectedAction:'click',expectedTarget:'add-2x-scale',
+     hint1:'Look for an "Add Scale" button or + button.',hint2:'Click "+ Add Scale" to add a second export scale → set to 2 → format PNG.',hint3:'Click Add Scale → Scale: 2 → Format: PNG → the preview shows both 1x and 2x exports.',
+     correctFeedback:'2x scale added. Both 1x and 2x PNG files will be exported — essential for Retina/high-DPI displays.',
+     incorrectFeedback:'Click Add Scale and set it to 2x PNG.',
+     acpContext:'ACP Ai-2.4b: @2x exports are twice the resolution — needed for Retina displays. @3x for high-density mobile screens. Export all scales in one click.',gagneEvent:6},
+    {id:3,instruction:'Click Export Artboard to export all artboards at both scales.',
+     expectedAction:'click',expectedTarget:'export-artboard-btn',
+     hint1:'Click the Export Artboard button.',hint2:'Click Export Artboard to save all files to your chosen destination.',hint3:'Click Export Artboard → choose destination folder → files are saved.',
+     correctFeedback:'Artboards exported at 1x and 2x. Files are named: ArtboardName.png and ArtboardName@2x.png.',
+     incorrectFeedback:'Click Export Artboard.',
+     acpContext:'ACP Ai-2.4b: Export for Screens names files automatically using artboard names. Always name artboards descriptively before exporting.',gagneEvent:7},
+    {id:4,instruction:'Open the Asset Export panel (Window → Asset Export). Drag a vector object onto the panel to add it as an individual exportable asset.',
+     expectedAction:'menu-click',expectedTarget:'window-asset-export',
+     hint1:'Go to Window → Asset Export.',hint2:'Window → Asset Export opens the panel. Drag objects from the canvas into it.',hint3:'Window → Asset Export → drag a shape/icon from the artboard into the panel.',
+     correctFeedback:'Asset Export panel open. Drag-and-drop individual elements to export them as standalone assets.',
+     incorrectFeedback:'Go to Window → Asset Export.',
+     acpContext:'ACP Ai-2.4b: The Asset Export panel lets you pre-configure individual assets (icons, logos, UI elements) for export — separate from artboard exports.',gagneEvent:6},
+    {id:5,instruction:'Package the project. Go to File → Package to collect all linked files and fonts into one folder.',
+     expectedAction:'menu-click',expectedTarget:'file-package',
+     hint1:'Go to the File menu.',hint2:'File → Package collects all linked files and fonts into a packaged folder.',hint3:'File → Package → choose destination → click Package.',
+     correctFeedback:'Package dialog opened. Illustrator will collect the .ai file, all linked files, and document fonts into one folder.',
+     incorrectFeedback:'Go to File → Package.',
+     acpContext:'ACP Ai-2.4c: Always Package before sending files to a printer or collaborator. Missing linked files or fonts cause errors at the print/production stage.',gagneEvent:7}
+  ]
+},
+
+'ai-2-mc': {
+  id:'ai-2-mc', tool:'illustrator', domain:2,
+  objective:'1.3–2.4', objectiveText:'Domain 1–2 knowledge check',
+  bloomsLevel:'Understand', estimatedMinutes:8, uiType:'mc',
+  questions:[
+    {q:'What is the key difference between a raster image and a vector graphic?',options:['Raster images are always larger in file size','Vector graphics use paths and can scale to any size without quality loss; raster images are pixel-based and lose quality when enlarged','Vector graphics can only be created in Illustrator','Raster images cannot be placed into Illustrator'],correct:1,explanation:'Vector graphics are mathematical paths — they are resolution-independent and scale to any size perfectly. Raster images are pixel grids — enlarging them reduces sharpness and causes pixelation.',acpObj:'Ai-1.3a'},
+    {q:'In the New Document dialog, what does the "Raster Effects" setting control?',options:['The resolution of placed photographs','The resolution at which raster effects (drop shadows, glows, blurs) are rendered','The maximum number of colours in the document','The colour profile assigned to the document'],correct:1,explanation:'Raster Effects sets the ppi for rendered raster effects. 72 ppi for screen, 300 ppi for print. Setting it too low produces blurry effects in print output.',acpObj:'Ai-2.1a'},
+    {q:'You placed a logo using File → Place with the "Link" checkbox CHECKED. What does this mean?',options:['The logo is embedded inside the .ai document','The logo file must remain in its original location; the .ai document references it','The logo cannot be edited','The logo is automatically updated whenever Illustrator is opened'],correct:1,explanation:'Checked "Link" creates a link to the external file. The .ai document stores only a low-resolution preview and a path reference. If the source file moves, the link breaks.',acpObj:'Ai-2.3a'},
+    {q:'Which Illustrator command collects all linked files, fonts, and the main document into a single folder for sharing?',options:['File → Save a Copy','File → Export → Export for Screens','File → Package','File → Save As → Template'],correct:2,explanation:'File → Package creates a folder containing the .ai file, all linked images, and a copy of all document fonts. This is the standard method for delivering projects to clients or printers.',acpObj:'Ai-2.4c'},
+    {q:'What is the primary advantage of exporting with "Export for Screens" compared to "Export As"?',options:['Export for Screens is faster','Export for Screens allows exporting at multiple resolutions (@1x, @2x, @3x) and formats in one operation','Export for Screens produces smaller files','Export for Screens is the only way to export SVG'],correct:1,explanation:'Export for Screens (File → Export → Export for Screens) lets you export artboards and assets at multiple scales simultaneously — essential for web and app development asset delivery.',acpObj:'Ai-2.4b'},
+    {q:'You need to send an Illustrator file to a collaborator who uses Illustrator 2018. Which option ensures they can open it?',options:['Export the file as .eps','Save As → Adobe Illustrator → set Compatibility to an earlier version','Save as PDF','Use File → Package'],correct:1,explanation:'File → Save As → Adobe Illustrator → set the Compatibility dropdown to the required earlier version. This ensures the file uses only features available in that version.',acpObj:'Ai-2.4a'}
+  ]
+}
+};
+
+/* ═══ STATE ═══════════════════════════════════════════ */
+let currentTask=null,currentMode='guided',currentStep=0,stepResults=[],mcAnswers={};
+
+function loadTask(id){
+  const task=TASKS[id];if(!task)return;
+  currentTask=task;currentStep=0;stepResults=new Array((task.steps||[]).length).fill(null);mcAnswers={};
+  document.querySelectorAll('.task-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.task-item').forEach(el=>{if(el.getAttribute('onclick')?.includes("'"+id+"'"))el.classList.add('active');});
+  renderHeader(task);renderUI(task);renderStep(task,0);
+  document.getElementById('score-report').style.display='none';
+}
+
+function renderHeader(task){
+  document.getElementById('task-header').innerHTML=`
+    <div class="task-meta">
+      <span class="acp-tag" style="color:#FF9A00;border-color:rgba(255,154,0,.3);background:rgba(255,154,0,.08);">Ai-${task.objective}</span>
+      <span class="badge badge-ai">Illustrator</span>
+      <span class="badge badge-live">${task.bloomsLevel}</span>
+      <span style="color:var(--text-tertiary);font-size:.78rem;">~${task.estimatedMinutes} min</span>
+    </div>
+    <h2>${task.objectiveText}</h2>
+    <div class="task-scenario">${task.scenario}</div>`;
+}
+
+function switchMode(mode){
+  currentMode=mode;currentStep=0;stepResults=new Array((currentTask?.steps||[]).length).fill(null);mcAnswers={};
+  document.getElementById('btn-guided').classList.toggle('active',mode==='guided');
+  document.getElementById('btn-independent').classList.toggle('active',mode==='independent');
+  document.getElementById('score-report').style.display='none';
+  if(currentTask){renderUI(currentTask);renderStep(currentTask,0);}
+}
+
+/* ═══ UI ══════════════════════════════════════════════ */
+function renderUI(task){
+  const c=document.getElementById('adobe-sim');
+  if(task.uiType==='mc'){c.innerHTML='';return;}
+  const map={
+    'new-doc':newDocUI,'artboards':artboardsUI,'place-assets':placeAssetsUI,
+    'save-export':saveExportUI,'export-package':exportPackageUI
+  };
+  c.innerHTML=map[task.uiType]?map[task.uiType]():'';
+}
+
+function aiShell(menus,tools,canvas,panels){
+  return `<div class="adobe-sim">
+    <div class="adobe-menubar"><span class="adobe-app-icon">Ai</span>${menus}</div>
+    <div class="adobe-body">
+      <div class="adobe-tools">${tools}</div>
+      ${canvas}
+      <div class="adobe-panels">${panels}</div>
+    </div>
+  </div>`;
+}
+
+function newDocUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('file-new')">File</span><span class="menu-item">Edit</span><span class="menu-item">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div><div class="tool-btn">▭</div><div class="tool-btn">○</div>`,
+    `<div class="adobe-canvas" style="align-items:center;justify-content:center;">
+      <div class="dialog-box">
+        <div class="dialog-title">New Document</div>
+        <div class="dialog-body">
+          <div style="font-size:10px;color:#888;margin-bottom:8px;">Create social media document</div>
+          <div class="dialog-row"><span class="dialog-label">Width</span>
+            <input class="dialog-input highlight" id="inp-width" placeholder="1080" oninput="doInput('doc-width',this.value)">
+            <select class="dialog-select" style="max-width:60px;"><option>px</option><option>in</option><option>mm</option></select>
+          </div>
+          <div class="dialog-row"><span class="dialog-label">Height</span>
+            <input class="dialog-input" id="inp-height" placeholder="1080">
+          </div>
+          <div class="dialog-row"><span class="dialog-label">Artboards</span>
+            <input class="dialog-input highlight" id="inp-artboards" placeholder="1" oninput="doInput('num-artboards',this.value)" style="width:50px;">
+          </div>
+          <div class="dialog-row"><span class="dialog-label">Colour Mode</span>
+            <select class="dialog-select highlight" id="sel-cm" onchange="doSelect('colour-mode',this.value.toLowerCase())">
+              <option value="rgb">RGB</option><option value="cmyk">CMYK</option><option value="grayscale">Grayscale</option>
+            </select>
+          </div>
+          <div class="dialog-row"><span class="dialog-label">Raster Effects</span>
+            <select class="dialog-select"><option>72 ppi (Screen)</option><option>150 ppi (Medium)</option><option>300 ppi (High)</option></select>
+          </div>
+          <div class="dialog-row"><span class="dialog-label">Preset name</span>
+            <input class="dialog-input" id="inp-preset" placeholder="Social Square 1080" oninput="doInput('preset-name',this.value.toLowerCase())">
+            <button onclick="doAction('save-preset-icon')" style="padding:3px 6px;background:#3A3A3A;border:0.5px solid #555;border-radius:3px;font-size:10px;color:#CCC;cursor:pointer;">💾</button>
+          </div>
+        </div>
+        <div class="dialog-footer">
+          <button class="dialog-btn dialog-btn-cancel">Cancel</button>
+          <button class="dialog-btn dialog-btn-ok" onclick="doAction('create-btn')">Create</button>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Document presets</div>
+     <div class="panel-body">
+       <div style="font-size:10px;color:#888;margin-bottom:4px;">Saved presets</div>
+       <div style="font-size:10px;color:#CCC;padding:3px 0;">Web 1280×800</div>
+       <div style="font-size:10px;color:#CCC;padding:3px 0;">Print A4</div>
+       <div id="saved-preset" style="display:none;font-size:10px;color:#FF9A00;padding:3px 0;">Social Square 1080 ✓</div>
+     </div>`
+  );
+}
+
+function artboardsUI(){
+  return aiShell(
+    `<span class="menu-item">File</span><span class="menu-item" onclick="doMenu('window-artboards')">Window</span><span class="menu-item">Object</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div>
+     <div class="tool-btn highlight" id="tb-ab" onclick="doTool('artboard-tool')" title="Artboard (Shift+O)">⊞</div>`,
+    `<div class="adobe-canvas" style="gap:8px;padding:.5rem;flex-direction:row;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <div style="position:relative;">
+        <div class="artboard" id="ab1" style="width:80px;height:80px;" onclick="doAction('select-ab1')">
+          <div class="artboard-label">Instagram</div>
+          <div style="font-size:8px;color:#888;text-align:center;padding-top:30px;">1080×1080</div>
+        </div>
+      </div>
+      <div style="position:relative;">
+        <div class="artboard" id="ab2" style="width:96px;height:50px;" onclick="doInput('artboard-width','1200')">
+          <div class="artboard-label">Artboard 2</div>
+          <div style="font-size:8px;color:#888;text-align:center;padding-top:15px;">resize me</div>
+        </div>
+      </div>
+      <div style="position:relative;">
+        <div class="artboard" id="ab3" style="width:80px;height:80px;">
+          <div class="artboard-label">Artboard 3</div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Artboards</div>
+     <div class="panel-body">
+       <div id="ab-list">
+         <div class="layer-row selected" onclick="doAction('select-ab1')"><span style="font-size:10px;color:#999;">1</span><span class="layer-name" id="ab1-name">Instagram</span></div>
+         <div class="layer-row" onclick="doInput('artboard-name','facebook')"><span style="font-size:10px;color:#999;">2</span><span class="layer-name" id="ab2-name">Artboard 2</span></div>
+         <div class="layer-row"><span style="font-size:10px;color:#999;">3</span><span class="layer-name">Artboard 3</span></div>
+       </div>
+       <div style="margin-top:6px;border-top:0.5px solid #444;padding-top:5px;">
+         <div class="prop-row"><span class="prop-label">W</span><input class="prop-input highlight" id="inp-ab-w" style="width:60px;" oninput="doInput('artboard-width',this.value)"></div>
+         <div class="prop-row"><span class="prop-label">H</span><input class="prop-input" id="inp-ab-h" style="width:60px;"></div>
+         <div class="adj-btn" onclick="doAction('duplicate-artboard')" style="margin-top:4px;">Duplicate artboard</div>
+         <div class="adj-btn" onclick="doAction('reorder-artboard')">Drag to reorder ↑</div>
+       </div>
+     </div>`
+  );
+}
+
+function placeAssetsUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('file-place')">File</span><span class="menu-item" onclick="doMenu('window-links')">Window</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div><div class="tool-btn">↔</div>`,
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:200px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+        <div id="logo-placed" style="display:none;background:#1A1A2E;color:#FFF;font-size:14px;font-weight:700;padding:6px 14px;border-radius:4px;">LOGO</div>
+        <div id="bg-placed" style="display:none;position:absolute;inset:0;background:repeating-linear-gradient(45deg,#F5F0E8,#F5F0E8 4px,#EDE8E0 4px,#EDE8E0 8px);opacity:.4;"></div>
+        <div style="font-size:9px;color:#AAA;">File → Place to add assets</div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Links</div>
+     <div class="panel-body" id="links-panel">
+       <div style="font-size:10px;color:#888;">Window → Links to open</div>
+     </div>
+     <div class="panel-hdr">Place options</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-place')">File → Place (Shift+Ctrl+P)</div>
+       <div style="margin-top:6px;">
+         <label style="display:flex;align-items:center;gap:5px;font-size:10px;color:#CCC;cursor:pointer;margin-bottom:4px;">
+           <input type="checkbox" id="cb-link" style="accent-color:#FF9A00;"> Link (uncheck = embed)
+         </label>
+       </div>
+       <div class="adj-btn" onclick="doAction('uncheck-link')">Step 2: Uncheck Link → embed</div>
+       <div class="adj-btn" onclick="doAction('check-link')">Step 3: Check Link → link</div>
+       <div class="adj-btn" onclick="doMenu('window-links')">Window → Links panel</div>
+       <div class="adj-btn" onclick="doAction('edit-original')">Links panel → Edit Original</div>
+     </div>`
+  );
+}
+
+function saveExportUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('file-save-as')">File</span><span class="menu-item">Edit</span>`,
+    `<div class="tool-btn active">↖</div>`,
+    `<div class="adobe-canvas">
+      <div class="artboard" style="width:180px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+        <div style="font-size:16px;font-weight:700;color:#FF9A00;font-family:Georgia,serif;">LOGO</div>
+        <div style="font-size:8px;color:#888;">Brand identity document</div>
+        <div id="save-indicator" style="font-size:8px;color:#888;margin-top:4px;"></div>
+      </div>
+    </div>`,
+    `<div class="panel-hdr">Save / Export</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('file-save-as')">File → Save As</div>
+       <div class="panel-hdr" style="margin-top:4px;">Format selector</div>
+       <div style="padding:6px 0;">
+         <div style="margin-bottom:4px;font-size:10px;color:#AAA;">Select format:</div>
+         <select class="prop-select" id="sel-save-fmt" onchange="handleSaveFmt(this.value)">
+           <option value="">— Choose format —</option>
+           <option value="ai">Adobe Illustrator (.ai)</option>
+           <option value="pdf">Adobe PDF (.pdf)</option>
+           <option value="eps">Illustrator EPS (.eps)</option>
+           <option value="svg">SVG (.svg)</option>
+         </select>
+       </div>
+       <div class="panel-hdr" style="margin-top:4px;">Ai Compatibility</div>
+       <div class="panel-body" id="ai-compat-panel" style="display:none;">
+         <select class="prop-select highlight" id="sel-compat" onchange="doSelect('ai-compatibility',this.value.toLowerCase())">
+           <option value="">— Select version —</option>
+           <option value="illustrator 2020">Illustrator 2020</option>
+           <option value="illustrator 2019">Illustrator 2019</option>
+           <option value="illustrator cs6">Illustrator CS6</option>
+         </select>
+         <button onclick="doAction('save-ai-ok')" style="width:100%;margin-top:4px;padding:4px;background:#FF9A00;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">OK</button>
+       </div>
+       <div class="panel-hdr" style="margin-top:4px;">PDF options</div>
+       <div class="panel-body" id="pdf-opts" style="display:none;">
+         <div class="prop-row"><span class="prop-label">Preset</span><select class="prop-select"><option>[Illustrator Default]</option><option>[PDF/X-1a]</option><option>[Press Quality]</option></select></div>
+         <button onclick="doAction('save-pdf-btn')" style="width:100%;margin-top:4px;padding:4px;background:#FF9A00;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">Save PDF</button>
+       </div>
+     </div>`
+  );
+}
+
+function exportPackageUI(){
+  return aiShell(
+    `<span class="menu-item" onclick="doMenu('export-for-screens')">File</span><span class="menu-item" onclick="doMenu('window-asset-export')">Window</span>`,
+    `<div class="tool-btn active">↖</div><div class="tool-sep"></div><div class="tool-btn">⊞</div>`,
+    `<div class="adobe-canvas" style="flex-wrap:wrap;gap:4px;padding:.5rem;align-content:center;justify-content:center;">
+      <div style="position:relative;"><div class="artboard" style="width:65px;height:65px;"><div class="artboard-label">Instagram</div></div></div>
+      <div style="position:relative;"><div class="artboard" style="width:80px;height:42px;"><div class="artboard-label">Facebook</div></div></div>
+      <div style="position:relative;"><div class="artboard" style="width:75px;height:42px;"><div class="artboard-label">Twitter</div></div></div>
+    </div>`,
+    `<div class="panel-hdr">Export controls</div>
+     <div class="panel-body">
+       <div class="adj-btn highlight" onclick="doMenu('export-for-screens')">File → Export → Export for Screens</div>
+       <div class="adj-btn" onclick="doMenu('window-asset-export')">Window → Asset Export</div>
+       <div class="adj-btn" onclick="doMenu('file-package')">File → Package</div>
+     </div>
+     <div class="panel-hdr">Export for Screens</div>
+     <div class="panel-body" id="efs-panel" style="display:none;">
+       <div style="font-size:10px;color:#AAA;margin-bottom:4px;">Scales</div>
+       <div style="display:flex;gap:4px;margin-bottom:4px;">
+         <div style="flex:1;background:#2B2B2B;border:0.5px solid #555;border-radius:3px;padding:4px;font-size:10px;text-align:center;color:#CCC;">1x PNG</div>
+         <div class="adj-btn" style="flex:1;margin:0;" onclick="doAction('add-2x-scale')">+ Add Scale</div>
+       </div>
+       <div id="scale-2x" style="display:none;font-size:10px;color:#FF9A00;padding:3px 0;">✓ 2x PNG added</div>
+       <button onclick="doAction('export-artboard-btn')" style="width:100%;margin-top:5px;padding:4px;background:#FF9A00;color:#000;border:none;border-radius:3px;font-size:10px;cursor:pointer;font-weight:600;">Export Artboard</button>
+     </div>
+     <div class="panel-hdr">Asset Export</div>
+     <div class="panel-body" id="ae-panel" style="display:none;">
+       <div style="font-size:10px;color:#888;margin-bottom:4px;">Drag objects here from canvas</div>
+       <div id="asset-list"></div>
+     </div>`
+  );
+}
+
+/* ═══ HANDLERS ════════════════════════════════════════ */
+function doMenu(t){processAction('menu-click',t,t);}
+function doAction(t){processAction('click',t,t);}
+function doTool(t){processAction('tool-select',t,t);}
+function doInput(t,v){if(currentMode==='guided')processAction('input',t,v);}
+function doSelect(t,v){if(currentMode==='guided')processAction('select',t,v);}
+
+function handleSaveFmt(v){
+  if(!v)return;
+  if(v==='ai'){doSelect('save-format','ai');document.getElementById('ai-compat-panel')&&(document.getElementById('ai-compat-panel').style.display='block');}
+  else if(v==='pdf'){doSelect('save-format','pdf');document.getElementById('pdf-opts')&&(document.getElementById('pdf-opts').style.display='block');}
+  else if(v==='svg'){doSelect('save-format-svg','svg');}
+  else if(v==='eps'){doSelect('save-format','eps');}
+}
+
+function applyEffect(target){
+  const map={
+    'file-new':()=>{},
+    'create-btn':()=>{},
+    'save-preset-icon':()=>{},
+    'artboard-tool':()=>{document.getElementById('tb-ab')?.classList.add('active');},
+    'select-ab1':()=>{document.getElementById('ab1')?.classList.add('highlight-ab');},
+    'duplicate-artboard':()=>{},
+    'reorder-artboard':()=>{const n=document.getElementById('ab1-name');if(n)n.textContent='Facebook';},
+    'file-place':()=>{},
+    'uncheck-link':()=>{const cb=document.getElementById('cb-link');if(cb)cb.checked=false;document.getElementById('logo-placed')&&(document.getElementById('logo-placed').style.display='block');},
+    'check-link':()=>{const cb=document.getElementById('cb-link');if(cb)cb.checked=true;document.getElementById('bg-placed')&&(document.getElementById('bg-placed').style.display='block');},
+    'window-links':()=>{const lp=document.getElementById('links-panel');if(lp)lp.innerHTML='<div class="layer-row"><span style="font-size:9px;color:#FF9A00;">●</span><span class="layer-name" style="font-size:9px;">logo.svg (embedded)</span></div><div class="layer-row"><span style="font-size:9px;color:#7AB8F5;">🔗</span><span class="layer-name" style="font-size:9px;">texture.jpg (linked)</span><span style="font-size:9px;cursor:pointer;color:#AAA;" onclick="doAction(\'edit-original\')">✏</span></div>';},
+    'edit-original':()=>{},
+    'file-save-as':()=>{},
+    'save-pdf-btn':()=>{const si=document.getElementById('save-indicator');if(si)si.textContent='✓ PDF saved';},
+    'save-ai-ok':()=>{const si=document.getElementById('save-indicator');if(si)si.textContent='✓ .ai saved';},
+    'export-for-screens':()=>{const p=document.getElementById('efs-panel');if(p)p.style.display='block';},
+    'add-2x-scale':()=>{const el=document.getElementById('scale-2x');if(el)el.style.display='block';},
+    'export-artboard-btn':()=>{},
+    'window-asset-export':()=>{const p=document.getElementById('ae-panel');if(p)p.style.display='block';const al=document.getElementById('asset-list');if(al)al.innerHTML='<div style="font-size:10px;color:#FF9A00;padding:3px 0;">icon-logo.svg</div>';},
+    'file-package':()=>{},
+    'preset-name':()=>{const el=document.getElementById('saved-preset');if(el)el.style.display='block';},
+    'doc-width':()=>{},
+    'num-artboards':()=>{},
+    'colour-mode':()=>{},
+    'artboard-width':()=>{const el=document.getElementById('ab2');if(el)el.style.width='96px';const n=document.getElementById('ab2-name');if(n)n.textContent='Facebook';},
+    'artboard-name':()=>{const n=document.getElementById('ab2-name');if(n)n.textContent='Facebook';},
+    'ai-compatibility':()=>{},
+    'save-format':()=>{},
+    'save-format-svg':()=>{const si=document.getElementById('save-indicator');if(si)si.textContent='✓ SVG saved';}
+  };
+  if(map[target])map[target]();
+}
+
+function processAction(action,target,value){
+  if(!currentTask||currentTask.uiType==='mc')return;
+  const step=currentTask.steps[currentStep];if(!step)return;
+  const aM=!step.expectedAction||action===step.expectedAction;
+  const tM=!step.expectedTarget||target===step.expectedTarget;
+  let vM=true;
+  if(step.expectedValue!==undefined){
+    const mt=step.matchType||'exact',sv=String(value).toLowerCase().trim(),ev=String(step.expectedValue).toLowerCase().trim();
+    if(mt==='exact')vM=sv===ev;else if(mt==='contains')vM=sv.includes(ev);
+  }
+  if(aM&&tM&&vM){
+    stepResults[currentStep]='correct';showFB('correct',step.correctFeedback,step.acpContext);updateDots();applyEffect(target);
+    if(currentMode==='guided')setTimeout(()=>nextStep(),1300);
+  }else if(aM&&tM)showFB('incorrect',step.incorrectFeedback,step.acpContext);
+}
+
+const GAGNE={1:'Gain attention',2:'Inform objectives',3:'Stimulate recall',4:'Present content',5:'Provide guidance',6:'Elicit performance',7:'Provide feedback',8:'Assess performance',9:'Enhance retention'};
+
+function renderStep(task,idx){
+  if(task.uiType==='mc'){renderMC(task);return;}
+  const step=task.steps[idx],total=task.steps.length;if(!step)return;
+  const dots=task.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===idx?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');
+  const g=step.gagneEvent?`<div class="gagne-tag">Gagne ${step.gagneEvent}: ${GAGNE[step.gagneEvent]}</div>`:'';
+  document.getElementById('step-panel').innerHTML=`<div class="step-header"><span class="step-counter">Step ${idx+1} of ${total}</span><div class="step-dots">${dots}</div></div>${currentMode==='guided'?`${g}<p class="step-instruction">${step.instruction}</p>`:'<p class="step-instruction" style="color:var(--text-tertiary);font-style:italic;">Independent practice mode — complete all steps then submit.</p>'}`;
+  document.getElementById('step-actions').innerHTML=currentMode==='guided'
+    ?`<button class="btn btn-ghost btn-sm" onclick="showHint(1)">💡 Hint 1</button><button class="btn btn-ghost btn-sm" onclick="showHint(2)">💡 Hint 2</button><button class="btn btn-ghost btn-sm" onclick="showHint(3)">💡 Hint 3</button>${idx>0?'<button class="btn btn-ghost btn-sm" onclick="prevStep()">← Back</button>':''}`
+    :`<button class="btn btn-primary" onclick="submitInd()">Submit answers</button>`;
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function renderMC(task){
+  const qs=task.questions;
+  document.getElementById('step-panel').innerHTML=`
+    <div style="font-size:.78rem;font-weight:600;color:var(--text-tertiary);margin-bottom:.75rem;letter-spacing:.06em;text-transform:uppercase;">
+      Domain 1–2 knowledge check · ${qs.length} questions
+    </div>
+    ${qs.map((q,qi)=>`
+      <div style="margin-bottom:1.1rem;">
+        <div style="font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.45rem;line-height:1.5;">${qi+1}. ${q.q}</div>
+        ${q.options.map((opt,oi)=>`
+          <div onclick="selectMC(${qi},${oi},${q.correct})"
+            id="mc-opt-${qi}-${oi}"
+            style="padding:.4rem .75rem;border-radius:var(--radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--surface);font-size:.83rem;color:var(--text-secondary);cursor:pointer;margin-bottom:.3rem;transition:all .15s;">
+            ${opt}
+          </div>`).join('')}
+        <div id="mc-fb-${qi}" style="margin-top:.35rem;font-size:.78rem;display:none;padding:.4rem .7rem;border-radius:6px;line-height:1.5;"></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="submitMC()">Submit answers</button>`;
+  document.getElementById('step-actions').innerHTML='';
+  document.getElementById('feedback-area').innerHTML='';document.getElementById('hint-area').innerHTML='';
+}
+
+function selectMC(qi,oi,correct){
+  mcAnswers[qi]=oi;
+  document.querySelectorAll(`[id^="mc-opt-${qi}-"]`).forEach(el=>{el.style.borderColor='var(--color-border-tertiary)';el.style.background='var(--surface)';el.style.color='var(--text-secondary)';});
+  const sel=document.getElementById(`mc-opt-${qi}-${oi}`);
+  if(sel){sel.style.borderColor='rgba(255,154,0,.4)';sel.style.background='rgba(255,154,0,.07)';sel.style.color='var(--text-primary)';}
+}
+
+function submitMC(){
+  const qs=currentTask.questions;let correct=0;
+  qs.forEach((q,qi)=>{
+    const ua=mcAnswers[qi];const fb=document.getElementById(`mc-fb-${qi}`);
+    if(ua===undefined){if(fb){fb.style.display='block';fb.style.background='rgba(255,77,109,.08)';fb.style.color='#FFB3C1';fb.innerHTML='✗ Not answered — '+q.explanation;}}
+    else{
+      const ok=ua===q.correct;if(ok)correct++;
+      q.options.forEach((_,oi)=>{const el=document.getElementById(`mc-opt-${qi}-${oi}`);if(!el)return;if(oi===q.correct){el.style.borderColor='rgba(0,214,143,.4)';el.style.background='rgba(0,214,143,.07)';el.style.color='#7FFFD4';}else if(oi===ua&&!ok){el.style.borderColor='rgba(255,77,109,.4)';el.style.background='rgba(255,77,109,.07)';}el.style.cursor='default';el.style.pointerEvents='none';});
+      if(fb){fb.style.display='block';fb.style.background=ok?'rgba(0,214,143,.08)':'rgba(255,77,109,.08)';fb.style.color=ok?'#7FFFD4':'#FFB3C1';fb.innerHTML=(ok?'✓ Correct — ':'✗ Incorrect — ')+q.explanation+` <span style="font-family:var(--font-mono);font-size:.7rem;opacity:.7;">${q.acpObj}</span>`;}
+    }
+  });
+  const pct=Math.round(correct/qs.length*100);showScore({correct,incorrect:qs.length-correct,pct,passed:pct>=70});
+}
+
+function nextStep(){if(currentStep<currentTask.steps.length-1){currentStep++;renderStep(currentTask,currentStep);}else completeTask();}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentTask,currentStep);}}
+function submitInd(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});}
+function completeTask(){const c=stepResults.filter(r=>r==='correct').length,t=currentTask.steps.length,p=Math.round(c/t*100);showScore({correct:c,incorrect:t-c,pct:p,passed:p>=70});const sc=document.getElementById('sc-'+currentTask.id.replace(/-/g,''));if(sc)sc.textContent=p+'%';if(p>=70){const ic=document.getElementById('icon-'+currentTask.id.replace(/-/g,''));if(ic)ic.classList.add('done');}}
+function showScore(s){const col=s.passed?(s.pct===100?'#00D68F':'#FF9A00'):'#FFB800';const el=document.getElementById('score-report');el.style.display='block';el.innerHTML=`<div class="score-report"><div class="score-circle" style="border-color:${col};"><div class="score-pct" style="color:${col};">${s.pct}%</div><div class="score-lbl">${s.passed?(s.pct===100?'Perfect!':'Passed'):'Keep practicing'}</div></div><div class="score-grid"><div class="score-stat-card"><span class="score-stat-n" style="color:var(--correct);">${s.correct}</span><span class="score-stat-l">Correct</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--partial);">0</span><span class="score-stat-l">Partial</span></div><div class="score-stat-card"><span class="score-stat-n" style="color:var(--incorrect);">${s.incorrect}</span><span class="score-stat-l">Incorrect</span></div></div><div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin:.75rem 0;"><span class="acp-tag" style="color:#FF9A00;border-color:rgba(255,154,0,.3);background:rgba(255,154,0,.08);">Ai-${currentTask.objective}</span><span style="font-size:.83rem;color:var(--text-secondary);">${currentTask.objectiveText}</span></div><div class="score-actions"><button class="btn btn-ghost btn-sm" onclick="loadTask('${currentTask.id}')">🔄 Try again</button><button class="btn btn-ghost btn-sm" onclick="switchMode('${currentMode==='guided'?'independent':'guided'}')">${currentMode==='guided'?'🎯 Independent':'📚 Guided'}</button><a href="d3-workflow.html" class="btn btn-primary btn-sm" style="text-decoration:none;">Domain 3 →</a></div></div>`;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showFB(s,msg,ctx){const ic={correct:'✓',incorrect:'✗',partial:'~'};document.getElementById('feedback-area').innerHTML=`<div class="feedback-block ${s} animate-fade"><strong>${ic[s]} ${s.charAt(0).toUpperCase()+s.slice(1)}</strong><p>${msg}</p>${ctx?`<p style="margin-top:.3rem;font-size:.75rem;opacity:.75;font-family:var(--font-mono);">${ctx}</p>`:''}</div>`;}
+function showHint(l){if(!currentTask||currentMode!=='guided')return;const s=currentTask.steps[currentStep];const h=[null,s.hint1,s.hint2,s.hint3];document.getElementById('hint-area').innerHTML=`<div class="feedback-block partial animate-fade"><strong>💡 Hint ${l}</strong><p>${h[l]}</p></div>`;}
+function updateDots(){if(!currentTask)return;const d=document.querySelector('.step-dots');if(!d)return;d.innerHTML=currentTask.steps.map((_,i)=>{const r=stepResults[i];const c=r===null?(i===currentStep?'current':''):r==='correct'?'done':'error';return`<div class="step-dot ${c}"></div>`;}).join('');}
+
+window.addEventListener('DOMContentLoaded',()=>{loadTask('ai-2-1a');ACPProgress.init();});
+</script>
+</body>
+</html>
